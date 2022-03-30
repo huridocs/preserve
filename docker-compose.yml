@@ -1,0 +1,21 @@
+version: "3"
+services:
+  api:
+    init: true
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - USER_ID=${USER_ID}
+      - GROUP_ID=${GROUP_ID}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/home/user/app/data
+      - ./src:/home/user/app/src
+
+  mongo:
+    network_mode: host
+    restart: unless-stopped
+    command: mongod --port 29017
+    image: "mongo:5.0.0"

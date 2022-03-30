@@ -1,0 +1,5 @@
+./ocr-service-venv
+.git
+./src/test_end_to_end.py
+./src/test_files
+node_modules
