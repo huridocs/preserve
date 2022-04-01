@@ -5,8 +5,7 @@ import { setupApp, startJobs, stopJobs } from '../src/setupApp';
 import { Application } from 'express';
 import { Db, ObjectId } from 'mongodb';
 
-const DB_CONN_STRING = 'mongodb://localhost:29017';
-const DB_NAME = 'huridocs-vault';
+const DB_CONN_STRING = 'mongodb://localhost';
 
 describe('Preserve API', () => {
   let app: Application;
@@ -25,7 +24,7 @@ describe('Preserve API', () => {
   const job = async () => new Promise(resolve => setTimeout(resolve, 1000));
 
   beforeAll(async () => {
-    db = (await connectDB(DB_CONN_STRING)).db(DB_NAME);
+    db = await connectDB(DB_CONN_STRING);
     app = setupApp(db);
   });
 
