@@ -1,4 +1,5 @@
 // import { spawn } from 'child_process';
+import { config } from 'config';
 import { connectDB } from './DB';
 
 import { setupApp } from './setupApp';
@@ -10,9 +11,7 @@ const port = 4000;
 // app.use('/data', directory('./data'));
 // app.use('/data', staticServer('./data'));
 
-const DB_CONN_STRING = 'mongodb://localhost:29017';
-
-connectDB(DB_CONN_STRING).then(db => {
+connectDB(config.mongodb_uri).then(db => {
   const app = setupApp(db);
   app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
