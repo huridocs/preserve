@@ -21,7 +21,7 @@ services:
     container_name: huridocs-vault-mongodb
 #    network_mode: host
     restart: unless-stopped
-    command: mongod --port 29017
+    command: mongod --port 27017
     image: "mongo:5.0.0"
     ports:
-      - "29017:29017"
+      - "27017:27017"
