@@ -65,16 +65,6 @@ describe('Preserve API', () => {
       await db.collection('users').insertOne({ token: 'another_token' });
     });
 
-    it('should respond 401 when not authorized', async () => {
-      await get('/api/preservations', null).expect(401);
-      await get('/api/preservations', 'invalid_token').expect(401);
-    });
-
-    it('should respond 404 when requesting an existing job with an invalid token', async () => {
-      const { body: newPreservation } = await post().expect(202);
-      await get(newPreservation.links.self, 'another_token').expect(404);
-    });
-
     it('should respond 404 when job not found', async () => {
       await get('/api/preservations/non_existent').expect(404);
     });
@@ -138,39 +128,58 @@ describe('Preserve API', () => {
       const { body: newPreservation } = await post().expect(202);
 
       startJobs(job, 0);
-      await waitForExpect(async () => {
-        const { body } = await get(newPreservation.links.self).expect(200);
+      await stopJobs();
 
-        expect(body).toMatchObject({
-          data: {
-            id: newPreservation.id,
-            attributes: {
-              ...newPreservation.data.attributes,
-              status: 'PROCESSED',
-              downloads: {
-                screenshot: `/preservations/${newPreservation.id}/screenshot.jpg`,
-                video: `/preservations/${newPreservation.id}/video.mp4`,
-              },
+      const { body } = await get(newPreservation.links.self).expect(200);
+      expect(body).toMatchObject({
+        data: {
+          id: newPreservation.id,
+          attributes: {
+            ...newPreservation.data.attributes,
+            status: 'PROCESSED',
+            downloads: {
+              screenshot: `/preservations/${newPreservation.id}/screenshot.jpg`,
+              video: `/preservations/${newPreservation.id}/video.mp4`,
             },
           },
-        });
+        },
       });
-      await stopJobs();
     });
 
     it('should be able to download files on the processed job', async () => {
       const { body: newPreservation } = await post().expect(202);
 
       startJobs(job, 0);
-      await waitForExpect(async () => {
-        const { body } = await get(newPreservation.links.self).expect(200);
-
-        const screenshot = await get(body.data.attributes.downloads.screenshot).expect(200);
-        expect(screenshot.body.toString()).toBe('screenshot');
-        const video = await get(body.data.attributes.downloads.video).expect(200);
-        expect(video.body.toString()).toBe('video');
-      });
       await stopJobs();
+      const { body } = await get(newPreservation.links.self).expect(200);
+
+      const screenshot = await get(body.data.attributes.downloads.screenshot).expect(200);
+      expect(screenshot.body.toString()).toBe('screenshot');
+      const video = await get(body.data.attributes.downloads.video).expect(200);
+      expect(video.body.toString()).toBe('video');
+    });
+
+    describe('Authorization', () => {
+      it('should respond 401 when not authorized', async () => {
+        await get('/api/preservations', null).expect(401);
+        await get('/api/preservations', 'invalid_token').expect(401);
+      });
+
+      it('should respond 404 when requesting an existing job with an invalid token', async () => {
+        const { body: newPreservation } = await post().expect(202);
+        await get(newPreservation.links.self, 'another_token').expect(404);
+      });
+
+      it('should respond 404 when trying to download files belonging to another token', async () => {
+        const { body: newPreservation } = await post().expect(202);
+
+        startJobs(job, 0);
+        await stopJobs();
+
+        const { body } = await get(newPreservation.links.self).expect(200);
+        await get(body.data.attributes.downloads.screenshot, 'another_token').expect(404);
+        await get(body.data.attributes.downloads.video, 'another_token').expect(404);
+      });
     });
   });
 });

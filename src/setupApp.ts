@@ -131,10 +131,20 @@ const setupApp = (db: Db) => {
   });
 
   app.get('/preservations/:id/:filename', async (req, res) => {
-    res.status(200);
-    res.sendFile(
-      path.resolve(`${__dirname}/../specs/data/${req.params.id}/${req.params.filename}`)
-    );
+    const preservation = await preservations.findOne({
+      _id: new ObjectId(req.params.id),
+      'attributes.user': req.user._id,
+    });
+
+    if (preservation) {
+      res.status(200);
+      res.sendFile(
+        path.resolve(`${__dirname}/../specs/data/${req.params.id}/${req.params.filename}`)
+      );
+    } else {
+      res.status(404);
+      res.end();
+    }
   });
 
   return app;

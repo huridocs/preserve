@@ -1,15 +1,10 @@
 // import { spawn } from 'child_process';
-import { config } from 'config';
+import { config } from './config';
 import { connectDB } from './DB';
 
 import { setupApp } from './setupApp';
-// import directory from 'serve-index';
-// import staticServer from 'serve-static';
 
 const port = 4000;
-
-// app.use('/data', directory('./data'));
-// app.use('/data', staticServer('./data'));
 
 connectDB(config.mongodb_uri).then(db => {
   const app = setupApp(db);
