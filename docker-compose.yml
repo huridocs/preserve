@@ -4,8 +4,8 @@ services:
     container_name: huridocs-vault-api
     init: true
     network_mode: host
-    ports:
-      - "4000:4000"
+#    ports:
+#      - "4000:4000"
     restart: unless-stopped
     environment:
       - USER_ID=${USER_ID}
