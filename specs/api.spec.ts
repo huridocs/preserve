@@ -13,14 +13,11 @@ describe('Preserve API', () => {
   let app: Application;
 
   const post = (
-    data: { url?: string; type?: 'preservations' } = {},
+    data: { url?: any; type?: 'preservations' } = { url: 'test-url' },
     token = 'my_private_token'
   ) => {
     data.type = data.type || 'preservations';
-    return request(app)
-      .post('/api/preservations')
-      .send(data.url ? data : { url: 'test-url' })
-      .set({ Authorization: token });
+    return request(app).post('/api/preservations').send(data).set({ Authorization: token });
   };
 
   const get = (url = '/api/preservations', token = 'my_private_token') =>
@@ -67,25 +64,6 @@ describe('Preserve API', () => {
 
     it('should respond 404 when job not found', async () => {
       await get('/api/preservations/non_existent').expect(404);
-    });
-
-    it('should respond only jobs authorized for the token sent', async () => {
-      const { body: newPreservation } = await post({ url: 'http://my-url' }).expect(202);
-      await post({ url: 'http://another-url' }, 'another_token').expect(202);
-
-      const { body: preservation } = await get().expect(200);
-
-      expect(preservation).toMatchObject({
-        data: [
-          {
-            id: newPreservation.id,
-            attributes: {
-              url: 'http://my-url',
-              status: 'SCHEDULED',
-            },
-          },
-        ],
-      });
     });
 
     it('should respond with 202, and return job information', async () => {
@@ -159,6 +137,24 @@ describe('Preserve API', () => {
       expect(video.body.toString()).toBe('video');
     });
 
+    describe('Validation', () => {
+      describe('POST', () => {
+        it('should respond 400 when no url passed', async () => {
+          await post({}).expect(400);
+          await post({ url: 4 }).expect(400);
+        });
+        it('should not add any job when validation fails', async () => {
+          await post({}).expect(400);
+          let { body } = await get().expect(200);
+          expect(body).toMatchObject({ data: [] });
+
+          await post({ url: 4 }).expect(400);
+          ({ body } = await get().expect(200));
+          expect(body).toMatchObject({ data: [] });
+        });
+      });
+    });
+
     describe('Authorization', () => {
       it('should respond 401 when not authorized', async () => {
         await get('/api/preservations', null).expect(401);
@@ -179,6 +175,25 @@ describe('Preserve API', () => {
         const { body } = await get(newPreservation.links.self).expect(200);
         await get(body.data.attributes.downloads.screenshot, 'another_token').expect(404);
         await get(body.data.attributes.downloads.video, 'another_token').expect(404);
+      });
+
+      it('should respond only jobs authorized for the token sent', async () => {
+        const { body: newPreservation } = await post({ url: 'http://my-url' }).expect(202);
+        await post({ url: 'http://another-url' }, 'another_token').expect(202);
+
+        const { body: preservation } = await get().expect(200);
+
+        expect(preservation).toMatchObject({
+          data: [
+            {
+              id: newPreservation.id,
+              attributes: {
+                url: 'http://my-url',
+                status: 'SCHEDULED',
+              },
+            },
+          ],
+        });
       });
     });
   });

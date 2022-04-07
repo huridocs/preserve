@@ -15,7 +15,6 @@ export type PreservationBase = {
   attributes: {
     status: status;
     url: string;
-    user: string;
     downloads?: {
       screenshot: string;
       video: string;
@@ -24,7 +23,7 @@ export type PreservationBase = {
 };
 
 export type Preservation = PreservationBase & { id: string };
-export type PreservationDB = PreservationBase & { _id: ObjectId };
+export type PreservationDB = PreservationBase & { _id: ObjectId; attributes: { user: ObjectId } };
 
 let preservations: Collection<PreservationDB>;
 
@@ -79,32 +78,45 @@ const setupApp = (db: Db) => {
 
   app.use(authMiddleware);
 
+  const validateBody = (body: any): { url: string } => {
+    if (typeof body.url === 'string') {
+      return { url: body.url };
+    }
+    throw new Error('url should exist and be a string');
+  };
+
   app.post('/api/preservations', async (req, res) => {
-    res.status(202);
-    const id = new ObjectId();
+    try {
+      const body = validateBody(req.body);
+      res.status(202);
+      const id = new ObjectId();
 
-    const attributes = {
-      url: req.body.url,
-      user: req.user._id,
-      status: 'SCHEDULED',
-    };
-
-    await preservations.insertOne({
-      _id: id,
-      attributes: {
-        url: req.body.url,
+      const attributes = {
+        url: body.url,
         user: req.user._id,
         status: 'SCHEDULED',
-      },
-    });
+      };
 
-    res.json({
-      id: id,
-      data: { attributes },
-      links: {
-        self: `/api/preservations/${id}`,
-      },
-    });
+      await preservations.insertOne({
+        _id: id,
+        attributes: {
+          url: body.url,
+          user: req.user._id,
+          status: 'SCHEDULED',
+        },
+      });
+
+      res.json({
+        id: id,
+        data: { attributes },
+        links: {
+          self: `/api/preservations/${id}`,
+        },
+      });
+    } catch (e) {
+      res.status(400);
+      res.end();
+    }
   });
 
   app.get('/api/preservations', async (req, res) => {
