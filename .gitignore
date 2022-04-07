@@ -133,3 +133,6 @@ data/*
 !data/index.html
 specs/data/*
 !specs/data/index.html
+
+# Webstorm
+.idea
