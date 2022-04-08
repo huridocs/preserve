@@ -18,6 +18,6 @@ jobs:
       - uses: satackey/action-docker-layer-caching@v0.0.11
         continue-on-error: true
       - name: Build the docker-compose stack
-        run: docker-compose up --build -d
+        run: ./run start
       - name: Run test suite
         run: docker exec huridocs-vault-api yarn test
