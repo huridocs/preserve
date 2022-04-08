@@ -1,0 +1,10 @@
+version: "3"
+services:
+  api:
+    network_mode: bridge
+    ports:
+      - "4000:4000"
+  mongo:
+    network_mode: bridge
+    ports:
+      - "27017:27017"

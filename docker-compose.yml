@@ -1,6 +1,7 @@
 version: "3"
 services:
   api:
+    container_name: huridocs-vault-api
     init: true
     network_mode: host
     restart: unless-stopped
@@ -13,9 +14,12 @@ services:
     volumes:
       - ./data:/home/user/app/data
       - ./src:/home/user/app/src
+    depends_on:
+      - mongo
 
   mongo:
+    container_name: huridocs-vault-mongodb
     network_mode: host
     restart: unless-stopped
-    command: mongod --port 29017
+    command: mongod --port 27017
     image: "mongo:5.0.0"

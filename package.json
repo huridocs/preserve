@@ -7,7 +7,8 @@
     "build": "npm run lint && rimraf dist/ && tsc",
     "start": "npm run build && node dist/index.js",
     "test": "jest",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "check-types": "tsc --noEmit --pretty"
   },
   "keywords": [],
   "author": "",
