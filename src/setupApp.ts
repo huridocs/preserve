@@ -1,9 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
 
 import { Collection, Db, ObjectId } from 'mongodb';
 import { authMiddleware } from './authMiddleware';
 import path from 'path';
+import { config } from './config';
 
 let resolvePromise: (value: unknown) => void;
 
@@ -70,6 +73,25 @@ const setupApp = (db: Db) => {
   preservations = db.collection<PreservationDB>('preservations');
 
   const app = express();
+  if (config.sentry.dsn) {
+    Sentry.init({
+      release: config.VERSION,
+      dsn: config.sentry.dsn,
+      environment: config.ENVIRONMENT,
+      integrations: [
+        new Sentry.Integrations.Http({ tracing: true }),
+        new Tracing.Integrations.Express({ app }),
+        new Tracing.Integrations.Mongo({
+          useMongoose: false,
+        }),
+      ],
+      tracesSampleRate: config.sentry.tracesSampleRate,
+    });
+    app.use(Sentry.Handlers.requestHandler());
+    app.use(Sentry.Handlers.tracingHandler());
+    app.use(Sentry.Handlers.errorHandler());
+  }
+
   app.use(bodyParser.json({ limit: '1mb' }));
 
   app.get('/api/health', (_req, res) => {
