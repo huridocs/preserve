@@ -19,9 +19,10 @@ export type PreservationBase = {
   attributes: {
     status: status;
     url: string;
+    content?: string;
     downloads?: {
-      screenshot: string;
-      video: string;
+      screenshots?: Array<string>;
+      video?: string;
     };
   };
 };
@@ -32,9 +33,10 @@ export type PreservationDB = PreservationBase & { _id: ObjectId; attributes: { u
 let preservations: Collection<PreservationDB>;
 
 export type JobResults = {
+  content?: string;
   downloads?: {
-    screenshot: string;
-    video: string;
+    screenshots?: Array<string>;
+    video?: string;
   };
 };
 
