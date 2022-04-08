@@ -8,3 +8,7 @@ services:
     network_mode: bridge
     ports:
       - "27017:27017"
+
+volumes:
+  data: { }
+  src: { }

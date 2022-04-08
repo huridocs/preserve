@@ -20,4 +20,4 @@ jobs:
       - name: Build the docker-compose stack
         run: ./run start
       - name: Run test suite
-        run: docker exec huridocs-vault-api yarn test
+        run: docker exec -it huridocs-vault-api yarn test
