@@ -1,15 +1,16 @@
 import { spawn } from 'child_process';
 import { readFile } from 'fs/promises';
+import { ObjectId } from 'mongodb';
 import { JobFunction, PreservationDB } from './setupApp';
 
-const job = async (url: string, id) => {
+const job = async (url: string, id: ObjectId) => {
   return new Promise((resolve, reject) => {
-    let result;
-    let error;
+    let result: string;
+    // let error;
     const ls = spawn('./node_modules/.bin/sugarcube', [
       '-p',
       // 'http_import,youtube_video,workflow_merge,media_screenshot,media_youtubedl,tap_printf',
-      'http_import,media_screenshot,tap_writef',
+      'http_import,media_screenshot,media_fetch,tap_writef',
       '-Q',
       `http_url:${url}`,
       // '-M',
@@ -38,7 +39,7 @@ const job = async (url: string, id) => {
         reject(`ERROR!!<br/><pre>${result}</pre>`);
       }
       // log all stdout and stderr to file/graylog ?
-      console.log(result);
+      // console.log(result);
       //
       readFile(`${__dirname}/../data/data-${id}.json`, 'utf-8').then(data => {
         resolve(JSON.parse(data)[0]);
@@ -54,11 +55,15 @@ const sugarcubeJob: JobFunction = async (preservation: PreservationDB) => {
     body: string;
     _sc_downloads: Array<{ location: string; type: string }>;
   };
-  console.log(result);
+
+  const screenshot = result._sc_downloads.find(d => d.location.match(/screenshot/));
+  if (screenshot) {
+  }
+
   return {
     content: result.body,
     downloads: {
-      screenshots: [],
+      screenshot: '',
       video: '',
     },
   };

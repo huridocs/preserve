@@ -5,13 +5,12 @@ import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 
 import { Collection, Db, ObjectId } from 'mongodb';
-import { authMiddleware } from './authMiddleware';
 import path from 'path';
 import { config } from './config';
+import { authMiddleware } from './authMiddleware';
 
-let resolvePromise: (value: unknown) => void;
-
-const timeout = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds));
+let resolvePromise: undefined | ((value: unknown) => void);
+const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
 type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED';
 
@@ -21,7 +20,7 @@ export type PreservationBase = {
     url: string;
     content?: string;
     downloads?: {
-      screenshots?: Array<string>;
+      screenshot?: string;
       video?: string;
     };
   };
@@ -35,7 +34,7 @@ let preservations: Collection<PreservationDB>;
 export type JobResults = {
   content?: string;
   downloads?: {
-    screenshots?: Array<string>;
+    screenshot?: string;
     video?: string;
   };
 };

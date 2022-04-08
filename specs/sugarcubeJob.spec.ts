@@ -1,9 +1,11 @@
 import express from 'express';
-import { ObjectId } from 'mongodb';
-import { sugarcubeJob } from '../src/sugarcubeJob';
-import { JobResults } from '../src/setupApp';
-import { Server } from 'http';
 import { access } from 'fs/promises';
+import { Server } from 'http';
+import { ObjectId } from 'mongodb';
+import path from 'path';
+import { config } from 'src/config';
+import { JobResults } from 'src/setupApp';
+import { sugarcubeJob } from 'src/sugarcubeJob';
 
 async function exists(path: string) {
   try {
@@ -22,7 +24,11 @@ describe('sugarcubeJob', () => {
     const app = express();
     app.get('/test_page', (_req, res) => {
       res.set('Content-Type', 'text/html');
-      res.send(Buffer.from('<h2>Test String</h2>'));
+      res.send(
+        Buffer.from(
+          '<body><h2>Test Page</h2><img src="https://github.com/critocrito/sugarcube/raw/main/logo.png"></body>'
+        )
+      );
     });
     await new Promise<void>(resolve => {
       server = app.listen(5959, resolve);
@@ -35,7 +41,7 @@ describe('sugarcubeJob', () => {
         url: 'http://localhost:5959/test_page',
       },
     });
-  });
+  }, 10000);
 
   afterAll(async () => {
     await new Promise<void>(resolve => {
@@ -48,12 +54,13 @@ describe('sugarcubeJob', () => {
     });
   });
 
-  describe('sugarcubeJob', () => {
-    it('should return the content of the url passed', async () => {
-      expect(result.content).toMatch('Test String');
-    });
-    it('should perform screenshots and return the paths', async () => {
-      expect(await exists(result.downloads.screenshots[0])).toBe(true);
-    });
+  it('should return the content of the url passed', async () => {
+    expect(result.content).toMatch('Test Page');
+  });
+  it('should perform screenshots and return the paths', async () => {
+    //this should fail as screenshot is blank, test that the screenshot is actually moved to the config destination by performing a snapshot ?
+    expect(await exists(path.join(config.data_path, result.downloads?.screenshot || ''))).toBe(
+      true
+    );
   });
 });

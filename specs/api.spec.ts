@@ -1,17 +1,10 @@
-import { connectDB, disconnectDB } from '../src/DB';
+import { Application } from 'express';
+import { appendFile, mkdir } from 'fs/promises';
+import { Db, ObjectId } from 'mongodb';
+import { connectDB, disconnectDB } from 'src/DB';
+import { JobFunction, PreservationDB, setupApp, startJobs, stopJobs } from 'src/setupApp';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
-import {
-  JobFunction,
-  JobResults,
-  PreservationDB,
-  setupApp,
-  startJobs,
-  stopJobs,
-} from '../src/setupApp';
-import { Application } from 'express';
-import { Db, ObjectId } from 'mongodb';
-import { appendFile, mkdir } from 'fs/promises';
 
 const DB_CONN_STRING = 'mongodb://localhost';
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
@@ -27,7 +20,7 @@ describe('Preserve API', () => {
     return request(app).post('/api/preservations').send(data).set({ Authorization: token });
   };
 
-  const get = (url = '/api/preservations', token = 'my_private_token') =>
+  const get = (url = '/api/preservations', token: string | null = 'my_private_token') =>
     request(app).get(url).set({ Authorization: token });
 
   let db: Db;
