@@ -4,17 +4,6 @@ RUN apt-get update && apt-get install -y  \
     libxss1 \
     libgconf-2-4 \
     default-jre \
-#     tesseract-ocr \
-#     tesseract-ocr-deu tesseract-ocr-eng  \
-#     tesseract-ocr-fra  \
-#     tesseract-ocr-spa  \
-#     tesseract-ocr-deu  \
-#     tesseract-ocr-ara  \
-#     tesseract-ocr-mya  \
-#     tesseract-ocr-hin  \
-#     tesseract-ocr-tam  \
-#     tesseract-ocr-tha  \
-#     tesseract-ocr-chi-sim  \
     gosu \
     && rm -rf /var/lib/apt/lists/*
 
@@ -41,9 +30,7 @@ WORKDIR /home/user/app
 
 EXPOSE 4000
 
-# CMD [ "node", "server.js" ]
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
-# ENTRYPOINT ["tail", "-f", "/dev/null"]
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
