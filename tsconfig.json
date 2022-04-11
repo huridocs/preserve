@@ -9,16 +9,30 @@
     "target": "es2017",
     "outDir": "./dist",
     "baseUrl": ".",
-    "typeRoots": ["./node_modules/@types"],
-    "types": ["jest","node"],
+    "paths": {
+      "/*": [ "/*" ]
+    },
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "types": [
+      "jest",
+      "node"
+    ],
     "moduleResolution": "node",
+    "isolatedModules": true,
     "incremental": true,
+    "strict": true,
     "esModuleInterop": true,
     "declarationMap": true,
     "inlineSourceMap": true,
     "inlineSources": true,
     "resolveJsonModule": true
   },
-  "include": ["**/*"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

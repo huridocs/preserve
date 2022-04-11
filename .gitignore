@@ -130,6 +130,8 @@ dist
 .pnp.*
 .sugarcube_cache.json
 data/*
+downloads/*
+!downloads/index.html
 !data/index.html
 specs/data/*
 !specs/data/index.html
