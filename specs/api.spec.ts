@@ -2,7 +2,14 @@ import { Application } from 'express';
 import { appendFile, mkdir } from 'fs/promises';
 import { Db, ObjectId } from 'mongodb';
 import { connectDB, disconnectDB } from 'src/DB';
-import { JobFunction, PreservationDB, setupApp, startJobs, stopJobs } from 'src/setupApp';
+import {
+  JobFunction,
+  JobResults,
+  PreservationDB,
+  setupApp,
+  startJobs,
+  stopJobs,
+} from 'src/setupApp';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 
@@ -31,12 +38,13 @@ describe('Preserve API', () => {
     await mkdir(`${__dirname}/data/${preservation._id}`);
     await appendFile(`${__dirname}/data/${preservation._id}/screenshot.jpg`, 'screenshot');
     await appendFile(`${__dirname}/data/${preservation._id}/video.mp4`, 'video');
-    return {
+    const result: JobResults = {
       downloads: {
-        screenshots: [`/preservations/${preservation._id}/screenshot.jpg`],
+        screenshot: `/preservations/${preservation._id}/screenshot.jpg`,
         video: `/preservations/${preservation._id}/video.mp4`,
       },
     };
+    return result;
   };
 
   beforeAll(async () => {
@@ -116,7 +124,7 @@ describe('Preserve API', () => {
             ...newPreservation.data.attributes,
             status: 'PROCESSED',
             downloads: {
-              screenshots: [`/preservations/${newPreservation.id}/screenshot.jpg`],
+              screenshot: `/preservations/${newPreservation.id}/screenshot.jpg`,
               video: `/preservations/${newPreservation.id}/video.mp4`,
             },
           },
@@ -131,7 +139,7 @@ describe('Preserve API', () => {
       await stopJobs();
       const { body } = await get(newPreservation.links.self).expect(200);
 
-      const screenshot = await get(body.data.attributes.downloads.screenshots[0]).expect(200);
+      const screenshot = await get(body.data.attributes.downloads.screenshot).expect(200);
       expect(screenshot.body.toString()).toBe('screenshot');
       const video = await get(body.data.attributes.downloads.video).expect(200);
       expect(video.body.toString()).toBe('video');
@@ -173,7 +181,7 @@ describe('Preserve API', () => {
         await stopJobs();
 
         const { body } = await get(newPreservation.links.self).expect(200);
-        await get(body.data.attributes.downloads.screenshots[0], 'another_token').expect(404);
+        await get(body.data.attributes.downloads.screenshot, 'another_token').expect(404);
         await get(body.data.attributes.downloads.video, 'another_token').expect(404);
       });
 
