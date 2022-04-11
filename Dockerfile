@@ -23,8 +23,8 @@ RUN mkdir -p /home/user/app
 
 RUN yarn build
 
+RUN cp -r ./node_modules /home/user/app
 RUN mv ./dist/* /home/user/app
-RUN mv ./node_modules /home/user/app
 
 WORKDIR /home/user/app
 
