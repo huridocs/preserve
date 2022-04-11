@@ -13,7 +13,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./data:/home/user/app/data
-      - ./src:/home/user/app/src
+      - ./downloads:/home/user/app/downloads
     depends_on:
       - mongo
 

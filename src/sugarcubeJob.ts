@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { mkdir, readFile, rename } from 'fs/promises';
+import { copyFile, mkdir, readFile } from 'fs/promises';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from './config';
@@ -58,7 +58,7 @@ const sugarcubeJob: JobFunction = async (preservation: PreservationDB) => {
   const screenshot = result._sc_downloads.find(d => d.location.match(/screenshot/));
   let screenshot_path: string | null = null;
   if (screenshot) {
-    await rename(
+    await copyFile(
       `${__dirname}/../${screenshot.location}`,
       path.join(preservation_dir, 'screenshot.jpg')
     );
@@ -69,7 +69,7 @@ const sugarcubeJob: JobFunction = async (preservation: PreservationDB) => {
   let video_path: string | null = null;
 
   if (video) {
-    await rename(`${__dirname}/../${video.location}`, path.join(preservation_dir, 'video.mp4'));
+    await copyFile(`${__dirname}/../${video.location}`, path.join(preservation_dir, 'video.mp4'));
     video_path = path.join(preservation._id.toString(), 'video.mp4');
   }
 
