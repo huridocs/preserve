@@ -57,10 +57,10 @@ describe('sugarcubeJob', () => {
   it('should return the content of the url passed', async () => {
     expect(result.content).toMatch('Test Page');
   });
+
   it('should perform screenshots and return the paths', async () => {
-    //this should fail as screenshot is blank, test that the screenshot is actually moved to the config destination by performing a snapshot ?
-    expect(await exists(path.join(config.data_path, result.downloads?.screenshot || ''))).toBe(
-      true
-    );
+    expect(
+      await exists(path.join(config.data_path, result.downloads?.screenshot || 'no_screenshot'))
+    ).toBe(true);
   });
 });

@@ -1,6 +1,8 @@
 import { spawn } from 'child_process';
-import { readFile } from 'fs/promises';
+import { mkdir, readFile, rename } from 'fs/promises';
 import { ObjectId } from 'mongodb';
+import path from 'path';
+import { config } from './config';
 import { JobFunction, PreservationDB } from './setupApp';
 
 const job = async (url: string, id: ObjectId) => {
@@ -9,20 +11,18 @@ const job = async (url: string, id: ObjectId) => {
     // let error;
     const ls = spawn('./node_modules/.bin/sugarcube', [
       '-p',
-      // 'http_import,youtube_video,workflow_merge,media_screenshot,media_youtubedl,tap_printf',
-      'http_import,media_screenshot,media_fetch,tap_writef',
+      'http_import,youtube_video,media_screenshot,media_youtubedl,tap_writef',
       '-Q',
       `http_url:${url}`,
-      // '-M',
-      // `${id}`,
+      '-M',
+      `${id}`,
       '--media.force',
       '--tap.filename',
       `${__dirname}/../data/data-${id}.json`,
-      // '-Q',
-      // 'youtube_video:https://www.youtube.com/watch?v=E_8B_seg8AI',
-      // `-Q workflow_merge:'{"_sc_id_hash" : 'token-${Date.now()}'}'`,
-      // '--youtube.api_key',
-      // 'AIzaSyCUqHumtR9-KJOhPNXxNJqWwW73bAslpv4',
+      '-Q',
+      `youtube_video:${url}`,
+      '--youtube.api_key',
+      'AIzaSyCUqHumtR9-KJOhPNXxNJqWwW73bAslpv4',
     ]);
 
     ls.stdout.on('data', data => {
@@ -31,7 +31,6 @@ const job = async (url: string, id: ObjectId) => {
 
     ls.stderr.on('data', (data: string) => {
       result += data.toString();
-      // res.status(500).send({success: false, error: {message:data}});
     });
 
     ls.on('close', code => {
@@ -48,23 +47,37 @@ const job = async (url: string, id: ObjectId) => {
   });
 };
 const sugarcubeJob: JobFunction = async (preservation: PreservationDB) => {
-  // await mkdir(`${__dirname}/data/${preservation._id}`);
-  // await appendFile(`${__dirname}/data/${preservation._id}/screenshot.jpg`, 'screenshot');
-  // await appendFile(`${__dirname}/data/${preservation._id}/video.mp4`, 'video');
   const result = (await job(preservation.attributes.url, preservation._id)) as {
     body: string;
     _sc_downloads: Array<{ location: string; type: string }>;
   };
 
+  const preservation_dir = path.join(config.data_path, preservation._id.toString());
+  await mkdir(preservation_dir);
+
   const screenshot = result._sc_downloads.find(d => d.location.match(/screenshot/));
+  let screenshot_path: string | null = null;
   if (screenshot) {
+    await rename(
+      `${__dirname}/../${screenshot.location}`,
+      path.join(preservation_dir, 'screenshot.jpg')
+    );
+    screenshot_path = path.join(preservation._id.toString(), 'screenshot.jpg');
+  }
+
+  const video = result._sc_downloads.find(d => d.location.match(/\.mp4/));
+  let video_path: string | null = null;
+
+  if (video) {
+    await rename(`${__dirname}/../${video.location}`, path.join(preservation_dir, 'video.mp4'));
+    video_path = path.join(preservation._id.toString(), 'video.mp4');
   }
 
   return {
     content: result.body,
     downloads: {
-      screenshot: '',
-      video: '',
+      ...(screenshot_path ? { screenshot: screenshot_path } : {}),
+      ...(video_path ? { video: video_path } : {}),
     },
   };
 };
