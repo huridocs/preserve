@@ -17,6 +17,7 @@ const job = async (url: string, id: ObjectId) => {
       '-M',
       `${id}`,
       '--media.force',
+      '--media.youtubedl_force_download',
       '--tap.filename',
       `${__dirname}/../data/data-${id}.json`,
       '-Q',
@@ -42,7 +43,8 @@ const job = async (url: string, id: ObjectId) => {
       //
       readFile(`${__dirname}/../data/data-${id}.json`, 'utf-8')
         .then(data => {
-          resolve(JSON.parse(data)[0]);
+          const theData = JSON.parse(data);
+          resolve(theData[theData.length - 1]);
         })
         .catch(e => {
           console.log(e);

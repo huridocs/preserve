@@ -1,6 +1,7 @@
 import { Application } from 'express';
 import { appendFile, mkdir } from 'fs/promises';
 import { Db, ObjectId } from 'mongodb';
+import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/DB';
 import {
   JobFunction,
@@ -35,19 +36,20 @@ describe('Preserve API', () => {
 
   const job: JobFunction = async (preservation: PreservationDB) => {
     await timeout(100);
-    await mkdir(`${__dirname}/data/${preservation._id}`);
-    await appendFile(`${__dirname}/data/${preservation._id}/screenshot.jpg`, 'screenshot');
-    await appendFile(`${__dirname}/data/${preservation._id}/video.mp4`, 'video');
+    await mkdir(`${config.data_path}/${preservation._id}`);
+    await appendFile(`${config.data_path}/${preservation._id}/screenshot.jpg`, 'screenshot');
+    await appendFile(`${config.data_path}/${preservation._id}/video.mp4`, 'video');
     const result: JobResults = {
       downloads: {
-        screenshot: `/preservations/${preservation._id}/screenshot.jpg`,
-        video: `/preservations/${preservation._id}/video.mp4`,
+        screenshot: `${preservation._id}/screenshot.jpg`,
+        video: `${preservation._id}/video.mp4`,
       },
     };
     return result;
   };
 
   beforeAll(async () => {
+    config.data_path = `${__dirname}/../data`;
     db = await connectDB(DB_CONN_STRING, 'huridocs-vault-testing');
     app = setupApp(db);
   });
