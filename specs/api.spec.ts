@@ -48,7 +48,7 @@ describe('Preserve API', () => {
   };
 
   beforeAll(async () => {
-    db = await connectDB(DB_CONN_STRING);
+    db = await connectDB(DB_CONN_STRING, 'huridocs-vault-testing');
     app = setupApp(db);
   });
 

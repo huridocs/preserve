@@ -5,10 +5,10 @@ const DB_NAME = 'huridocs-vault';
 let client: MongoClient;
 let db: Db;
 
-const connectDB = async (uri: string) => {
+const connectDB = async (uri: string, db_name = DB_NAME) => {
   client = new MongoClient(uri);
   await client.connect();
-  db = client.db(DB_NAME);
+  db = client.db(db_name);
   return db;
 };
 

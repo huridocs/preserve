@@ -33,6 +33,7 @@ describe('sugarcubeJob', () => {
     await new Promise<void>(resolve => {
       server = app.listen(5959, resolve);
     });
+
     result = await sugarcubeJob({
       _id: new ObjectId(),
       attributes: {

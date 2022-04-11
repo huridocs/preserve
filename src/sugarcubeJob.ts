@@ -40,9 +40,13 @@ const job = async (url: string, id: ObjectId) => {
       // log all stdout and stderr to file/graylog ?
       // console.log(result);
       //
-      readFile(`${__dirname}/../data/data-${id}.json`, 'utf-8').then(data => {
-        resolve(JSON.parse(data)[0]);
-      });
+      readFile(`${__dirname}/../data/data-${id}.json`, 'utf-8')
+        .then(data => {
+          resolve(JSON.parse(data)[0]);
+        })
+        .catch(e => {
+          console.log(e);
+        });
     });
   });
 };
