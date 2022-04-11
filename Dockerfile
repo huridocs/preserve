@@ -12,7 +12,10 @@ RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/yout
 
 RUN groupmod -g 999 node && usermod -u 999 -g 999 node
 
-RUN mkdir -p /home/user/source
+RUN mkdir -p /home/user/source \
+    mkdir -p /home/user/source/data \
+    mkdir -p /home/user/source/downloads
+
 WORKDIR /home/user/source
 
 COPY package.json ./
