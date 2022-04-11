@@ -10,4 +10,4 @@ chown -R user:user /home/user
 export HOME=/home/user
 
 # exec /usr/sbin/gosu user node src/server.ts
-exec /usr/sbin/gosu user yarn dev
+exec /usr/sbin/gosu user node src/server.js

@@ -5,6 +5,12 @@ import { connectDB } from './DB';
 import { setupApp, startJobs } from './setupApp';
 import { sugarcubeJob } from './sugarcubeJob';
 
+const uncaughtError = (error: any) => {
+  throw error;
+};
+process.on('unhandledRejection', uncaughtError);
+process.on('uncaughtException', uncaughtError);
+
 connectDB(config.mongodb_uri).then(db => {
   const app = setupApp(db);
   app.listen(config.PORT, () => {
