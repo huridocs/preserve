@@ -4,12 +4,10 @@ import { connectDB } from './DB';
 
 import { setupApp } from './setupApp';
 
-const port = 4000;
-
 connectDB(config.mongodb_uri).then(db => {
   const app = setupApp(db);
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+  app.listen(config.PORT, () => {
+    console.log(`Example app listening on port ${config.PORT}`);
   });
 });
 

@@ -9,4 +9,5 @@ export const config = {
   },
   ENVIRONMENT: process.env.ENVIRONMENT || 'development',
   VERSION: process.env.ENVIRONMENT ? version : `development-${version}`,
+  PORT: 4000,
 };
