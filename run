@@ -6,6 +6,10 @@ function test {
   docker exec -it huridocs-vault-api yarn --cwd /home/user/source test "${@}"
 }
 
+function test:ci {
+  docker exec huridocs-vault-api yarn --cwd /home/user/source test "${@}"
+}
+
 function remove_docker_containers {
   docker-compose ps -q | xargs docker rm
 }
