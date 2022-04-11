@@ -41,7 +41,7 @@ describe('sugarcubeJob', () => {
         url: 'http://localhost:5959/test_page',
       },
     });
-  }, 10000);
+  }, 20000);
 
   afterAll(async () => {
     await new Promise<void>(resolve => {
