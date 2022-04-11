@@ -16,7 +16,8 @@
     "esModuleInterop": true,
     "declarationMap": true,
     "inlineSourceMap": true,
-    "inlineSources": true
+    "inlineSources": true,
+    "resolveJsonModule": true
   },
   "include": ["**/*"],
   "exclude": ["node_modules"]
