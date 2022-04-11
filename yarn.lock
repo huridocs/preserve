@@ -2730,6 +2730,14 @@ expect@^27.5.1:
     jest-matcher-utils "^27.5.1"
     jest-message-util "^27.5.1"
 
+express-prom-bundle@^6.4.1:
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/express-prom-bundle/-/express-prom-bundle-6.4.1.tgz#a688050b9e090f6969825c33143106d3e0e5a70e"
+  integrity sha512-Sg0svLQe/SS5z1tHDTVfZVjNumobiDlXM0jmemt5Dm9K6BX8z9yCwEr93zbko6fNMR4zKav77iPfxUWi6gAjNA==
+  dependencies:
+    on-finished "^2.3.0"
+    url-value-parser "^2.0.0"
+
 express@^4.17.3:
   version "4.17.3"
   resolved "https://registry.yarnpkg.com/express/-/express-4.17.3.tgz#f6c7302194a4fb54271b73a1fe7a06478c8f85a1"
@@ -4844,7 +4852,7 @@ object-keys@~0.4.0:
   resolved "https://registry.npmjs.org/object-keys/-/object-keys-0.4.0.tgz"
   integrity sha1-KKaq50KN0sOpLz2V8hM13SBOAzY=
 
-on-finished@2.4.1:
+on-finished@2.4.1, on-finished@^2.3.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/on-finished/-/on-finished-2.4.1.tgz#58c8c44116e54845ad57f14ab10b03533184ac3f"
   integrity sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==
@@ -6364,6 +6372,11 @@ url-parse-lax@^3.0.0:
   integrity sha1-FrXK/Afb42dsGxmZF3gj1lA6yww=
   dependencies:
     prepend-http "^2.0.0"
+
+url-value-parser@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/url-value-parser/-/url-value-parser-2.1.0.tgz#fe1ae776122b2eea4bbf284896bbdcd7fc75e1fa"
+  integrity sha512-gIYPWXujdUdwd/9TGCHTf5Vvgw6lOxjE5Q/k+7WNByYyS0vW5WX0k+xuVlhvPq6gRNhzXVv/ezC+OfeAet5Kcw==
 
 util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"

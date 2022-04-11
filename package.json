@@ -19,6 +19,7 @@
     "@sugarcube/sugarcube": "^0.42.1",
     "body-parser": "^1.20.0",
     "express": "^4.17.3",
+    "express-prom-bundle": "^6.4.1",
     "mongodb": "^4.5.0"
   },
   "devDependencies": {

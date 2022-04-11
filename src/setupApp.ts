@@ -1,4 +1,5 @@
 import express from 'express';
+import promBundle from 'express-prom-bundle';
 import bodyParser from 'body-parser';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
@@ -10,7 +11,7 @@ import { config } from './config';
 
 let resolvePromise: (value: unknown) => void;
 
-const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
+const timeout = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED';
 
@@ -73,6 +74,21 @@ const setupApp = (db: Db) => {
   preservations = db.collection<PreservationDB>('preservations');
 
   const app = express();
+
+  const metricsMiddleware = promBundle({
+    includeMethod: true,
+    includePath: true,
+    customLabels: {
+      port: config.PORT,
+      env: config.ENVIRONMENT,
+    },
+    promClient: {
+      collectDefaultMetrics: {},
+    },
+  });
+
+  app.use(metricsMiddleware);
+
   if (config.sentry.dsn) {
     Sentry.init({
       release: config.VERSION,
