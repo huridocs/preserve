@@ -3,7 +3,7 @@
 set -eo pipefail
 
 function test {
-  docker exec -it huridocs-vault-api env TERM=xterm-256color yarn --cwd /home/user/source test "${@}"
+  docker exec -it huridocs-vault-api yarn --cwd /home/user/source test "${@}"
 }
 
 function remove_docker_containers {
