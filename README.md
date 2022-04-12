@@ -16,8 +16,3 @@ To start the containers exposing the ports to your host machine:
 ```shell
 ./run start:local
 ```
-
-To run the tests inside the container:
-```shell
-./run test
-```

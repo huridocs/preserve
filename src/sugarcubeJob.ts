@@ -1,9 +1,9 @@
 import { spawn } from 'child_process';
-import { copyFile, mkdir, readFile } from 'fs/promises';
+import { appendFile, copyFile, mkdir, readFile } from 'fs/promises';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from './config';
-import { JobFunction, PreservationDB } from './setupApp';
+import { JobFunction, JobResults, PreservationDB } from './setupApp';
 
 const job = async (url: string, id: ObjectId) => {
   return new Promise((resolve, reject) => {
@@ -17,6 +17,7 @@ const job = async (url: string, id: ObjectId) => {
       '-M',
       `${id}`,
       '--media.force',
+      '--media.youtubedl_force_download',
       '--tap.filename',
       `${__dirname}/../data/data-${id}.json`,
       '-Q',
@@ -35,19 +36,26 @@ const job = async (url: string, id: ObjectId) => {
 
     ls.on('close', code => {
       if (code === 1) {
-        reject(`ERROR!!<br/><pre>${result}</pre>`);
+        reject(result);
       }
       // log all stdout and stderr to file/graylog ?
       // console.log(result);
       //
-      readFile(`${__dirname}/../data/data-${id}.json`, 'utf-8').then(data => {
-        resolve(JSON.parse(data)[0]);
-      });
+      readFile(`${__dirname}/../data/data-${id}.json`, 'utf-8')
+        .then(fileText => {
+          const theData = JSON.parse(fileText);
+          const data = theData[1] ? { ...theData[0], ...theData[1] } : theData[0];
+          resolve(data);
+        })
+        .catch(e => {
+          console.log(e);
+          reject(e);
+        });
     });
   });
 };
 const sugarcubeJob: JobFunction = async (preservation: PreservationDB) => {
-  const result = (await job(preservation.attributes.url, preservation._id)) as {
+  const sugarcubeResult = (await job(preservation.attributes.url, preservation._id)) as {
     body: string;
     _sc_downloads: Array<{ location: string; type: string }>;
   };
@@ -55,7 +63,7 @@ const sugarcubeJob: JobFunction = async (preservation: PreservationDB) => {
   const preservation_dir = path.join(config.data_path, preservation._id.toString());
   await mkdir(preservation_dir);
 
-  const screenshot = result._sc_downloads.find(d => d.location.match(/screenshot/));
+  const screenshot = sugarcubeResult._sc_downloads.find(d => d.location.match(/screenshot/));
   let screenshot_path: string | null = null;
   if (screenshot) {
     await copyFile(
@@ -65,7 +73,7 @@ const sugarcubeJob: JobFunction = async (preservation: PreservationDB) => {
     screenshot_path = path.join(preservation._id.toString(), 'screenshot.jpg');
   }
 
-  const video = result._sc_downloads.find(d => d.location.match(/\.mp4/));
+  const video = sugarcubeResult._sc_downloads.find(d => d.location.match(/\.mp4/));
   let video_path: string | null = null;
 
   if (video) {
@@ -73,13 +81,18 @@ const sugarcubeJob: JobFunction = async (preservation: PreservationDB) => {
     video_path = path.join(preservation._id.toString(), 'video.mp4');
   }
 
-  return {
-    content: result.body,
+  await appendFile(path.join(preservation_dir, 'content.txt'), sugarcubeResult.body);
+  const content_path = path.join(preservation._id.toString(), 'content.txt');
+
+  const result: JobResults = {
     downloads: {
+      content: content_path,
       ...(screenshot_path ? { screenshot: screenshot_path } : {}),
       ...(video_path ? { video: video_path } : {}),
     },
   };
+
+  return result;
 };
 
 export { sugarcubeJob };

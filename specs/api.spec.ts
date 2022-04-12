@@ -1,12 +1,20 @@
 import { Application } from 'express';
 import { appendFile, mkdir } from 'fs/promises';
 import { Db, ObjectId } from 'mongodb';
+import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/DB';
-import { JobFunction, PreservationDB, setupApp, startJobs, stopJobs } from 'src/setupApp';
+import {
+  JobFunction,
+  JobResults,
+  PreservationDB,
+  setupApp,
+  startJobs,
+  stopJobs,
+} from 'src/setupApp';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 
-const DB_CONN_STRING = 'mongodb://localhost';
+const DB_CONN_STRING = 'mongodb://localhost:27019';
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
 describe('Preserve API', () => {
@@ -28,19 +36,23 @@ describe('Preserve API', () => {
 
   const job: JobFunction = async (preservation: PreservationDB) => {
     await timeout(100);
-    await mkdir(`${__dirname}/data/${preservation._id}`);
-    await appendFile(`${__dirname}/data/${preservation._id}/screenshot.jpg`, 'screenshot');
-    await appendFile(`${__dirname}/data/${preservation._id}/video.mp4`, 'video');
-    return {
+    await mkdir(`${config.data_path}/${preservation._id}`);
+    await appendFile(`${config.data_path}/${preservation._id}/screenshot.jpg`, 'screenshot');
+    await appendFile(`${config.data_path}/${preservation._id}/video.mp4`, 'video');
+    await appendFile(`${config.data_path}/${preservation._id}/content.txt`, 'content');
+    const result: JobResults = {
       downloads: {
-        screenshots: [`/preservations/${preservation._id}/screenshot.jpg`],
-        video: `/preservations/${preservation._id}/video.mp4`,
+        content: `${preservation._id}/content.txt`,
+        screenshot: `${preservation._id}/screenshot.jpg`,
+        video: `${preservation._id}/video.mp4`,
       },
     };
+    return result;
   };
 
   beforeAll(async () => {
-    db = await connectDB(DB_CONN_STRING);
+    config.data_path = `${__dirname}/../data`;
+    db = await connectDB(DB_CONN_STRING, 'huridocs-vault-testing');
     app = setupApp(db);
   });
 
@@ -116,7 +128,8 @@ describe('Preserve API', () => {
             ...newPreservation.data.attributes,
             status: 'PROCESSED',
             downloads: {
-              screenshots: [`/preservations/${newPreservation.id}/screenshot.jpg`],
+              content: `/preservations/${newPreservation.id}/content.txt`,
+              screenshot: `/preservations/${newPreservation.id}/screenshot.jpg`,
               video: `/preservations/${newPreservation.id}/video.mp4`,
             },
           },
@@ -131,7 +144,10 @@ describe('Preserve API', () => {
       await stopJobs();
       const { body } = await get(newPreservation.links.self).expect(200);
 
-      const screenshot = await get(body.data.attributes.downloads.screenshots[0]).expect(200);
+      const content = await get(body.data.attributes.downloads.content).expect(200);
+      expect(content.text).toBe('content');
+
+      const screenshot = await get(body.data.attributes.downloads.screenshot).expect(200);
       expect(screenshot.body.toString()).toBe('screenshot');
       const video = await get(body.data.attributes.downloads.video).expect(200);
       expect(video.body.toString()).toBe('video');
@@ -173,7 +189,7 @@ describe('Preserve API', () => {
         await stopJobs();
 
         const { body } = await get(newPreservation.links.self).expect(200);
-        await get(body.data.attributes.downloads.screenshots[0], 'another_token').expect(404);
+        await get(body.data.attributes.downloads.screenshot, 'another_token').expect(404);
         await get(body.data.attributes.downloads.video, 'another_token').expect(404);
       });
 

@@ -1,20 +1,9 @@
-FROM node:14
+FROM node:14.18.3
 
 RUN apt-get update && apt-get install -y  \
     libxss1 \
     libgconf-2-4 \
     default-jre \
-    tesseract-ocr \
-    tesseract-ocr-deu tesseract-ocr-eng  \
-    tesseract-ocr-fra  \
-    tesseract-ocr-spa  \
-    tesseract-ocr-deu  \
-    tesseract-ocr-ara  \
-    tesseract-ocr-mya  \
-    tesseract-ocr-hin  \
-    tesseract-ocr-tam  \
-    tesseract-ocr-tha  \
-    tesseract-ocr-chi-sim  \
     gosu \
     && rm -rf /var/lib/apt/lists/*
 
@@ -28,12 +17,16 @@ WORKDIR /home/user/app
 
 COPY package.json ./
 RUN yarn install
+COPY tsconfig.json ./
+COPY src/ ./src
+RUN yarn build
+RUN yarn install --prod
+RUN rm -fr ./src ./specs
+RUN mv -f ./dist/* ./
+RUN rm -fr ./dist
 
-COPY . .
 EXPOSE 4000
 
-# CMD [ "node", "server.js" ]
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
+COPY entrypoint.sh /bin/entrypoint.sh
+RUN chmod +x /bin/entrypoint.sh
+ENTRYPOINT ["/bin/entrypoint.sh"]

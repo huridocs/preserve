@@ -18,8 +18,8 @@ export type PreservationBase = {
   attributes: {
     status: status;
     url: string;
-    content?: string;
     downloads?: {
+      content?: string;
       screenshot?: string;
       video?: string;
     };
@@ -32,8 +32,8 @@ export type PreservationDB = PreservationBase & { _id: ObjectId; attributes: { u
 let preservations: Collection<PreservationDB>;
 
 export type JobResults = {
-  content?: string;
   downloads?: {
+    content?: string;
     screenshot?: string;
     video?: string;
   };
@@ -161,7 +161,25 @@ const setupApp = (db: Db) => {
   app.get('/api/preservations', async (req, res) => {
     res.json({
       data: (await preservations.find({ 'attributes.user': req.user._id }).toArray()).map(p => {
-        return { id: p._id, ...p, _id: undefined };
+        return {
+          id: p._id,
+          ...p,
+          _id: undefined,
+          attributes: {
+            ...p.attributes,
+            downloads: {
+              ...(p.attributes?.downloads?.content
+                ? { content: `/preservations/${p.attributes.downloads.content}` }
+                : {}),
+              ...(p.attributes?.downloads?.screenshot
+                ? { screenshot: `/preservations/${p.attributes.downloads.screenshot}` }
+                : {}),
+              ...(p.attributes?.downloads?.video
+                ? { video: `/preservations/${p.attributes.downloads.video}` }
+                : {}),
+            },
+          },
+        };
       }),
     });
   });
@@ -177,7 +195,27 @@ const setupApp = (db: Db) => {
 
     res.status(preservation ? 200 : 404);
     res.json({
-      data: preservation ? { id: preservation._id, ...preservation, _id: undefined } : {},
+      data: preservation
+        ? {
+            id: preservation._id,
+            ...preservation,
+            _id: undefined,
+            attributes: {
+              ...preservation.attributes,
+              downloads: {
+                ...(preservation.attributes?.downloads?.content
+                  ? { content: `/preservations/${preservation.attributes.downloads.content}` }
+                  : {}),
+                ...(preservation.attributes?.downloads?.screenshot
+                  ? { screenshot: `/preservations/${preservation.attributes.downloads.screenshot}` }
+                  : {}),
+                ...(preservation.attributes?.downloads?.video
+                  ? { video: `/preservations/${preservation.attributes.downloads.video}` }
+                  : {}),
+              },
+            },
+          }
+        : {},
     });
   });
 
@@ -189,9 +227,7 @@ const setupApp = (db: Db) => {
 
     if (preservation) {
       res.status(200);
-      res.sendFile(
-        path.resolve(`${__dirname}/../specs/data/${req.params.id}/${req.params.filename}`)
-      );
+      res.sendFile(path.resolve(`${config.data_path}/${req.params.id}/${req.params.filename}`));
     } else {
       res.status(404);
       res.end();
