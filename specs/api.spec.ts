@@ -14,7 +14,7 @@ import {
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 
-const DB_CONN_STRING = 'mongodb://localhost';
+const DB_CONN_STRING = 'mongodb://localhost:27019';
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
 describe('Preserve API', () => {
