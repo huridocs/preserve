@@ -18,8 +18,8 @@ export type PreservationBase = {
   attributes: {
     status: status;
     url: string;
-    content?: string;
     downloads?: {
+      content?: string;
       screenshot?: string;
       video?: string;
     };
@@ -32,8 +32,8 @@ export type PreservationDB = PreservationBase & { _id: ObjectId; attributes: { u
 let preservations: Collection<PreservationDB>;
 
 export type JobResults = {
-  content?: string;
   downloads?: {
+    content?: string;
     screenshot?: string;
     video?: string;
   };
@@ -168,6 +168,9 @@ const setupApp = (db: Db) => {
           attributes: {
             ...p.attributes,
             downloads: {
+              ...(p.attributes?.downloads?.content
+                ? { content: `/preservations/${p.attributes.downloads.content}` }
+                : {}),
               ...(p.attributes?.downloads?.screenshot
                 ? { screenshot: `/preservations/${p.attributes.downloads.screenshot}` }
                 : {}),
@@ -200,6 +203,9 @@ const setupApp = (db: Db) => {
             attributes: {
               ...preservation.attributes,
               downloads: {
+                ...(preservation.attributes?.downloads?.content
+                  ? { content: `/preservations/${preservation.attributes.downloads.content}` }
+                  : {}),
                 ...(preservation.attributes?.downloads?.screenshot
                   ? { screenshot: `/preservations/${preservation.attributes.downloads.screenshot}` }
                   : {}),

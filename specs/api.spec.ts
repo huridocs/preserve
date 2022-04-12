@@ -39,8 +39,10 @@ describe('Preserve API', () => {
     await mkdir(`${config.data_path}/${preservation._id}`);
     await appendFile(`${config.data_path}/${preservation._id}/screenshot.jpg`, 'screenshot');
     await appendFile(`${config.data_path}/${preservation._id}/video.mp4`, 'video');
+    await appendFile(`${config.data_path}/${preservation._id}/content.txt`, 'content');
     const result: JobResults = {
       downloads: {
+        content: `${preservation._id}/content.txt`,
         screenshot: `${preservation._id}/screenshot.jpg`,
         video: `${preservation._id}/video.mp4`,
       },
@@ -126,6 +128,7 @@ describe('Preserve API', () => {
             ...newPreservation.data.attributes,
             status: 'PROCESSED',
             downloads: {
+              content: `/preservations/${newPreservation.id}/content.txt`,
               screenshot: `/preservations/${newPreservation.id}/screenshot.jpg`,
               video: `/preservations/${newPreservation.id}/video.mp4`,
             },
@@ -140,6 +143,9 @@ describe('Preserve API', () => {
       startJobs(job, 0);
       await stopJobs();
       const { body } = await get(newPreservation.links.self).expect(200);
+
+      const content = await get(body.data.attributes.downloads.content).expect(200);
+      expect(content.text).toBe('content');
 
       const screenshot = await get(body.data.attributes.downloads.screenshot).expect(200);
       expect(screenshot.body.toString()).toBe('screenshot');

@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:14.19.1
 
 RUN apt-get update && apt-get install -y  \
     libxss1 \
@@ -12,28 +12,21 @@ RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/yout
 
 RUN groupmod -g 999 node && usermod -u 999 -g 999 node
 
-RUN mkdir -p /home/user/source \
-    mkdir -p /home/user/source/data \
-    mkdir -p /home/user/source/downloads
-
-WORKDIR /home/user/source
+RUN mkdir -p /home/user/app
+WORKDIR /home/user/app
 
 COPY package.json ./
 RUN yarn install
-COPY . .
-
-RUN mkdir -p /home/user/app
-
+COPY tsconfig.json ./
+COPY src/ ./src
 RUN yarn build
-
-RUN cp -r ./node_modules /home/user/app
-RUN mv ./dist/* /home/user/app
-
-WORKDIR /home/user/app
+RUN yarn install --prod
+RUN rm -fr ./src ./specs
+RUN mv -f ./dist/* ./
+RUN rm -fr ./dist
 
 EXPOSE 4000
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
+COPY entrypoint.sh /bin/entrypoint.sh
+RUN chmod +x /bin/entrypoint.sh
+ENTRYPOINT ["/bin/entrypoint.sh"]

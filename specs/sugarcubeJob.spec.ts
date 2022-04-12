@@ -1,5 +1,5 @@
 import express from 'express';
-import { access } from 'fs/promises';
+import { access, readFile } from 'fs/promises';
 import { Server } from 'http';
 import { ObjectId } from 'mongodb';
 import path from 'path';
@@ -55,8 +55,12 @@ describe('sugarcubeJob', () => {
     });
   });
 
-  it('should return the content of the url passed', async () => {
-    expect(result.content).toMatch('Test Page');
+  it('should set the content in a file and return as a download', async () => {
+    const content = await readFile(
+      path.join(config.data_path, result.downloads?.content || 'no content'),
+      'utf-8'
+    );
+    expect(content).toMatch('Test Page');
   });
 
   it('should perform screenshots and return the paths', async () => {

@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "build": "npm run lint && rimraf dist/ && tsc",
+    "build": "rimraf dist/ && tsc",
     "start": "npm run build && node dist/index.js",
     "test": "jest",
     "lint": "eslint src/**/*.ts",
