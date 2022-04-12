@@ -1,8 +1,7 @@
-// import { spawn } from 'child_process';
 import { config } from './config';
-import { connectDB } from './DB';
+import { connectDB, disconnectDB } from './DB';
 
-import { setupApp, startJobs } from './setupApp';
+import { setupApp, startJobs, stopJobs } from './setupApp';
 import { sugarcubeJob } from './sugarcubeJob';
 
 const uncaughtError = (error: any) => {
@@ -13,9 +12,27 @@ process.on('uncaughtException', uncaughtError);
 
 connectDB(config.mongodb_uri).then(db => {
   const app = setupApp(db);
-  app.listen(config.PORT, () => {
+  const server = app.listen(config.PORT, () => {
     console.log(`Example app listening on port ${config.PORT}`);
   });
 
   startJobs(sugarcubeJob, 1000);
+
+  process.on('SIGTERM', () => {
+    process.stdout.write('SIGTERM signal received.\r\n');
+    server.close(error => {
+      process.stdout.write('Gracefully closing express connections\r\n');
+      if (error) {
+        process.stderr.write(error.toString());
+        process.exit(1);
+      }
+
+      disconnectDB().then(() => {
+        process.stdout.write('Disconnected from database\r\n');
+        process.stdout.write('Server closed successfully\r\n');
+        process.exit(0);
+      });
+    });
+    stopJobs();
+  });
 });
