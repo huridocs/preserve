@@ -8,5 +8,6 @@ useradd -u "$USERID" -o -m user
 groupmod -g "$GROUPID" user
 chown -R user:user /home/user
 export HOME=/home/user
+export NODE_ENV=production
 
 exec /usr/sbin/gosu user node src/server.js
