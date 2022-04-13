@@ -1,6 +1,6 @@
 import { Db, MongoClient } from 'mongodb';
 
-const DB_NAME = 'huridocs-vault';
+const DB_NAME = 'preserve';
 
 let client: MongoClient;
 let db: Db;
