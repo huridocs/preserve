@@ -6,14 +6,16 @@ services:
     network_mode: host
     restart: unless-stopped
     environment:
+      - USER_ID=${USER_ID}
+      - GROUP_ID=${GROUP_ID}
       - ENVIRONMENT=${ENVIRONMENT}
       - SENTRY_VAULT_API_DSN=${SENTRY_VAULT_API_DSN}
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./data:/home/node/app/data
-      - ./downloads:/home/node/app/downloads
+      - ./data:/home/user/app/data
+      - ./downloads:/home/user/app/downloads
     depends_on:
       - mongo
 
