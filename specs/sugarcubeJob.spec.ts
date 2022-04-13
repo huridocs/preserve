@@ -4,7 +4,7 @@ import { Server } from 'http';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from 'src/config';
-import { JobResults } from 'src/setupApp';
+import { JobResults } from 'src/QueueProcessor';
 import { sugarcubeJob } from 'src/sugarcubeJob';
 
 async function exists(path: string) {
@@ -40,6 +40,7 @@ describe('sugarcubeJob', () => {
         user: new ObjectId(),
         status: 'PROCESSING',
         url: 'http://localhost:5959/test_page',
+        downloads: {}
       },
     });
   }, 20000);

@@ -3,7 +3,8 @@ import { appendFile, copyFile, mkdir, readFile } from 'fs/promises';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from './config';
-import { JobFunction, JobResults, PreservationDB } from './setupApp';
+import { PreservationDB } from './Api';
+import { JobFunction, JobResults } from './QueueProcessor';
 
 const job = async (url: string, id: ObjectId) => {
   return new Promise((resolve, reject) => {
