@@ -19,12 +19,10 @@ COPY --chown=node:node package.json ./
 RUN yarn install
 COPY --chown=node:node tsconfig.json ./
 COPY --chown=node:node src/ ./src
-RUN yarn build
-RUN yarn install --prod
-RUN rm -fr ./src ./specs
-RUN mv -f ./dist/* ./
-RUN rm -fr ./dist
+RUN yarn build && yarn install --prod
+RUN rm -fr ./src && mv -f ./dist/* ./ && rm -fr ./dist ./specs
 
+ENV NODE_ENV=production
 EXPOSE 4000
 
 CMD ["node", "src/server.js"]
