@@ -1,7 +1,8 @@
 import { config } from './config';
 import { connectDB, disconnectDB } from './DB';
 
-import { setupApp, startJobs, stopJobs } from './setupApp';
+import { Api } from './Api';
+import { startJobs, stopJobs } from './QueueProcessor';
 import { sugarcubeJob } from './sugarcubeJob';
 
 const uncaughtError = (error: any) => {
@@ -11,7 +12,7 @@ process.on('unhandledRejection', uncaughtError);
 process.on('uncaughtException', uncaughtError);
 
 connectDB(config.mongodb_uri).then(db => {
-  const app = setupApp(db);
+  const app = Api(db);
   const server = app.listen(config.PORT, () => {
     console.log(`Example app listening on port ${config.PORT}`);
   });

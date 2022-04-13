@@ -1,5 +1,4 @@
 import express from 'express';
-import promBundle from 'express-prom-bundle';
 import bodyParser from 'body-parser';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
@@ -8,9 +7,10 @@ import { Collection, Db, ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from './config';
 import { authMiddleware } from './authMiddleware';
+import { prometheusMiddleware } from './prometheusMiddleware';
 
-let resolvePromise: undefined | ((value: unknown) => void);
-const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
+export const timeout = (miliseconds: number) =>
+  new Promise(resolve => setTimeout(resolve, miliseconds));
 
 type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED';
 
@@ -18,7 +18,7 @@ export type PreservationBase = {
   attributes: {
     status: status;
     url: string;
-    downloads?: {
+    downloads: {
       content?: string;
       screenshot?: string;
       video?: string;
@@ -29,66 +29,14 @@ export type PreservationBase = {
 export type Preservation = PreservationBase & { id: string };
 export type PreservationDB = PreservationBase & { _id: ObjectId; attributes: { user: ObjectId } };
 
-let preservations: Collection<PreservationDB>;
+export let preservations: Collection<PreservationDB>;
 
-export type JobResults = {
-  downloads?: {
-    content?: string;
-    screenshot?: string;
-    video?: string;
-  };
-};
-
-export type JobFunction = (preservation: PreservationDB) => Promise<JobResults>;
-
-const processJobs = async (job: JobFunction, interval = 1000) => {
-  while (!resolvePromise) {
-    await timeout(interval);
-
-    const preservation = (
-      await preservations.findOneAndUpdate(
-        { 'attributes.status': 'SCHEDULED' },
-        { $set: { 'attributes.status': 'PROCESSING' } }
-      )
-    ).value;
-
-    if (preservation) {
-      const preservationMetadata = await job(preservation);
-      await preservations.updateOne(
-        { _id: preservation._id },
-        {
-          $set: {
-            attributes: {
-              ...preservation.attributes,
-              ...preservationMetadata,
-              status: 'PROCESSED',
-            },
-          },
-        }
-      );
-    }
-  }
-  resolvePromise(1);
-};
-
-const setupApp = (db: Db) => {
+const Api = (db: Db) => {
   preservations = db.collection<PreservationDB>('preservations');
 
   const app = express();
 
-  const metricsMiddleware = promBundle({
-    includeMethod: true,
-    includePath: true,
-    customLabels: {
-      port: config.PORT,
-      env: config.ENVIRONMENT,
-    },
-    promClient: {
-      collectDefaultMetrics: {},
-    },
-  });
-
-  app.use(metricsMiddleware);
+  app.use(prometheusMiddleware);
 
   if (config.sentry.dsn) {
     Sentry.init({
@@ -142,6 +90,7 @@ const setupApp = (db: Db) => {
           url: body.url,
           user: req.user._id,
           status: 'SCHEDULED',
+          downloads: {},
         },
       });
 
@@ -237,15 +186,4 @@ const setupApp = (db: Db) => {
   return app;
 };
 
-const stopJobs = async () => {
-  return new Promise(resolve => {
-    resolvePromise = resolve;
-  });
-};
-
-const startJobs = (job: JobFunction, interval: number) => {
-  resolvePromise = undefined;
-  processJobs(job, interval);
-};
-
-export { setupApp, stopJobs, startJobs };
+export { Api };

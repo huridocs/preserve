@@ -1,16 +1,10 @@
 import { Application } from 'express';
 import { appendFile, mkdir } from 'fs/promises';
 import { Db, ObjectId } from 'mongodb';
+import { Api, PreservationDB } from 'src/Api';
 import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/DB';
-import {
-  JobFunction,
-  JobResults,
-  PreservationDB,
-  setupApp,
-  startJobs,
-  stopJobs,
-} from 'src/setupApp';
+import { JobFunction, JobResults, startJobs, stopJobs } from 'src/QueueProcessor';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 
@@ -53,7 +47,7 @@ describe('Preserve API', () => {
   beforeAll(async () => {
     config.data_path = `${__dirname}/../data`;
     db = await connectDB(DB_CONN_STRING, 'preserve-testing');
-    app = setupApp(db);
+    app = Api(db);
   });
 
   afterAll(async () => {
