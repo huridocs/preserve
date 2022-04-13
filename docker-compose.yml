@@ -12,8 +12,8 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./data:/home/user/app/data
-      - ./downloads:/home/user/app/downloads
+      - ./data:/home/node/app/data
+      - ./downloads:/home/node/app/downloads
     depends_on:
       - mongo
 

@@ -10,15 +10,15 @@ RUN apt-get update && apt-get install -y  \
 RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl && \
      chmod a+rx /usr/local/bin/youtube-dl
 
-RUN groupmod -g 999 node && usermod -u 999 -g 999 node
+USER node
 
-RUN mkdir -p /home/user/app
-WORKDIR /home/user/app
+RUN mkdir -p /home/node/app
+WORKDIR /home/node/app
 
-COPY package.json ./
+COPY --chown=node:node package.json ./
 RUN yarn install
-COPY tsconfig.json ./
-COPY src/ ./src
+COPY --chown=node:node tsconfig.json ./
+COPY --chown=node:node src/ ./src
 RUN yarn build
 RUN yarn install --prod
 RUN rm -fr ./src ./specs
@@ -27,6 +27,4 @@ RUN rm -fr ./dist
 
 EXPOSE 4000
 
-COPY entrypoint.sh /bin/entrypoint.sh
-RUN chmod +x /bin/entrypoint.sh
-ENTRYPOINT ["/bin/entrypoint.sh"]
+CMD ["node", "src/server.js"]
