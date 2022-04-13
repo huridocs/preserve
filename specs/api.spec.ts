@@ -52,7 +52,7 @@ describe('Preserve API', () => {
 
   beforeAll(async () => {
     config.data_path = `${__dirname}/../data`;
-    db = await connectDB(DB_CONN_STRING, 'huridocs-vault-testing');
+    db = await connectDB(DB_CONN_STRING, 'preserve-testing');
     app = setupApp(db);
   });
 
