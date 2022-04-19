@@ -8,6 +8,9 @@ groupmod -g "$GROUPID" user
 chown user:user /home/user/app
 chown user:user /home/user/app/node_modules/@sugarcube/utils/_dist/
 export HOME=/home/user
-export NODE_ENV=production
 
-exec /usr/sbin/gosu user node src/server.js
+if [ "$NODE_ENV" = "production" ]; then
+  exec /usr/sbin/gosu user node src/server.js
+else
+  exec /usr/sbin/gosu user yarn dev
+fi

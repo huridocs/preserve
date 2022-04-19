@@ -2,9 +2,25 @@ version: "3"
 services:
   api:
     network_mode: bridge
+    environment:
+      - MONGO_URI=mongodb://mongo:27019
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: testing
     ports:
       - "4000:4000"
+    networks:
+      - preserve
+    volumes:
+      - ./data:/home/user/app/data
+      - ./downloads:/home/user/app/downloads
+      - ./src:/home/user/app/src
   mongo:
     network_mode: bridge
     ports:
-      - "27017:27017"
+      - "27019:27019"
+    networks:
+      - preserve
+networks:
+  preserve:

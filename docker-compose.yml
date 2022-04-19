@@ -13,6 +13,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: production
     volumes:
       - ./data:/home/user/app/data
       - ./downloads:/home/user/app/downloads
