@@ -28,10 +28,12 @@ const job = async (url: string, id: ObjectId) => {
     ]);
 
     ls.stdout.on('data', data => {
+      console.log(data.toString());
       result += data.toString();
     });
 
     ls.stderr.on('data', (data: string) => {
+      console.log(data.toString());
       result += data.toString();
     });
 

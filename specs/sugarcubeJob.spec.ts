@@ -21,6 +21,7 @@ describe('sugarcubeJob', () => {
   let result: JobResults;
 
   beforeAll(async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => false);
     const app = express();
     app.get('/test_page', (_req, res) => {
       res.set('Content-Type', 'text/html');
@@ -40,7 +41,7 @@ describe('sugarcubeJob', () => {
         user: new ObjectId(),
         status: 'PROCESSING',
         url: 'http://localhost:5959/test_page',
-        downloads: {}
+        downloads: {},
       },
     });
   }, 20000);
