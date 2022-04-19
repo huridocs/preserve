@@ -23,7 +23,7 @@ function start {
 }
 
 function start:local {
-  docker-compose -f docker-compose.yml -f docker-compose.local.yml up -d "${@}"
+  docker-compose -f docker-compose.yml -f docker-compose.local.yml up --build -d "${@}"
 }
 
 function start:testing {

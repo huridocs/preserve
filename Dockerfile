@@ -1,4 +1,4 @@
-FROM node:14.18.3
+FROM node:14.18.3 AS base
 
 RUN apt-get update && apt-get install -y  \
     libxss1 \
@@ -14,16 +14,22 @@ RUN groupmod -g 999 node && usermod -u 999 -g 999 node
 
 RUN mkdir -p /home/user/app
 WORKDIR /home/user/app
-
 COPY package.json ./
-RUN yarn install
 COPY tsconfig.json ./
-COPY src/ ./src
-RUN yarn build && yarn install --prod
-RUN rm -fr ./src && mv -f ./dist/* ./ && rm -fr ./dist ./specs
-
-EXPOSE 4000
+RUN yarn install
 
 COPY entrypoint.sh /bin/entrypoint.sh
 RUN chmod +x /bin/entrypoint.sh
+
+EXPOSE 4000
+
+FROM base AS production
+COPY src/ ./src
+RUN yarn build && yarn install --prod
+RUN rm -fr ./src && mv -f ./dist/* ./ && rm -fr ./dist ./specs
+ENV NODE_ENV=production
+ENTRYPOINT ["/bin/entrypoint.sh"]
+
+FROM base AS testing
+ENV NODE_ENV=development
 ENTRYPOINT ["/bin/entrypoint.sh"]
