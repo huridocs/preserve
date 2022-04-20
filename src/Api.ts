@@ -21,7 +21,6 @@ export type EvidenceBase = {
   };
 };
 
-export type Evidence = EvidenceBase & { id: string };
 export type EvidenceDB = EvidenceBase & { _id: ObjectId; attributes: { user: ObjectId } };
 
 const Api = (vault: Vault) => {

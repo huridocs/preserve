@@ -1,13 +1,14 @@
 import { Application } from 'express';
 import { appendFile, mkdir } from 'fs/promises';
 import { Db, ObjectId } from 'mongodb';
-import { Api, Evidence, EvidenceDB } from 'src/Api';
+import { Api, EvidenceDB } from 'src/Api';
 import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/DB';
 import { Vault } from 'src/Vault';
 import { JobFunction, JobResults, startJobs, stopJobs } from 'src/QueueProcessor';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
+import { EvidenceResponse } from 'src/Response';
 
 const DB_CONN_STRING = 'mongodb://localhost:27019';
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
@@ -143,7 +144,7 @@ describe('Preserve API', () => {
       await stopJobs();
       const { body } = await get(newEvidence.data.links.self).expect(200);
 
-      const data: Evidence | null = body.data;
+      const data: EvidenceResponse | null = body.data;
 
       const content = await get(
         data?.attributes?.downloads.find(d => d.type === 'content')?.path

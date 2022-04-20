@@ -1,6 +1,6 @@
-import { Evidence, EvidenceDB } from './Api';
+import { EvidenceBase, EvidenceDB } from './Api';
 
-type EvidenceResponse = Evidence & { links: { self: string } };
+export type EvidenceResponse = EvidenceBase & { id: string; links: { self: string } };
 
 export const Response = (evidence: EvidenceDB): EvidenceResponse => {
   return {
