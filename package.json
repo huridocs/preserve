@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "nodemon --watch src/** --exec 'ts-node src/server.ts'",
+    "dev": "nodemon --watch src src/server.ts",
     "build": "rimraf dist/ && tsc",
     "start": "npm run build && node dist/index.js",
     "test": "jest",
