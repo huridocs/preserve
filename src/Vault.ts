@@ -1,11 +1,11 @@
 import { Collection, Db, ObjectId } from 'mongodb';
-import { PreservationDB } from './Api';
+import { EvidenceDB } from './Api';
 import { User } from './authMiddleware';
 
 export class Vault {
-  private collection: Collection<PreservationDB>;
+  private collection: Collection<EvidenceDB>;
   constructor(db: Db) {
-    this.collection = db.collection<PreservationDB>('preservations');
+    this.collection = db.collection<EvidenceDB>('evidences');
   }
 
   async create(url: string, user: User) {
@@ -14,11 +14,11 @@ export class Vault {
       _id: _id,
       attributes: { url: url, user: user._id, status: 'SCHEDULED', downloads: [] },
     });
-    const preservation = await this.getOne(_id, user);
-    if (!preservation) {
-      throw new Error('Something went wrong with preservation creation');
+    const evidence = await this.getOne(_id, user);
+    if (!evidence) {
+      throw new Error('Something went wrong with evidence creation');
     }
-    return preservation;
+    return evidence;
   }
 
   async getOne(_id: ObjectId, user: User) {
@@ -38,7 +38,7 @@ export class Vault {
     ).value;
   }
 
-  async update(_id: ObjectId, data: Partial<PreservationDB>) {
+  async update(_id: ObjectId, data: Partial<EvidenceDB>) {
     await this.collection.updateOne({ _id }, { $set: data });
   }
 }

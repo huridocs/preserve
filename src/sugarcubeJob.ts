@@ -3,7 +3,7 @@ import { appendFile, copyFile, mkdir, readFile } from 'fs/promises';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from './config';
-import { PreservationDB } from './Api';
+import { EvidenceDB } from './Api';
 import { JobFunction, JobResults } from './QueueProcessor';
 
 const job = async (url: string, id: ObjectId) => {
@@ -57,35 +57,35 @@ const job = async (url: string, id: ObjectId) => {
     });
   });
 };
-const sugarcubeJob: JobFunction = async (preservation: PreservationDB) => {
-  const sugarcubeResult = (await job(preservation.attributes.url, preservation._id)) as {
+const sugarcubeJob: JobFunction = async (evidence: EvidenceDB) => {
+  const sugarcubeResult = (await job(evidence.attributes.url, evidence._id)) as {
     body: string;
     _sc_downloads: Array<{ location: string; type: string }>;
   };
 
-  const preservation_dir = path.join(config.data_path, preservation._id.toString());
-  await mkdir(preservation_dir);
+  const evidence_dir = path.join(config.data_path, evidence._id.toString());
+  await mkdir(evidence_dir);
 
   const screenshot = sugarcubeResult._sc_downloads.find(d => d.location.match(/screenshot/));
   let screenshot_path: string | null = null;
   if (screenshot) {
     await copyFile(
       `${__dirname}/../${screenshot.location}`,
-      path.join(preservation_dir, 'screenshot.jpg')
+      path.join(evidence_dir, 'screenshot.jpg')
     );
-    screenshot_path = path.join(preservation._id.toString(), 'screenshot.jpg');
+    screenshot_path = path.join(evidence._id.toString(), 'screenshot.jpg');
   }
 
   const video = sugarcubeResult._sc_downloads.find(d => d.location.match(/\.mp4/));
   let video_path: string | null = null;
 
   if (video) {
-    await copyFile(`${__dirname}/../${video.location}`, path.join(preservation_dir, 'video.mp4'));
-    video_path = path.join(preservation._id.toString(), 'video.mp4');
+    await copyFile(`${__dirname}/../${video.location}`, path.join(evidence_dir, 'video.mp4'));
+    video_path = path.join(evidence._id.toString(), 'video.mp4');
   }
 
-  await appendFile(path.join(preservation_dir, 'content.txt'), sugarcubeResult.body);
-  const content_path = path.join(preservation._id.toString(), 'content.txt');
+  await appendFile(path.join(evidence_dir, 'content.txt'), sugarcubeResult.body);
+  const content_path = path.join(evidence._id.toString(), 'content.txt');
 
   const result: JobResults = {
     downloads: [

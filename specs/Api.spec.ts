@@ -1,7 +1,7 @@
 import { Application } from 'express';
 import { appendFile, mkdir } from 'fs/promises';
 import { Db, ObjectId } from 'mongodb';
-import { Api, Preservation, PreservationDB } from 'src/Api';
+import { Api, Evidence, EvidenceDB } from 'src/Api';
 import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/DB';
 import { Vault } from 'src/Vault';
@@ -16,30 +16,30 @@ describe('Preserve API', () => {
   let app: Application;
 
   const post = (
-    data: { url?: any; type?: 'preservations' } = { url: 'test-url' },
+    data: { url?: any; type?: 'evidences' } = { url: 'test-url' },
     token = 'my_private_token'
   ) => {
-    data.type = data.type || 'preservations';
-    return request(app).post('/api/preservations').send(data).set({ Authorization: token });
+    // data.type = data.type || 'evidences';
+    return request(app).post('/api/evidences').send(data).set({ Authorization: token });
   };
 
-  const get = (url = '/api/preservations', token: string | null = 'my_private_token') =>
+  const get = (url = '/api/evidences', token: string | null = 'my_private_token') =>
     request(app).get(url).set({ Authorization: token });
 
   let db: Db;
   const user1Id = new ObjectId();
 
-  const job: JobFunction = async (preservation: PreservationDB) => {
+  const job: JobFunction = async (evidence: EvidenceDB) => {
     await timeout(100);
-    await mkdir(`${config.data_path}/${preservation._id}`);
-    await appendFile(`${config.data_path}/${preservation._id}/screenshot.jpg`, 'screenshot');
-    await appendFile(`${config.data_path}/${preservation._id}/video.mp4`, 'video');
-    await appendFile(`${config.data_path}/${preservation._id}/content.txt`, 'content');
+    await mkdir(`${config.data_path}/${evidence._id}`);
+    await appendFile(`${config.data_path}/${evidence._id}/screenshot.jpg`, 'screenshot');
+    await appendFile(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
+    await appendFile(`${config.data_path}/${evidence._id}/content.txt`, 'content');
     const result: JobResults = {
       downloads: [
-        { path: `${preservation._id}/content.txt`, type: 'content' },
-        { path: `${preservation._id}/screenshot.jpg`, type: 'screenshot' },
-        { path: `${preservation._id}/video.mp4`, type: 'video' },
+        { path: `${evidence._id}/content.txt`, type: 'content' },
+        { path: `${evidence._id}/screenshot.jpg`, type: 'screenshot' },
+        { path: `${evidence._id}/video.mp4`, type: 'video' },
       ],
     };
     return result;
@@ -61,28 +61,28 @@ describe('Preserve API', () => {
     });
   });
 
-  describe('/api/preservations', () => {
+  describe('/api/evidences', () => {
     beforeEach(async () => {
-      await db.collection('preservations').deleteMany({});
+      await db.collection('evidences').deleteMany({});
       await db.collection('users').deleteMany({});
       await db.collection('users').insertOne({ _id: user1Id, token: 'my_private_token' });
       await db.collection('users').insertOne({ token: 'another_token' });
     });
 
     it('should respond 404 when job not found', async () => {
-      await get('/api/preservations/non_existent').expect(404);
+      await get('/api/evidences/non_existent').expect(404);
     });
 
     it('should respond with 202, and return job information', async () => {
-      const { body: newPreservation } = await post({ url: 'http://my-url' }).expect(202);
-      const { body: preservation } = await get(newPreservation.data.links.self).expect(200);
+      const { body: newEvidence } = await post({ url: 'http://my-url' }).expect(202);
+      const { body: evidence } = await get(newEvidence.data.links.self).expect(200);
 
-      expect(preservation.data._id).not.toBeDefined();
-      expect(newPreservation.data._id).not.toBeDefined();
-      expect(preservation).toMatchObject({
+      expect(evidence.data._id).not.toBeDefined();
+      expect(newEvidence.data._id).not.toBeDefined();
+      expect(evidence).toMatchObject({
         data: {
           attributes: {
-            ...newPreservation.data.attributes,
+            ...newEvidence.data.attributes,
             url: 'http://my-url',
             status: 'SCHEDULED',
           },
@@ -91,17 +91,17 @@ describe('Preserve API', () => {
     });
 
     it('should set the job to PROCESSING', async () => {
-      const { body: newPreservation } = await post().expect(202);
+      const { body: newEvidence } = await post().expect(202);
 
       startJobs(job, new Vault(db), 0);
       await waitForExpect(async () => {
-        const { body } = await get(newPreservation.data.links.self).expect(200);
+        const { body } = await get(newEvidence.data.links.self).expect(200);
 
         expect(body).toMatchObject({
           data: {
-            id: newPreservation.data.id,
+            id: newEvidence.data.id,
             attributes: {
-              ...newPreservation.data.attributes,
+              ...newEvidence.data.attributes,
               status: 'PROCESSING',
             },
           },
@@ -111,25 +111,25 @@ describe('Preserve API', () => {
     });
 
     it('should process the job', async () => {
-      const { body: newPreservation } = await post().expect(202);
+      const { body: newEvidence } = await post().expect(202);
 
       startJobs(job, new Vault(db), 0);
       await stopJobs();
 
-      const { body } = await get(newPreservation.data.links.self).expect(200);
+      const { body } = await get(newEvidence.data.links.self).expect(200);
       expect(body).toMatchObject({
         data: {
-          id: newPreservation.data.id,
+          id: newEvidence.data.id,
           attributes: {
-            ...newPreservation.data.attributes,
+            ...newEvidence.data.attributes,
             status: 'PROCESSED',
             downloads: [
-              { path: `/preservations/${newPreservation.data.id}/content.txt`, type: 'content' },
+              { path: `/evidences/${newEvidence.data.id}/content.txt`, type: 'content' },
               {
-                path: `/preservations/${newPreservation.data.id}/screenshot.jpg`,
+                path: `/evidences/${newEvidence.data.id}/screenshot.jpg`,
                 type: 'screenshot',
               },
-              { path: `/preservations/${newPreservation.data.id}/video.mp4`, type: 'video' },
+              { path: `/evidences/${newEvidence.data.id}/video.mp4`, type: 'video' },
             ],
           },
         },
@@ -137,13 +137,13 @@ describe('Preserve API', () => {
     });
 
     it('should be able to download files on the processed job', async () => {
-      const { body: newPreservation } = await post().expect(202);
+      const { body: newEvidence } = await post().expect(202);
 
       startJobs(job, new Vault(db), 0);
       await stopJobs();
-      const { body } = await get(newPreservation.data.links.self).expect(200);
+      const { body } = await get(newEvidence.data.links.self).expect(200);
 
-      const data: Preservation | null = body.data;
+      const data: Evidence | null = body.data;
 
       const content = await get(
         data?.attributes?.downloads.find(d => d.type === 'content')?.path
@@ -179,36 +179,36 @@ describe('Preserve API', () => {
 
     describe('Authorization', () => {
       it('should respond 401 when not authorized', async () => {
-        await get('/api/preservations', null).expect(401);
-        await get('/api/preservations', 'invalid_token').expect(401);
+        await get('/api/evidences', null).expect(401);
+        await get('/api/evidences', 'invalid_token').expect(401);
       });
 
       it('should respond 404 when requesting an existing job with an invalid token', async () => {
-        const { body: newPreservation } = await post().expect(202);
-        await get(newPreservation.data.links.self, 'another_token').expect(404);
+        const { body: newEvidence } = await post().expect(202);
+        await get(newEvidence.data.links.self, 'another_token').expect(404);
       });
 
       it('should respond 404 when trying to download files belonging to another token', async () => {
-        const { body: newPreservation } = await post().expect(202);
+        const { body: newEvidence } = await post().expect(202);
 
         startJobs(job, new Vault(db), 0);
         await stopJobs();
 
-        const { body } = await get(newPreservation.data.links.self).expect(200);
+        const { body } = await get(newEvidence.data.links.self).expect(200);
         await get(body.data.attributes.downloads[0].path, 'another_token').expect(404);
         await get(body.data.attributes.downloads[1].path, 'another_token').expect(404);
       });
 
       it('should respond only jobs authorized for the token sent', async () => {
-        const { body: newPreservation } = await post({ url: 'http://my-url' }).expect(202);
+        const { body: newEvidence } = await post({ url: 'http://my-url' }).expect(202);
         await post({ url: 'http://another-url' }, 'another_token').expect(202);
 
-        const { body: preservation } = await get().expect(200);
+        const { body: evidence } = await get().expect(200);
 
-        expect(preservation).toMatchObject({
+        expect(evidence).toMatchObject({
           data: [
             {
-              id: newPreservation.data.id,
+              id: newEvidence.data.id,
               attributes: {
                 url: 'http://my-url',
                 status: 'SCHEDULED',

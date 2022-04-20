@@ -13,7 +13,7 @@ import { Response } from './Response';
 
 type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED';
 
-export type PreservationBase = {
+export type EvidenceBase = {
   attributes: {
     status: status;
     url: string;
@@ -21,8 +21,8 @@ export type PreservationBase = {
   };
 };
 
-export type Preservation = PreservationBase & { id: string };
-export type PreservationDB = PreservationBase & { _id: ObjectId; attributes: { user: ObjectId } };
+export type Evidence = EvidenceBase & { id: string };
+export type EvidenceDB = EvidenceBase & { _id: ObjectId; attributes: { user: ObjectId } };
 
 const Api = (vault: Vault) => {
   const app = express();
@@ -63,7 +63,7 @@ const Api = (vault: Vault) => {
     return true;
   };
 
-  app.post('/api/preservations', async (req, res) => {
+  app.post('/api/evidences', async (req, res) => {
     if (!validateBody(req.body)) {
       res.status(400);
       res.json({ errors: ['url should exist and be a string'] });
@@ -75,18 +75,18 @@ const Api = (vault: Vault) => {
     }
   });
 
-  app.get('/api/preservations', async (req, res) => {
+  app.get('/api/evidences', async (req, res) => {
     res.json({
       data: (await vault.getByUser(req.user)).map(Response),
     });
   });
 
-  app.get('/api/preservations/:id', async (req, res) => {
-    const preservation = await vault.getOne(new ObjectId(req.params.id), req.user);
-    if (preservation) {
+  app.get('/api/evidences/:id', async (req, res) => {
+    const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
+    if (evidence) {
       res.status(200);
       res.json({
-        data: Response(preservation),
+        data: Response(evidence),
       });
     } else {
       res.status(404);
@@ -94,9 +94,9 @@ const Api = (vault: Vault) => {
     }
   });
 
-  app.get('/preservations/:id/:filename', async (req, res) => {
-    const preservation = await vault.getOne(new ObjectId(req.params.id), req.user);
-    if (preservation) {
+  app.get('/evidences/:id/:filename', async (req, res) => {
+    const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
+    if (evidence) {
       res.status(200);
       res.sendFile(path.resolve(`${config.data_path}/${req.params.id}/${req.params.filename}`));
     } else {

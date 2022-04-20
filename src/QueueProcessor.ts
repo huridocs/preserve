@@ -1,11 +1,11 @@
-import { PreservationDB } from './Api';
+import { EvidenceDB } from './Api';
 import { Vault } from './Vault';
 
 export type JobResults = {
   downloads: { path: string; type: string }[];
 };
 
-export type JobFunction = (preservation: PreservationDB) => Promise<JobResults>;
+export type JobFunction = (evidence: EvidenceDB) => Promise<JobResults>;
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -14,14 +14,14 @@ const processJobs = async (job: JobFunction, vault: Vault, interval = 1000) => {
   while (!resolvePromise) {
     await timeout(interval);
 
-    const preservation = await vault.processingNext();
+    const evidence = await vault.processingNext();
 
-    if (preservation) {
-      const preservationMetadata = await job(preservation);
-      await vault.update(preservation._id, {
+    if (evidence) {
+      const jobResult = await job(evidence);
+      await vault.update(evidence._id, {
         attributes: {
-          ...preservation.attributes,
-          ...preservationMetadata,
+          ...evidence.attributes,
+          ...jobResult,
           status: 'PROCESSED',
         },
       });

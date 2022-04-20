@@ -1,18 +1,18 @@
-import { Preservation, PreservationDB } from './Api';
+import { Evidence, EvidenceDB } from './Api';
 
-type PreservationResponse = Preservation & { links: { self: string } };
+type EvidenceResponse = Evidence & { links: { self: string } };
 
-export const Response = (preservation: PreservationDB): PreservationResponse => {
+export const Response = (evidence: EvidenceDB): EvidenceResponse => {
   return {
-    id: preservation._id.toString(),
+    id: evidence._id.toString(),
     attributes: {
-      ...preservation.attributes,
-      downloads: preservation.attributes.downloads.map(download => {
-        return { ...download, path: `/preservations/${download.path}` };
+      ...evidence.attributes,
+      downloads: evidence.attributes.downloads.map(download => {
+        return { ...download, path: `/evidences/${download.path}` };
       }),
     },
     links: {
-      self: `/api/preservations/${preservation._id}`,
+      self: `/api/evidences/${evidence._id}`,
     },
   };
 };
