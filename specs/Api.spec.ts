@@ -74,12 +74,19 @@ describe('Preserve API', () => {
       await get('/api/evidences/non_existent').expect(404);
     });
 
-    it('should respond with 202, and return job information', async () => {
+    it('should not expose internal properties', async () => {
       const { body: newEvidence } = await post({ url: 'http://my-url' }).expect(202);
       const { body: evidence } = await get(newEvidence.data.links.self).expect(200);
 
       expect(evidence.data._id).not.toBeDefined();
       expect(newEvidence.data._id).not.toBeDefined();
+      expect(newEvidence.data.user).not.toBeDefined();
+    });
+
+    it('should respond with 202, and return job information', async () => {
+      const { body: newEvidence } = await post({ url: 'http://my-url' }).expect(202);
+      const { body: evidence } = await get(newEvidence.data.links.self).expect(200);
+
       expect(evidence).toMatchObject({
         data: {
           attributes: {

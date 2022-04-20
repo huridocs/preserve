@@ -37,8 +37,8 @@ describe('sugarcubeJob', () => {
 
     result = await sugarcubeJob({
       _id: new ObjectId(),
+      user: new ObjectId(),
       attributes: {
-        user: new ObjectId(),
         status: 'PROCESSING',
         url: 'http://localhost:5959/test_page',
         downloads: [],
