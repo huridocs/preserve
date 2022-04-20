@@ -1,41 +1,30 @@
-import { timeout, preservations, PreservationDB } from './Api';
+import { PreservationDB } from './Api';
+import { Preservations } from './Preservations';
 
 export type JobResults = {
-  downloads: {
-    content: string;
-    screenshot?: string;
-    video?: string;
-  };
+  downloads: { path: string; type: string }[];
 };
 
 export type JobFunction = (preservation: PreservationDB) => Promise<JobResults>;
 
+const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
+
 let resolvePromise: undefined | ((value: unknown) => void);
-const processJobs = async (job: JobFunction, interval = 1000) => {
+const processJobs = async (job: JobFunction, preservations: Preservations, interval = 1000) => {
   while (!resolvePromise) {
     await timeout(interval);
 
-    const preservation = (
-      await preservations.findOneAndUpdate(
-        { 'attributes.status': 'SCHEDULED' },
-        { $set: { 'attributes.status': 'PROCESSING' } }
-      )
-    ).value;
+    const preservation = await preservations.processingNext();
 
     if (preservation) {
       const preservationMetadata = await job(preservation);
-      await preservations.updateOne(
-        { _id: preservation._id },
-        {
-          $set: {
-            attributes: {
-              ...preservation.attributes,
-              ...preservationMetadata,
-              status: 'PROCESSED',
-            },
-          },
-        }
-      );
+      await preservations.update(preservation._id, {
+        attributes: {
+          ...preservation.attributes,
+          ...preservationMetadata,
+          status: 'PROCESSED',
+        },
+      });
     }
   }
   resolvePromise(1);
@@ -47,9 +36,9 @@ const stopJobs = async () => {
   });
 };
 
-const startJobs = (job: JobFunction, interval: number) => {
+const startJobs = (job: JobFunction, preservation: Preservations, interval: number) => {
   resolvePromise = undefined;
-  processJobs(job, interval);
+  processJobs(job, preservation, interval);
 };
 
 export { startJobs, stopJobs };

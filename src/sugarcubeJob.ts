@@ -88,11 +88,11 @@ const sugarcubeJob: JobFunction = async (preservation: PreservationDB) => {
   const content_path = path.join(preservation._id.toString(), 'content.txt');
 
   const result: JobResults = {
-    downloads: {
-      content: content_path,
-      ...(screenshot_path ? { screenshot: screenshot_path } : {}),
-      ...(video_path ? { video: video_path } : {}),
-    },
+    downloads: [
+      { path: content_path, type: 'content' },
+      ...(screenshot_path ? [{ path: screenshot_path, type: 'screenshot' }] : []),
+      ...(video_path ? [{ path: video_path, type: 'video' }] : []),
+    ],
   };
 
   return result;

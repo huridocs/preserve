@@ -1,15 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
-import { WithId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { db } from './DB';
 
 export type User = {
+  _id: ObjectId;
   token: string;
 };
 
 declare global {
   namespace Express {
     export interface Request {
-      user: WithId<User>;
+      user: User;
     }
   }
 }

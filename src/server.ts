@@ -4,6 +4,7 @@ import { connectDB, disconnectDB } from './DB';
 import { Api } from './Api';
 import { startJobs, stopJobs } from './QueueProcessor';
 import { sugarcubeJob } from './sugarcubeJob';
+import { Preservations } from './Preservations';
 
 const uncaughtError = (error: any) => {
   throw error;
@@ -12,12 +13,12 @@ process.on('unhandledRejection', uncaughtError);
 process.on('uncaughtException', uncaughtError);
 
 connectDB(config.mongodb_uri).then(db => {
-  const app = Api(db);
+  const app = Api(db, new Preservations(db));
   const server = app.listen(config.PORT, () => {
     console.log(`Example app listening on port ${config.PORT}`);
   });
 
-  startJobs(sugarcubeJob, 1000);
+  startJobs(sugarcubeJob, new Preservations(db), 1000);
 
   process.on('SIGTERM', () => {
     process.stdout.write('SIGTERM signal received.\r\n');
