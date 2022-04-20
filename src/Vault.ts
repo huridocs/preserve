@@ -1,9 +1,8 @@
 import { Collection, Db, ObjectId } from 'mongodb';
 import { PreservationDB } from './Api';
 import { User } from './authMiddleware';
-import { JobResults } from './QueueProcessor';
 
-export class Preservations {
+export class Vault {
   private collection: Collection<PreservationDB>;
   constructor(db: Db) {
     this.collection = db.collection<PreservationDB>('preservations');

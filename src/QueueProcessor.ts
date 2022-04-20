@@ -1,5 +1,5 @@
 import { PreservationDB } from './Api';
-import { Preservations } from './Preservations';
+import { Vault } from './Vault';
 
 export type JobResults = {
   downloads: { path: string; type: string }[];
@@ -10,15 +10,15 @@ export type JobFunction = (preservation: PreservationDB) => Promise<JobResults>;
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
 let resolvePromise: undefined | ((value: unknown) => void);
-const processJobs = async (job: JobFunction, preservations: Preservations, interval = 1000) => {
+const processJobs = async (job: JobFunction, vault: Vault, interval = 1000) => {
   while (!resolvePromise) {
     await timeout(interval);
 
-    const preservation = await preservations.processingNext();
+    const preservation = await vault.processingNext();
 
     if (preservation) {
       const preservationMetadata = await job(preservation);
-      await preservations.update(preservation._id, {
+      await vault.update(preservation._id, {
         attributes: {
           ...preservation.attributes,
           ...preservationMetadata,
@@ -36,9 +36,9 @@ const stopJobs = async () => {
   });
 };
 
-const startJobs = (job: JobFunction, preservation: Preservations, interval: number) => {
+const startJobs = (job: JobFunction, vault: Vault, interval: number) => {
   resolvePromise = undefined;
-  processJobs(job, preservation, interval);
+  processJobs(job, vault, interval);
 };
 
 export { startJobs, stopJobs };

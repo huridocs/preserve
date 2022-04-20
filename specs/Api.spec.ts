@@ -4,7 +4,7 @@ import { Db, ObjectId } from 'mongodb';
 import { Api, Preservation, PreservationDB } from 'src/Api';
 import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/DB';
-import { Preservations } from 'src/Preservations';
+import { Vault } from 'src/Vault';
 import { JobFunction, JobResults, startJobs, stopJobs } from 'src/QueueProcessor';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
@@ -48,7 +48,7 @@ describe('Preserve API', () => {
   beforeAll(async () => {
     config.data_path = `${__dirname}/../data`;
     db = await connectDB(DB_CONN_STRING, 'preserve-testing');
-    app = Api(db, new Preservations(db));
+    app = Api(new Vault(db));
   });
 
   afterAll(async () => {
@@ -93,7 +93,7 @@ describe('Preserve API', () => {
     it('should set the job to PROCESSING', async () => {
       const { body: newPreservation } = await post().expect(202);
 
-      startJobs(job, new Preservations(db), 0);
+      startJobs(job, new Vault(db), 0);
       await waitForExpect(async () => {
         const { body } = await get(newPreservation.data.links.self).expect(200);
 
@@ -113,7 +113,7 @@ describe('Preserve API', () => {
     it('should process the job', async () => {
       const { body: newPreservation } = await post().expect(202);
 
-      startJobs(job, new Preservations(db), 0);
+      startJobs(job, new Vault(db), 0);
       await stopJobs();
 
       const { body } = await get(newPreservation.data.links.self).expect(200);
@@ -139,7 +139,7 @@ describe('Preserve API', () => {
     it('should be able to download files on the processed job', async () => {
       const { body: newPreservation } = await post().expect(202);
 
-      startJobs(job, new Preservations(db), 0);
+      startJobs(job, new Vault(db), 0);
       await stopJobs();
       const { body } = await get(newPreservation.data.links.self).expect(200);
 
@@ -191,7 +191,7 @@ describe('Preserve API', () => {
       it('should respond 404 when trying to download files belonging to another token', async () => {
         const { body: newPreservation } = await post().expect(202);
 
-        startJobs(job, new Preservations(db), 0);
+        startJobs(job, new Vault(db), 0);
         await stopJobs();
 
         const { body } = await get(newPreservation.data.links.self).expect(200);

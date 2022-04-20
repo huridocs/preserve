@@ -3,12 +3,12 @@ import bodyParser from 'body-parser';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 
-import { Collection, Db, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from './config';
 import { authMiddleware } from './authMiddleware';
 import { prometheusMiddleware } from './prometheusMiddleware';
-import { Preservations } from './Preservations';
+import { Vault } from './Vault';
 import { Response } from './Response';
 
 type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED';
@@ -24,11 +24,7 @@ export type PreservationBase = {
 export type Preservation = PreservationBase & { id: string };
 export type PreservationDB = PreservationBase & { _id: ObjectId; attributes: { user: ObjectId } };
 
-export let preservationsCollection: Collection<PreservationDB>;
-
-const Api = (db: Db, preservations: Preservations) => {
-  preservationsCollection = db.collection<PreservationDB>('preservations');
-
+const Api = (vault: Vault) => {
   const app = express();
 
   app.use(prometheusMiddleware);
@@ -74,19 +70,19 @@ const Api = (db: Db, preservations: Preservations) => {
     } else {
       res.status(202);
       res.json({
-        data: Response(await preservations.create(req.body.url, req.user)),
+        data: Response(await vault.create(req.body.url, req.user)),
       });
     }
   });
 
   app.get('/api/preservations', async (req, res) => {
     res.json({
-      data: (await preservations.getByUser(req.user)).map(Response),
+      data: (await vault.getByUser(req.user)).map(Response),
     });
   });
 
   app.get('/api/preservations/:id', async (req, res) => {
-    const preservation = await preservations.getOne(new ObjectId(req.params.id), req.user);
+    const preservation = await vault.getOne(new ObjectId(req.params.id), req.user);
     if (preservation) {
       res.status(200);
       res.json({
@@ -99,7 +95,7 @@ const Api = (db: Db, preservations: Preservations) => {
   });
 
   app.get('/preservations/:id/:filename', async (req, res) => {
-    const preservation = await preservations.getOne(new ObjectId(req.params.id), req.user);
+    const preservation = await vault.getOne(new ObjectId(req.params.id), req.user);
     if (preservation) {
       res.status(200);
       res.sendFile(path.resolve(`${config.data_path}/${req.params.id}/${req.params.filename}`));
