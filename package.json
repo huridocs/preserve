@@ -16,12 +16,13 @@
   "dependencies": {
     "@sentry/node": "^6.19.6",
     "@sentry/tracing": "^6.19.6",
-    "@sugarcube/sugarcube": "^0.42.1",
     "body-parser": "^1.20.0",
+    "browserless": "^9.3.14-alpha.2",
     "express": "^4.17.3",
     "express-prom-bundle": "^6.4.1",
     "mongodb": "^4.5.0",
-    "prom-client": "^14.0.1"
+    "prom-client": "^14.0.1",
+    "puppeteer": "^13.6.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",

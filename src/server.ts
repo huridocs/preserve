@@ -5,6 +5,7 @@ import { Api } from './Api';
 import { startJobs, stopJobs } from './QueueProcessor';
 import { sugarcubeJob } from './sugarcubeJob';
 import { Vault } from './Vault';
+import { microlinkJob } from './microlinkJob';
 
 const uncaughtError = (error: any) => {
   throw error;
@@ -18,7 +19,7 @@ connectDB(config.mongodb_uri).then(db => {
     console.log(`Example app listening on port ${config.PORT}`);
   });
 
-  startJobs(sugarcubeJob, new Vault(db), 1000);
+  startJobs(microlinkJob, new Vault(db), 1000);
 
   process.on('SIGTERM', () => {
     process.stdout.write('SIGTERM signal received.\r\n');
