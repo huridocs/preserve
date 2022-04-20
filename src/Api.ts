@@ -3,37 +3,27 @@ import bodyParser from 'body-parser';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 
-import { Collection, Db, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from './config';
 import { authMiddleware } from './authMiddleware';
 import { prometheusMiddleware } from './prometheusMiddleware';
-
-export const timeout = (miliseconds: number) =>
-  new Promise(resolve => setTimeout(resolve, miliseconds));
+import { Vault } from './Vault';
+import { Response } from './Response';
 
 type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED';
 
-export type PreservationBase = {
+export type EvidenceBase = {
   attributes: {
     status: status;
     url: string;
-    downloads: {
-      content?: string;
-      screenshot?: string;
-      video?: string;
-    };
+    downloads: { path: string; type: string }[];
   };
 };
 
-export type Preservation = PreservationBase & { id: string };
-export type PreservationDB = PreservationBase & { _id: ObjectId; attributes: { user: ObjectId } };
+export type EvidenceDB = EvidenceBase & { _id: ObjectId; attributes: { user: ObjectId } };
 
-export let preservations: Collection<PreservationDB>;
-
-const Api = (db: Db) => {
-  preservations = db.collection<PreservationDB>('preservations');
-
+const Api = (vault: Vault) => {
   const app = express();
 
   app.use(prometheusMiddleware);
@@ -65,116 +55,47 @@ const Api = (db: Db) => {
 
   app.use(authMiddleware);
 
-  const validateBody = (body: any): { url: string } => {
-    if (typeof body.url === 'string') {
-      return { url: body.url };
+  const validateBody = (body: any): boolean => {
+    if (typeof body.url !== 'string') {
+      return false;
     }
-    throw new Error('url should exist and be a string');
+    return true;
   };
 
-  app.post('/api/preservations', async (req, res) => {
-    try {
-      const body = validateBody(req.body);
-      res.status(202);
-      const id = new ObjectId();
-
-      const attributes = {
-        url: body.url,
-        user: req.user._id,
-        status: 'SCHEDULED',
-      };
-
-      await preservations.insertOne({
-        _id: id,
-        attributes: {
-          url: body.url,
-          user: req.user._id,
-          status: 'SCHEDULED',
-          downloads: {},
-        },
-      });
-
-      res.json({
-        id: id,
-        data: { attributes },
-        links: {
-          self: `/api/preservations/${id}`,
-        },
-      });
-    } catch (e) {
+  app.post('/api/evidences', async (req, res) => {
+    if (!validateBody(req.body)) {
       res.status(400);
-      res.end();
+      res.json({ errors: ['url should exist and be a string'] });
+    } else {
+      res.status(202);
+      res.json({
+        data: Response(await vault.create(req.body.url, req.user)),
+      });
     }
   });
 
-  app.get('/api/preservations', async (req, res) => {
+  app.get('/api/evidences', async (req, res) => {
     res.json({
-      data: (await preservations.find({ 'attributes.user': req.user._id }).toArray()).map(p => {
-        return {
-          id: p._id,
-          ...p,
-          _id: undefined,
-          attributes: {
-            ...p.attributes,
-            downloads: {
-              ...(p.attributes?.downloads?.content
-                ? { content: `/preservations/${p.attributes.downloads.content}` }
-                : {}),
-              ...(p.attributes?.downloads?.screenshot
-                ? { screenshot: `/preservations/${p.attributes.downloads.screenshot}` }
-                : {}),
-              ...(p.attributes?.downloads?.video
-                ? { video: `/preservations/${p.attributes.downloads.video}` }
-                : {}),
-            },
-          },
-        };
-      }),
+      data: (await vault.getByUser(req.user)).map(Response),
     });
   });
 
-  app.get('/api/preservations/:id', async (req, res) => {
-    const preservation = await preservations.findOne(
-      {
-        _id: new ObjectId(req.params.id),
-        'attributes.user': req.user._id,
-      },
-      { projection: { attributes: 1, _id: 1 } }
-    );
-
-    res.status(preservation ? 200 : 404);
-    res.json({
-      data: preservation
-        ? {
-            id: preservation._id,
-            ...preservation,
-            _id: undefined,
-            attributes: {
-              ...preservation.attributes,
-              downloads: {
-                ...(preservation.attributes?.downloads?.content
-                  ? { content: `/preservations/${preservation.attributes.downloads.content}` }
-                  : {}),
-                ...(preservation.attributes?.downloads?.screenshot
-                  ? { screenshot: `/preservations/${preservation.attributes.downloads.screenshot}` }
-                  : {}),
-                ...(preservation.attributes?.downloads?.video
-                  ? { video: `/preservations/${preservation.attributes.downloads.video}` }
-                  : {}),
-              },
-            },
-          }
-        : {},
-    });
+  app.get('/api/evidences/:id', async (req, res) => {
+    const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
+    if (evidence) {
+      res.status(200);
+      res.json({
+        data: Response(evidence),
+      });
+    } else {
+      res.status(404);
+      res.json({});
+    }
   });
 
-  app.get('/preservations/:id/:filename', async (req, res) => {
-    const preservation = await preservations.findOne({
-      _id: new ObjectId(req.params.id),
-      'attributes.user': req.user._id,
-    });
-
-    if (preservation) {
+  app.get('/evidences/:id/:filename', async (req, res) => {
+    const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
+    if (evidence) {
       res.status(200);
       res.sendFile(path.resolve(`${config.data_path}/${req.params.id}/${req.params.filename}`));
     } else {

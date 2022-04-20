@@ -41,7 +41,7 @@ describe('sugarcubeJob', () => {
         user: new ObjectId(),
         status: 'PROCESSING',
         url: 'http://localhost:5959/test_page',
-        downloads: {},
+        downloads: [],
       },
     });
   }, 20000);
@@ -59,7 +59,10 @@ describe('sugarcubeJob', () => {
 
   it('should set the content in a file and return as a download', async () => {
     const content = await readFile(
-      path.join(config.data_path, result.downloads?.content || 'no content'),
+      path.join(
+        config.data_path,
+        result.downloads.find(d => d.type === 'content')?.path || 'no content'
+      ),
       'utf-8'
     );
     expect(content).toMatch('Test Page');
@@ -67,7 +70,12 @@ describe('sugarcubeJob', () => {
 
   it('should perform screenshots and return the paths', async () => {
     expect(
-      await exists(path.join(config.data_path, result.downloads?.screenshot || 'no_screenshot'))
+      await exists(
+        path.join(
+          config.data_path,
+          result.downloads.find(d => d.type === 'screenshot')?.path || 'no_screenshot'
+        )
+      )
     ).toBe(true);
   });
 });

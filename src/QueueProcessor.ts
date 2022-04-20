@@ -1,41 +1,30 @@
-import { timeout, preservations, PreservationDB } from './Api';
+import { EvidenceDB } from './Api';
+import { Vault } from './Vault';
 
 export type JobResults = {
-  downloads: {
-    content: string;
-    screenshot?: string;
-    video?: string;
-  };
+  downloads: { path: string; type: string }[];
 };
 
-export type JobFunction = (preservation: PreservationDB) => Promise<JobResults>;
+export type JobFunction = (evidence: EvidenceDB) => Promise<JobResults>;
+
+const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
 let resolvePromise: undefined | ((value: unknown) => void);
-const processJobs = async (job: JobFunction, interval = 1000) => {
+const processJobs = async (job: JobFunction, vault: Vault, interval = 1000) => {
   while (!resolvePromise) {
     await timeout(interval);
 
-    const preservation = (
-      await preservations.findOneAndUpdate(
-        { 'attributes.status': 'SCHEDULED' },
-        { $set: { 'attributes.status': 'PROCESSING' } }
-      )
-    ).value;
+    const evidence = await vault.processingNext();
 
-    if (preservation) {
-      const preservationMetadata = await job(preservation);
-      await preservations.updateOne(
-        { _id: preservation._id },
-        {
-          $set: {
-            attributes: {
-              ...preservation.attributes,
-              ...preservationMetadata,
-              status: 'PROCESSED',
-            },
-          },
-        }
-      );
+    if (evidence) {
+      const jobResult = await job(evidence);
+      await vault.update(evidence._id, {
+        attributes: {
+          ...evidence.attributes,
+          ...jobResult,
+          status: 'PROCESSED',
+        },
+      });
     }
   }
   resolvePromise(1);
@@ -47,9 +36,9 @@ const stopJobs = async () => {
   });
 };
 
-const startJobs = (job: JobFunction, interval: number) => {
+const startJobs = (job: JobFunction, vault: Vault, interval: number) => {
   resolvePromise = undefined;
-  processJobs(job, interval);
+  processJobs(job, vault, interval);
 };
 
 export { startJobs, stopJobs };
