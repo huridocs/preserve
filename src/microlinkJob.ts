@@ -1,29 +1,28 @@
-import { spawn } from 'child_process';
-import { appendFile, copyFile, mkdir, readFile } from 'fs/promises';
-import { ObjectId } from 'mongodb';
+import { appendFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { config } from './config';
 import { EvidenceDB } from './Api';
 import { JobFunction, JobResults } from './QueueProcessor';
 // @ts-ignore
 import createBrowserless from 'browserless';
-import puppeteer from 'puppeteer';
 
 const microlinkJob: JobFunction = async (evidence: EvidenceDB) => {
   const browserlessFactory = createBrowserless({
     defaultViewPort: { width: 1024, height: 768 },
   });
   const browserless = await browserlessFactory.createContext();
-  const text = await browserless.text(evidence.attributes.url);
 
   const evidence_dir = path.join(config.data_path, evidence._id.toString());
   await mkdir(evidence_dir);
+
+  const page = await browserless.page();
+  await page.goto(evidence.attributes.url);
+
+  const text = await page.evaluate(() => document.body.innerText);
   const content_path = path.join(evidence._id.toString(), 'content.txt');
   await appendFile(path.join(evidence_dir, 'content.txt'), text);
 
   const screenshot_path = path.join(evidence._id.toString(), 'screenshot.jpg');
-  const page = await browserless.page();
-  await page.goto(evidence.attributes.url);
   await page.screenshot({
     path: path.join(evidence_dir, 'screenshot.jpg'),
     fullPage: true,

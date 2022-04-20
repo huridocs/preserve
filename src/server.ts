@@ -3,7 +3,6 @@ import { connectDB, disconnectDB } from './DB';
 
 import { Api } from './Api';
 import { startJobs, stopJobs } from './QueueProcessor';
-import { sugarcubeJob } from './sugarcubeJob';
 import { Vault } from './Vault';
 import { microlinkJob } from './microlinkJob';
 
