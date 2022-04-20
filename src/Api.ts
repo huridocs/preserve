@@ -21,7 +21,7 @@ export type EvidenceBase = {
   };
 };
 
-export type EvidenceDB = EvidenceBase & { _id: ObjectId; attributes: { user: ObjectId } };
+export type EvidenceDB = EvidenceBase & { _id: ObjectId; user: ObjectId };
 
 const Api = (vault: Vault) => {
   const app = express();

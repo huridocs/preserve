@@ -12,7 +12,8 @@ export class Vault {
     const _id = new ObjectId();
     await this.collection.insertOne({
       _id: _id,
-      attributes: { url: url, user: user._id, status: 'SCHEDULED', downloads: [] },
+      user: user._id,
+      attributes: { url: url, status: 'SCHEDULED', downloads: [] },
     });
     const evidence = await this.getOne(_id, user);
     if (!evidence) {
@@ -22,11 +23,11 @@ export class Vault {
   }
 
   async getOne(_id: ObjectId, user: User) {
-    return this.collection.findOne({ _id, 'attributes.user': user._id });
+    return this.collection.findOne({ _id, user: user._id });
   }
 
   async getByUser(user: User) {
-    return this.collection.find({ 'attributes.user': user._id }).toArray();
+    return this.collection.find({ user: user._id }).toArray();
   }
 
   async processingNext() {
