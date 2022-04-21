@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request } from 'express';
 import bodyParser from 'body-parser';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
@@ -10,6 +10,14 @@ import { authMiddleware } from './authMiddleware';
 import { prometheusMiddleware } from './prometheusMiddleware';
 import { Vault } from './Vault';
 import { Response } from './Response';
+
+export interface ApiRequestFilter extends Request {
+  query: {
+    filter?: {
+      date: { gt: string };
+    };
+  };
+}
 
 const Api = (vault: Vault) => {
   const app = express();
@@ -43,6 +51,17 @@ const Api = (vault: Vault) => {
 
   app.use(authMiddleware);
 
+  const validateQuery = (request?: ApiRequestFilter): boolean => {
+    if (!request?.query?.filter) {
+      return true;
+    }
+
+    if (request?.query?.filter.date) {
+      return true;
+    }
+    return false;
+  };
+
   const validateBody = (body: any): boolean => {
     if (typeof body.url !== 'string') {
       return false;
@@ -62,10 +81,24 @@ const Api = (vault: Vault) => {
     }
   });
 
-  app.get('/api/evidences', async (req, res) => {
-    res.json({
-      data: (await vault.getByUser(req.user)).map(Response),
-    });
+  app.get('/api/evidences', async (req: ApiRequestFilter, res) => {
+    if (!validateQuery(req)) {
+      res.status(400);
+      res.json({ errors: ['only filter[date][gt]= is accepted as filter'] });
+    } else {
+      res.json({
+        data: (
+          await vault.getByUser(
+            req.user,
+            req.query.filter?.date?.gt
+              ? {
+                  'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
+                }
+              : {}
+          )
+        ).map(Response),
+      });
+    }
   });
 
   app.get('/api/evidences/:id', async (req, res) => {

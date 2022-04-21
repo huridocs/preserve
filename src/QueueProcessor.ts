@@ -11,6 +11,7 @@ export type EvidenceBase = {
     downloads: { path: string; type: string }[];
   };
 };
+
 export type EvidenceDB = EvidenceBase & { _id: ObjectId; user: ObjectId };
 
 export type JobResults = {
