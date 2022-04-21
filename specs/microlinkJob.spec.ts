@@ -21,7 +21,7 @@ describe('microlinkJob', () => {
   let result: JobResults;
 
   beforeAll(async () => {
-    // jest.spyOn(console, 'log').mockImplementation(() => false);
+    jest.spyOn(console, 'log').mockImplementation(() => false);
     const app = express();
     app.get('/test_page', (_req, res) => {
       res.set('Content-Type', 'text/html');
@@ -77,5 +77,9 @@ describe('microlinkJob', () => {
         )
       )
     ).toBe(true);
+  });
+
+  it('should not include video when not supported', async () => {
+    expect(result.downloads.find(d => d.type === 'video')).not.toBeDefined();
   });
 });

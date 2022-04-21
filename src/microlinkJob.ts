@@ -3,8 +3,10 @@ import path from 'path';
 import { config } from './config';
 import { EvidenceDB } from './Api';
 import { JobFunction, JobResults } from './QueueProcessor';
+// eslint-disable-next-line
 // @ts-ignore
 import createBrowserless from 'browserless';
+import youtubedl from 'youtube-dl-exec';
 
 const microlinkJob: JobFunction = async (evidence: EvidenceDB) => {
   const browserlessFactory = createBrowserless({
@@ -31,12 +33,26 @@ const microlinkJob: JobFunction = async (evidence: EvidenceDB) => {
   await browserless.destroyContext();
   await browserlessFactory.close();
 
+  let video_path = '';
+  try {
+    await youtubedl(evidence.attributes.url, {
+      output: path.join(evidence_dir, 'video.mp4'),
+      format: 'worst',
+    });
+    video_path = path.join(evidence._id.toString(), 'video.mp4');
+  } catch (e: any) {
+    if (!(e.stderr && e.stderr.match(/Unsupported URL/))) {
+      throw e;
+    } else {
+      console.log(e);
+    }
+  }
+
   const result: JobResults = {
     downloads: [
       { path: content_path, type: 'content' },
       { path: screenshot_path, type: 'screenshot' },
-      // ...(screenshot_path ? [{ path: screenshot_path, type: 'screenshot' }] : []),
-      // ...(video_path ? [{ path: video_path, type: 'video' }] : []),
+      ...(video_path ? [{ path: video_path, type: 'video' }] : []),
     ],
   };
 
