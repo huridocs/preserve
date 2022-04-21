@@ -47,7 +47,7 @@ describe('Preserve API', () => {
   };
 
   beforeAll(async () => {
-    config.data_path = `${__dirname}/../data`;
+    config.data_path = `${__dirname}/downloads`;
     db = await connectDB(DB_CONN_STRING, 'preserve-testing');
     app = Api(new Vault(db));
   });
