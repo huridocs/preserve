@@ -1,7 +1,20 @@
-import { EvidenceDB } from './Api';
+import { ObjectId } from 'mongodb';
 import { Vault } from './Vault';
 
+type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED';
+
+export type EvidenceBase = {
+  attributes: {
+    date?: Date;
+    status: status;
+    url: string;
+    downloads: { path: string; type: string }[];
+  };
+};
+export type EvidenceDB = EvidenceBase & { _id: ObjectId; user: ObjectId };
+
 export type JobResults = {
+  title: string;
   downloads: { path: string; type: string }[];
 };
 
@@ -20,6 +33,7 @@ const processJobs = async (job: JobFunction, vault: Vault, interval = 1000) => {
       const jobResult = await job(evidence);
       await vault.update(evidence._id, {
         attributes: {
+          date: new Date(),
           ...evidence.attributes,
           ...jobResult,
           status: 'PROCESSED',

@@ -27,7 +27,7 @@ describe('microlinkJob', () => {
       res.set('Content-Type', 'text/html');
       res.send(
         Buffer.from(
-          '<body><h2>Test Page</h2><img src="https://github.com/critocrito/sugarcube/raw/main/logo.png"></body>'
+          '</head><title>test title</title></head><body><h2>Test Page</h2><img src="https://github.com/critocrito/sugarcube/raw/main/logo.png"></body>'
         )
       );
     });
@@ -55,6 +55,10 @@ describe('microlinkJob', () => {
         resolve();
       });
     });
+  });
+
+  it('should return the url title', async () => {
+    expect(result.title).toBe('test title');
   });
 
   it('should set the content in a file and return as a download', async () => {

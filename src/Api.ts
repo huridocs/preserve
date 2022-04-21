@@ -11,18 +11,6 @@ import { prometheusMiddleware } from './prometheusMiddleware';
 import { Vault } from './Vault';
 import { Response } from './Response';
 
-type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED';
-
-export type EvidenceBase = {
-  attributes: {
-    status: status;
-    url: string;
-    downloads: { path: string; type: string }[];
-  };
-};
-
-export type EvidenceDB = EvidenceBase & { _id: ObjectId; user: ObjectId };
-
 const Api = (vault: Vault) => {
   const app = express();
 

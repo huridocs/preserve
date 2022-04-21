@@ -1,8 +1,7 @@
 import { appendFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { config } from './config';
-import { EvidenceDB } from './Api';
-import { JobFunction, JobResults } from './QueueProcessor';
+import { EvidenceDB, JobFunction, JobResults } from './QueueProcessor';
 // eslint-disable-next-line
 // @ts-ignore
 import createBrowserless from 'browserless';
@@ -30,9 +29,6 @@ const microlinkJob: JobFunction = async (evidence: EvidenceDB) => {
     fullPage: true,
   });
 
-  await browserless.destroyContext();
-  await browserlessFactory.close();
-
   let video_path = '';
   try {
     await youtubedl(evidence.attributes.url, {
@@ -49,6 +45,7 @@ const microlinkJob: JobFunction = async (evidence: EvidenceDB) => {
   }
 
   const result: JobResults = {
+    title: await page.title(),
     downloads: [
       { path: content_path, type: 'content' },
       { path: screenshot_path, type: 'screenshot' },
@@ -56,6 +53,8 @@ const microlinkJob: JobFunction = async (evidence: EvidenceDB) => {
     ],
   };
 
+  await browserless.destroyContext();
+  await browserlessFactory.close();
   return result;
 };
 
