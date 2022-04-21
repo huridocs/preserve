@@ -1,6 +1,6 @@
 import { Collection, Db, ObjectId } from 'mongodb';
-import { EvidenceDB } from './Api';
 import { User } from './authMiddleware';
+import { EvidenceDB } from './QueueProcessor';
 
 export class Vault {
   private collection: Collection<EvidenceDB>;

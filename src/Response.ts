@@ -1,4 +1,4 @@
-import { EvidenceBase, EvidenceDB } from './Api';
+import { EvidenceBase, EvidenceDB } from './QueueProcessor';
 
 export type EvidenceResponse = EvidenceBase & { id: string; links: { self: string } };
 

@@ -1,11 +1,11 @@
 import { Application } from 'express';
 import { appendFile, mkdir } from 'fs/promises';
 import { Db, ObjectId } from 'mongodb';
-import { Api, EvidenceDB } from 'src/Api';
+import { Api } from 'src/Api';
 import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/DB';
 import { Vault } from 'src/Vault';
-import { JobFunction, JobResults, startJobs, stopJobs } from 'src/QueueProcessor';
+import { EvidenceDB, JobFunction, JobResults, startJobs, stopJobs } from 'src/QueueProcessor';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 import { EvidenceResponse } from 'src/Response';
@@ -37,6 +37,7 @@ describe('Preserve API', () => {
     await appendFile(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
     await appendFile(`${config.data_path}/${evidence._id}/content.txt`, 'content');
     const result: JobResults = {
+      title: 'title',
       downloads: [
         { path: `${evidence._id}/content.txt`, type: 'content' },
         { path: `${evidence._id}/screenshot.jpg`, type: 'screenshot' },
@@ -90,7 +91,6 @@ describe('Preserve API', () => {
       expect(evidence).toMatchObject({
         data: {
           attributes: {
-            ...newEvidence.data.attributes,
             url: 'http://my-url',
             status: 'SCHEDULED',
           },
@@ -129,7 +129,7 @@ describe('Preserve API', () => {
         data: {
           id: newEvidence.data.id,
           attributes: {
-            ...newEvidence.data.attributes,
+            title: 'title',
             status: 'PROCESSED',
             downloads: [
               { path: `/evidences/${newEvidence.data.id}/content.txt`, type: 'content' },
@@ -158,11 +158,11 @@ describe('Preserve API', () => {
       ).expect(200);
       expect(content.text).toBe('content');
       const screenshot = await get(
-        data?.attributes.downloads.find((d: any) => d.type === 'screenshot')?.path
+        data?.attributes.downloads.find(d => d.type === 'screenshot')?.path
       ).expect(200);
       expect(screenshot.body.toString()).toBe('screenshot');
       const video = await get(
-        data?.attributes.downloads.find((d: any) => d.type === 'video')?.path
+        data?.attributes.downloads.find(d => d.type === 'video')?.path
       ).expect(200);
       expect(video.body.toString()).toBe('video');
     });
