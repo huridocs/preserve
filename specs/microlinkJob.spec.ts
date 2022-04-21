@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from 'src/config';
 import { JobResults } from 'src/QueueProcessor';
-import { sugarcubeJob } from 'src/sugarcubeJob';
+import { microlinkJob } from 'src/microlinkJob';
 
 async function exists(path: string) {
   try {
@@ -16,7 +16,7 @@ async function exists(path: string) {
   }
 }
 
-describe('sugarcubeJob', () => {
+describe('microlinkJob', () => {
   let server: Server;
   let result: JobResults;
 
@@ -32,15 +32,15 @@ describe('sugarcubeJob', () => {
       );
     });
     await new Promise<void>(resolve => {
-      server = app.listen(5959, resolve);
+      server = app.listen(5960, resolve);
     });
 
-    result = await sugarcubeJob({
+    result = await microlinkJob({
       _id: new ObjectId(),
       user: new ObjectId(),
       attributes: {
         status: 'PROCESSING',
-        url: 'http://localhost:5959/test_page',
+        url: 'http://localhost:5960/test_page',
         downloads: [],
       },
     });
@@ -77,5 +77,9 @@ describe('sugarcubeJob', () => {
         )
       )
     ).toBe(true);
+  });
+
+  it('should not include video when not supported', async () => {
+    expect(result.downloads.find(d => d.type === 'video')).not.toBeDefined();
   });
 });
