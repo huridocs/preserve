@@ -6,8 +6,6 @@ import { connectDB, disconnectDB } from 'src/DB';
 import { Vault } from 'src/Vault';
 import request from 'supertest';
 
-const DB_CONN_STRING = 'mongodb://localhost:27019';
-
 describe('Evidences endpoint pagination', () => {
   let app: Application;
 
@@ -20,7 +18,7 @@ describe('Evidences endpoint pagination', () => {
 
   beforeAll(async () => {
     config.data_path = `${__dirname}/downloads`;
-    db = await connectDB(DB_CONN_STRING, 'preserve-testing-filters');
+    db = await connectDB('preserve-api-testing-filters');
     await db.collection('evidences').deleteMany({});
     const vault = new Vault(db);
     app = Api(vault);

@@ -12,7 +12,7 @@ const uncaughtError = (error: any) => {
 process.on('unhandledRejection', uncaughtError);
 process.on('uncaughtException', uncaughtError);
 
-connectDB(config.mongodb_uri).then(db => {
+connectDB().then(db => {
   const app = Api(new Vault(db));
   const server = app.listen(config.PORT, () => {
     console.log(`Example app listening on port ${config.PORT}`);
