@@ -15,7 +15,6 @@ services:
       dockerfile: Dockerfile
       target: production
     volumes:
-      - ./data:/home/user/app/data
       - ./downloads:/home/user/app/downloads
     depends_on:
       - mongo

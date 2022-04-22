@@ -1,4 +1,4 @@
-import { Collection, Db, ObjectId } from 'mongodb';
+import { Collection, Db, Filter, ObjectId } from 'mongodb';
 import { User } from './authMiddleware';
 import { EvidenceDB } from './QueueProcessor';
 
@@ -26,8 +26,9 @@ export class Vault {
     return this.collection.findOne({ _id, user: user._id });
   }
 
-  async getByUser(user: User) {
-    return this.collection.find({ user: user._id }).toArray();
+  async getByUser(user: User, filter: Filter<EvidenceDB> = {}) {
+    filter.user = user._id;
+    return this.collection.find(filter).sort({ 'attributes.date': 'desc' }).toArray();
   }
 
   async processingNext() {

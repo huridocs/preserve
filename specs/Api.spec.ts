@@ -10,7 +10,6 @@ import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 import { EvidenceResponse } from 'src/Response';
 
-const DB_CONN_STRING = 'mongodb://localhost:27019';
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
 describe('Preserve API', () => {
@@ -20,7 +19,6 @@ describe('Preserve API', () => {
     data: { url?: any; type?: 'evidences' } = { url: 'test-url' },
     token = 'my_private_token'
   ) => {
-    // data.type = data.type || 'evidences';
     return request(app).post('/api/evidences').send(data).set({ Authorization: token });
   };
 
@@ -49,7 +47,7 @@ describe('Preserve API', () => {
 
   beforeAll(async () => {
     config.data_path = `${__dirname}/downloads`;
-    db = await connectDB(DB_CONN_STRING, 'preserve-testing');
+    db = await connectDB('preserve-api-testing');
     app = Api(new Vault(db));
   });
 

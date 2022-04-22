@@ -7,7 +7,7 @@
     "build": "rimraf dist/ && tsc",
     "start": "npm run build && node dist/index.js",
     "test": "jest",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint ./**/*.ts",
     "check-types": "tsc --noEmit --pretty"
   },
   "keywords": [],
@@ -20,6 +20,7 @@
     "browserless": "9.3.13",
     "express": "^4.17.3",
     "express-prom-bundle": "^6.4.1",
+    "lodash": "^4.17.21",
     "mongodb": "^4.5.0",
     "prom-client": "^14.0.1",
     "puppeteer": "^13.6.0",
