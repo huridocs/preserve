@@ -10,6 +10,7 @@ import { authMiddleware } from './authMiddleware';
 import { prometheusMiddleware } from './prometheusMiddleware';
 import { Vault } from './Vault';
 import { Response } from './Response';
+import logger from './logger';
 
 export interface ApiRequestFilter extends Request {
   query: {
@@ -40,13 +41,16 @@ const Api = (vault: Vault) => {
     });
     app.use(Sentry.Handlers.requestHandler());
     app.use(Sentry.Handlers.tracingHandler());
-    app.use(Sentry.Handlers.errorHandler());
   }
 
   app.use(bodyParser.json({ limit: '1mb' }));
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });
+  });
+
+  app.get('/api/error', (_req, _res) => {
+    throw new Error('Intentionally thrown error');
   });
 
   app.use(authMiddleware);
@@ -100,6 +104,20 @@ const Api = (vault: Vault) => {
     }
   });
 
+  app.get('/api/evidences', async (req, res, next) => {
+    // try {
+    //   res.json({
+    //     data: (await vault.getByUser(req.user)).map(Response),
+    //   });
+    // } catch (error) {
+    //   next(error);
+    // }
+
+    res.json({
+      data: (await vault.getByUser(req.user)).map(Response),
+    });
+  });
+
   app.get('/api/evidences/:id', async (req, res) => {
     const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
     if (evidence) {
@@ -123,6 +141,17 @@ const Api = (vault: Vault) => {
       res.end();
     }
   });
+
+  if (config.sentry.dsn) {
+    app.use(Sentry.Handlers.errorHandler());
+  }
+
+  app.use(
+    (error: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+      logger.error(error.message, { stacktrace: error.stack });
+      res.status(500).json({ error: error.message });
+    }
+  );
 
   return app;
 };
