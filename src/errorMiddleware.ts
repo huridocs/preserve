@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response} from 'express';
+import { NextFunction, Request, Response } from 'express';
 import logger from 'src/logger';
 
 const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFunction) => {
