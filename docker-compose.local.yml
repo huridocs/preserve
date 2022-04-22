@@ -13,7 +13,6 @@ services:
     networks:
       - preserve
     volumes:
-      - ./data:/home/user/app/data
       - ./downloads:/home/user/app/downloads
       - ./src:/home/user/app/src
   mongo:
