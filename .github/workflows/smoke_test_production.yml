@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
+      # - uses: satackey/action-docker-layer-caching@v0.0.11
+      #   continue-on-error: true
       - name: Build the docker-compose stack
         run: ./run start
       - name: check api is up
