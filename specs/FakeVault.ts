@@ -1,6 +1,4 @@
-import { Db, Filter, ObjectId } from 'mongodb';
-import { User } from 'src/authMiddleware';
-import { EvidenceDB } from 'src/QueueProcessor';
+import { Db } from 'mongodb';
 import { Vault } from 'src/Vault';
 
 export class FakeVault extends Vault {
@@ -8,15 +6,15 @@ export class FakeVault extends Vault {
     super(db);
   }
 
-  async create(_url: string, _user: User) {
+  async create() {
     return Promise.reject(new Error('Something went wrong with evidence creation'));
   }
 
-  async getOne(_id: ObjectId, user: User) {
+  async getOne() {
     return Promise.reject(new Error('Something went wrong with evidence retrieval'));
   }
 
-  async getByUser(user: User, filter: Filter<EvidenceDB> = {}) {
+  async getByUser() {
     return Promise.reject(new Error('Something went wrong with evidence retrieval by user'));
   }
 
@@ -24,7 +22,7 @@ export class FakeVault extends Vault {
     return Promise.reject(new Error('Something went wrong with evidence processing next'));
   }
 
-  async update(_id: ObjectId, data: Partial<EvidenceDB>) {
+  async update() {
     return Promise.reject(new Error('Something went wrong with evidence update'));
   }
 }

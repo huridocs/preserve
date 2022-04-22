@@ -49,7 +49,7 @@ const Api = (vault: Vault) => {
     res.json({ status: 'ok' });
   });
 
-  app.get('/api/error', (_req, _res) => {
+  app.get('/api/error', () => {
     throw new Error('Intentionally thrown error');
   });
 
