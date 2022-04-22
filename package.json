@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon --watch src src/server.ts",
     "build": "rimraf dist/ && tsc",
-    "start": "npm run build && node dist/index.js",
+    "start": "npm run build && node dist/src/server.js",
     "test": "jest",
     "lint": "eslint ./**/*.ts",
     "check-types": "tsc --noEmit --pretty"
@@ -24,6 +24,7 @@
     "mongodb": "^4.5.0",
     "prom-client": "^14.0.1",
     "puppeteer": "^13.6.0",
+    "winston": "^3.7.2",
     "youtube-dl-exec": "^2.0.11"
   },
   "devDependencies": {

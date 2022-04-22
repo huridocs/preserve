@@ -9,6 +9,7 @@ import { EvidenceDB, JobFunction, JobResults, startJobs, stopJobs } from 'src/Qu
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 import { EvidenceResponse } from 'src/Response';
+import { FakeVault } from './FakeVault';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -221,6 +222,36 @@ describe('Preserve API', () => {
               },
             },
           ],
+        });
+      });
+    });
+
+    describe('Error handling', () => {
+      beforeEach(() => {
+        app = Api(new FakeVault(db));
+      });
+      describe('POST', () => {
+        it('should respond 500 on errors', async () => {
+          const { body } = await post().expect(500);
+          expect(body).toEqual({ error: 'Something went wrong with evidence creation' });
+        });
+      });
+
+      describe('GET', () => {
+        it('should respond 500 on errors', async () => {
+          const evidenceId = new ObjectId();
+
+          await get()
+            .expect({ error: 'Something went wrong with evidence retrieval by user' })
+            .expect(500);
+
+          await get(`/api/evidences/${evidenceId}`)
+            .expect({ error: 'Something went wrong with evidence retrieval' })
+            .expect(500);
+
+          await get(`/evidences/${evidenceId}/screenshot.jpg`)
+            .expect({ error: 'Something went wrong with evidence retrieval' })
+            .expect(500);
         });
       });
     });
