@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import logger from 'src/logger';
+import { logger } from './logger';
 
 const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error(error.message, { stacktrace: error.stack });

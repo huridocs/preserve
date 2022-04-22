@@ -4,4 +4,6 @@ const logConfiguration = {
   transports: [new transports.Console()],
 };
 
-export default createLogger(logConfiguration);
+const logger = createLogger(logConfiguration);
+
+export { logger };
