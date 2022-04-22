@@ -1,4 +1,4 @@
-FROM node:14.18.3 AS base
+FROM node:16.14.2 AS base
 
 RUN apt-get update && apt-get install -y  \
     libxss1 \
