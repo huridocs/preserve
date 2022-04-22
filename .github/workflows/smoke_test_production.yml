@@ -20,5 +20,4 @@ jobs:
       - name: Build the docker-compose stack
         run: ./run start
       - name: check api is up
-        run: sleep 5 && wget --waitretry=5 --retry-connrefused -v http://localhost:4000/api/health
-        timeout-minutes: 2
+        run: sleep 5 && wget --tries=5 --waitretry=2 --retry-connrefused -v http://localhost:4000/api/health
