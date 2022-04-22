@@ -43,7 +43,7 @@ describe('Evidences endpoint pagination', () => {
   });
 
   describe('/api/evidences', () => {
-    it('should return evidences sorted by date descendent', async () => {
+    it('should return evidences sorted by date desc', async () => {
       const { body: evidences } = await get('/api/evidences', 'user1').expect(200);
       expect(evidences.data).toMatchObject([
         { attributes: { url: 'evidence1' } },
@@ -60,15 +60,13 @@ describe('Evidences endpoint pagination', () => {
 
       expect(evidences.data).toMatchObject([
         { attributes: { url: 'evidence1' } },
-        { attributes: { url: 'evidence3' } }
+        { attributes: { url: 'evidence3' } },
       ]);
     });
 
     it('should only accept [date][gt] filter or nothing, return error otherwise', async () => {
-      const { body: evidences } = await get(
-        `/api/evidences?filter[test][gt]=${new Date(1).toISOString()}`,
-        'user1'
-      ).expect(400);
+      await get(`/api/evidences?filter[unsuported_property][gt]=value`, 'user1').expect(400);
+      await get(`/api/evidences?filter[date][unsuported_filter]=value`, 'user1').expect(400);
     });
   });
 });

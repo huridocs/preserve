@@ -55,8 +55,7 @@ const Api = (vault: Vault) => {
     if (!request?.query?.filter) {
       return true;
     }
-
-    if (request?.query?.filter.date) {
+    if (request?.query?.filter.date && request?.query?.filter.date?.gt) {
       return true;
     }
     return false;
