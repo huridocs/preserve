@@ -10,7 +10,7 @@ import { authMiddleware } from './authMiddleware';
 import { prometheusMiddleware } from './prometheusMiddleware';
 import { Vault } from './Vault';
 import { Response } from './Response';
-import logger from './logger';
+import { errorMiddleware } from './errorMiddleware';
 
 export interface ApiRequestFilter extends Request {
   query: {
@@ -72,73 +72,75 @@ const Api = (vault: Vault) => {
     return true;
   };
 
-  app.post('/api/evidences', async (req, res) => {
-    if (!validateBody(req.body)) {
-      res.status(400);
-      res.json({ errors: ['url should exist and be a string'] });
-    } else {
-      res.status(202);
-      res.json({
-        data: Response(await vault.create(req.body.url, req.user)),
-      });
+  app.post('/api/evidences', async (req, res, next) => {
+    try {
+      if (!validateBody(req.body)) {
+        res.status(400);
+        res.json({ errors: ['url should exist and be a string'] });
+      } else {
+        res.status(202);
+        res.json({
+          data: Response(await vault.create(req.body.url, req.user)),
+        });
+      }
+    } catch (error) {
+      next(error);
     }
   });
 
-  app.get('/api/evidences', async (req: ApiRequestFilter, res) => {
-    if (!validateQuery(req)) {
-      res.status(400);
-      res.json({ errors: ['only filter[date][gt]= is accepted as filter'] });
-    } else {
-      res.json({
-        data: (
-          await vault.getByUser(
-            req.user,
-            req.query.filter?.date?.gt
-              ? {
-                  'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
-                }
-              : {}
-          )
-        ).map(Response),
-      });
+  app.get('/api/evidences', async (req: ApiRequestFilter, res, next) => {
+    try {
+      if (!validateQuery(req)) {
+        res.status(400);
+        res.json({ errors: ['only filter[date][gt]= is accepted as filter'] });
+      } else {
+        res.json({
+          data: (
+            await vault.getByUser(
+              req.user,
+              req.query.filter?.date?.gt
+                ? {
+                    'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
+                  }
+                : {}
+            )
+          ).map(Response),
+        });
+      }
+    } catch (error) {
+      next(error);
     }
   });
 
-  app.get('/api/evidences', async (req, res, next) => {
-    // try {
-    //   res.json({
-    //     data: (await vault.getByUser(req.user)).map(Response),
-    //   });
-    // } catch (error) {
-    //   next(error);
-    // }
-
-    res.json({
-      data: (await vault.getByUser(req.user)).map(Response),
-    });
-  });
-
-  app.get('/api/evidences/:id', async (req, res) => {
-    const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
-    if (evidence) {
-      res.status(200);
-      res.json({
-        data: Response(evidence),
-      });
-    } else {
-      res.status(404);
-      res.json({});
+  app.get('/api/evidences/:id', async (req, res, next) => {
+    try {
+      const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
+      if (evidence) {
+        res.status(200);
+        res.json({
+          data: Response(evidence),
+        });
+      } else {
+        res.status(404);
+        res.json({});
+      }
+    } catch (error) {
+      next(error);
     }
   });
 
-  app.get('/evidences/:id/:filename', async (req, res) => {
-    const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
-    if (evidence) {
-      res.status(200);
-      res.sendFile(path.resolve(`${config.data_path}/${req.params.id}/${req.params.filename}`));
-    } else {
-      res.status(404);
-      res.end();
+  app.get('/evidences/:id/:filename', async (req, res, next) => {
+    try {
+      const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
+      if (evidence) {
+        res.status(200);
+        res.sendFile(path.resolve(`${config.data_path}/${req.params.id}/${req.params.filename}`));
+      } else {
+        res.status(404);
+        res.end();
+      }
+    } catch (error) {
+      next(error);
     }
   });
 
@@ -146,12 +148,7 @@ const Api = (vault: Vault) => {
     app.use(Sentry.Handlers.errorHandler());
   }
 
-  app.use(
-    (error: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-      logger.error(error.message, { stacktrace: error.stack });
-      res.status(500).json({ error: error.message });
-    }
-  );
+  app.use(errorMiddleware);
 
   return app;
 };
