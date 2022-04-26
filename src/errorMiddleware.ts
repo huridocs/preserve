@@ -1,10 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
-import { logger } from './logger';
+import { Logger } from 'winston';
+import { ValidationError } from './validations';
 
-const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFunction) => {
-  logger.error(error.message, { stacktrace: error.stack });
-  res.status(500).json({ error: error.message });
-  next();
-};
+const errorMiddleware =
+  (logger: Logger) => (error: Error, _req: Request, res: Response, next: NextFunction) => {
+    if (error instanceof ValidationError) {
+      res.status(400).json({ error: error.message });
+      next();
+    } else {
+      logger.error(error.message, { stacktrace: error.stack });
+      res.status(500).json({ error: error.message });
+      next();
+    }
+  };
 
 export { errorMiddleware };

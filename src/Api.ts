@@ -11,16 +11,21 @@ import { prometheusMiddleware } from './prometheusMiddleware';
 import { Vault } from './Vault';
 import { Response } from './Response';
 import { errorMiddleware } from './errorMiddleware';
+import { Logger } from 'winston';
+import { validateBody, validatePagination, validateQuery } from './validations';
 
 export interface ApiRequestFilter extends Request {
   query: {
     filter?: {
       date: { gt: string };
     };
+    page?: {
+      limit: string;
+    };
   };
 }
 
-const Api = (vault: Vault) => {
+const Api = (vault: Vault, logger: Logger) => {
   const app = express();
 
   app.use(prometheusMiddleware);
@@ -55,34 +60,13 @@ const Api = (vault: Vault) => {
 
   app.use(authMiddleware);
 
-  const validateQuery = (request?: ApiRequestFilter): boolean => {
-    if (!request?.query?.filter) {
-      return true;
-    }
-    if (request?.query?.filter.date && request?.query?.filter.date?.gt) {
-      return true;
-    }
-    return false;
-  };
-
-  const validateBody = (body: any): boolean => {
-    if (typeof body.url !== 'string') {
-      return false;
-    }
-    return true;
-  };
-
   app.post('/api/evidences', async (req, res, next) => {
     try {
-      if (!validateBody(req.body)) {
-        res.status(400);
-        res.json({ errors: ['url should exist and be a string'] });
-      } else {
-        res.status(202);
-        res.json({
-          data: Response(await vault.create(req.body.url, req.user)),
-        });
-      }
+      validateBody(req.body);
+      res.status(202);
+      res.json({
+        data: Response(await vault.create(req.body.url, req.user)),
+      });
     } catch (error) {
       next(error);
     }
@@ -90,23 +74,21 @@ const Api = (vault: Vault) => {
 
   app.get('/api/evidences', async (req: ApiRequestFilter, res, next) => {
     try {
-      if (!validateQuery(req)) {
-        res.status(400);
-        res.json({ errors: ['only filter[date][gt]= is accepted as filter'] });
-      } else {
-        res.json({
-          data: (
-            await vault.getByUser(
-              req.user,
-              req.query.filter?.date?.gt
-                ? {
-                    'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
-                  }
-                : {}
-            )
-          ).map(Response),
-        });
-      }
+      validateQuery(req);
+      validatePagination(req);
+      res.json({
+        data: (
+          await vault.getByUser(
+            req.user,
+            req.query.filter?.date?.gt
+              ? {
+                  'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
+                }
+              : {},
+            req.query?.page?.limit ? parseInt(req.query.page.limit) : undefined
+          )
+        ).map(Response),
+      });
     } catch (error) {
       next(error);
     }
@@ -148,7 +130,7 @@ const Api = (vault: Vault) => {
     app.use(Sentry.Handlers.errorHandler());
   }
 
-  app.use(errorMiddleware);
+  app.use(errorMiddleware(logger));
 
   return app;
 };

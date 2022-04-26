@@ -10,6 +10,7 @@ import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 import { EvidenceResponse } from 'src/Response';
 import { FakeVault } from './FakeVault';
+import { fakeLogger } from './fakeLogger';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -49,7 +50,7 @@ describe('Preserve API', () => {
   beforeAll(async () => {
     config.data_path = `${__dirname}/downloads`;
     db = await connectDB('preserve-api-testing');
-    app = Api(new Vault(db));
+    app = Api(new Vault(db), fakeLogger);
   });
 
   afterAll(async () => {
@@ -228,7 +229,7 @@ describe('Preserve API', () => {
 
     describe('Error handling', () => {
       beforeEach(() => {
-        app = Api(new FakeVault(db));
+        app = Api(new FakeVault(db), fakeLogger);
       });
       describe('POST', () => {
         it('should respond 500 on errors', async () => {

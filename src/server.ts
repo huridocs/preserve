@@ -5,6 +5,7 @@ import { Api } from './Api';
 import { startJobs, stopJobs } from './QueueProcessor';
 import { Vault } from './Vault';
 import { microlinkJob } from './microlinkJob';
+import { logger } from './logger';
 
 const uncaughtError = (error: any) => {
   throw error;
@@ -13,9 +14,9 @@ process.on('unhandledRejection', uncaughtError);
 process.on('uncaughtException', uncaughtError);
 
 connectDB().then(db => {
-  const app = Api(new Vault(db));
+  const app = Api(new Vault(db), logger);
   const server = app.listen(config.PORT, () => {
-    console.log(`Example app listening on port ${config.PORT}`);
+    console.log(`Preserve API started on port ${config.PORT}`);
   });
 
   startJobs(microlinkJob, new Vault(db), 1000);
