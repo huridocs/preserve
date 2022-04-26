@@ -1,6 +1,7 @@
 import { version } from '../package.json';
 
 export const config = {
+  evidences_return_max_limit: 50,
   mongodb_uri: process.env.MONGO_URI || 'mongodb://localhost:27019',
   data_path: `${__dirname}/../downloads/`,
   sentry: {

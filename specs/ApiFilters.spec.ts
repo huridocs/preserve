@@ -5,6 +5,7 @@ import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/DB';
 import { Vault } from 'src/Vault';
 import request from 'supertest';
+import { fakeLogger } from './fakeLogger';
 
 describe('Evidences endpoint pagination', () => {
   let app: Application;
@@ -21,7 +22,7 @@ describe('Evidences endpoint pagination', () => {
     db = await connectDB('preserve-api-testing-filters');
     await db.collection('evidences').deleteMany({});
     const vault = new Vault(db);
-    app = Api(vault);
+    app = Api(vault, fakeLogger);
 
     const evidence1 = await vault.create('evidence1', user1);
     vault.update(evidence1._id, { attributes: { ...evidence1.attributes, date: new Date(3) } });
@@ -65,6 +66,30 @@ describe('Evidences endpoint pagination', () => {
     it('should only accept [date][gt] filter or nothing, return error otherwise', async () => {
       await get(`/api/evidences?filter[unsuported_property][gt]=value`, 'user1').expect(400);
       await get(`/api/evidences?filter[date][unsuported_filter]=value`, 'user1').expect(400);
+    });
+
+    describe('Pagination', () => {
+      it('should have a default limit', async () => {
+        config.evidences_return_max_limit = 1;
+        const { body: evidences } = await get('/api/evidences', 'user1').expect(200);
+        expect(evidences.data.length).toBe(1);
+        config.evidences_return_max_limit = 5;
+      });
+
+      it('should accept a limit query', async () => {
+        const { body: evidences } = await get('/api/evidences?page[limit]=2', 'user1').expect(200);
+        expect(evidences.data.length).toBe(2);
+      });
+
+      it('should not be able to surpass default limit', async () => {
+        config.evidences_return_max_limit = 2;
+        const { body: evidences } = await get('/api/evidences?page[limit]=3', 'user1').expect(200);
+        expect(evidences.data.length).toBe(2);
+      });
+
+      it('should only accept page[limit] pagination or nothing, return error otherwise', async () => {
+        await get(`/api/evidences?page[unsuported_property]=value`, 'user1').expect(400);
+      });
     });
   });
 });

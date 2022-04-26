@@ -1,5 +1,6 @@
 import { Collection, Db, Filter, ObjectId } from 'mongodb';
 import { User } from './authMiddleware';
+import { config } from './config';
 import { EvidenceDB } from './QueueProcessor';
 
 export class Vault {
@@ -26,9 +27,12 @@ export class Vault {
     return this.collection.findOne({ _id, user: user._id });
   }
 
-  async getByUser(user: User, filter: Filter<EvidenceDB> = {}) {
+  async getByUser(user: User, filter: Filter<EvidenceDB> = {}, limit?: number) {
     filter.user = user._id;
-    return this.collection.find(filter).sort({ 'attributes.date': 'desc' }).toArray();
+    if (!limit || limit > config.evidences_return_max_limit) {
+      limit = config.evidences_return_max_limit;
+    }
+    return this.collection.find(filter).sort({ 'attributes.date': 'desc' }).limit(limit).toArray();
   }
 
   async processingNext() {
