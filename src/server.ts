@@ -7,7 +7,7 @@ import { Vault } from './Vault';
 import { microlinkJob } from './microlinkJob';
 import { logger } from './logger';
 
-const uncaughtError = (error: any) => {
+const uncaughtError = (error: unknown) => {
   throw error;
 };
 process.on('unhandledRejection', uncaughtError);

@@ -22,6 +22,7 @@ export const validatePagination = (request?: ApiRequestFilter): boolean => {
   throw new ValidationError('only page[limit]= is accepted for pagination');
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateBody = (body: any): boolean => {
   if (typeof body.url !== 'string') {
     throw new ValidationError('url should exist and be a string');
