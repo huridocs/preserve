@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Vault } from './Vault';
 
-type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED';
+type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
 
 export type EvidenceBase = {
   attributes: {
@@ -12,7 +12,7 @@ export type EvidenceBase = {
   };
 };
 
-export type EvidenceDB = EvidenceBase & { _id: ObjectId; user: ObjectId };
+export type EvidenceDB = EvidenceBase & { _id: ObjectId; user: ObjectId; error?: string };
 
 export type JobResults = {
   title: string;
@@ -27,19 +27,28 @@ let resolvePromise: undefined | ((value: unknown) => void);
 const processJobs = async (job: JobFunction, vault: Vault, interval = 1000) => {
   while (!resolvePromise) {
     await timeout(interval);
-
     const evidence = await vault.processingNext();
-
     if (evidence) {
-      const jobResult = await job(evidence);
-      await vault.update(evidence._id, {
-        attributes: {
-          date: new Date(),
-          ...evidence.attributes,
-          ...jobResult,
-          status: 'PROCESSED',
-        },
-      });
+      try {
+        const jobResult = await job(evidence);
+        await vault.update(evidence._id, {
+          attributes: {
+            date: new Date(),
+            ...evidence.attributes,
+            ...jobResult,
+            status: 'PROCESSED',
+          },
+        });
+      } catch (e) {
+        await vault.update(evidence._id, {
+          attributes: {
+            ...evidence.attributes,
+            date: new Date(),
+            status: 'ERROR',
+          },
+          error: e instanceof Error ? e.message : 'unknown error',
+        });
+      }
     }
   }
   resolvePromise(1);

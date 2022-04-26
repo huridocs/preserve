@@ -18,7 +18,7 @@ describe('Preserve API', () => {
   let app: Application;
 
   const post = (
-    data: { url?: any; type?: 'evidences' } = { url: 'test-url' },
+    data: { url?: unknown; type?: 'evidences' } = { url: 'test-url' },
     token = 'my_private_token'
   ) => {
     return request(app).post('/api/evidences').send(data).set({ Authorization: token });
@@ -253,6 +253,40 @@ describe('Preserve API', () => {
           await get(`/evidences/${evidenceId}/screenshot.jpg`)
             .expect({ error: 'Something went wrong with evidence retrieval' })
             .expect(500);
+        });
+      });
+
+      describe('Job', () => {
+        it('should set the job to ERROR', async () => {
+          const vault = new Vault(db);
+          app = Api(vault, fakeLogger);
+          const { body: newEvidence } = await post().expect(202);
+
+          const fakeJob: JobFunction = async () => {
+            throw new Error('Job error');
+          };
+
+          startJobs(fakeJob, new Vault(db), 0);
+          await waitForExpect(async () => {
+            const { body } = await get(newEvidence.data.links.self).expect(200);
+            expect(body).toMatchObject({
+              data: {
+                id: newEvidence.data.id,
+                attributes: {
+                  status: 'ERROR',
+                },
+              },
+            });
+          });
+          await stopJobs();
+          expect(
+            await vault.getOne(new ObjectId(newEvidence.data.id), {
+              _id: user1Id,
+              token: 'my_private_token',
+            })
+          ).toMatchObject({
+            error: 'Job error',
+          });
         });
       });
     });

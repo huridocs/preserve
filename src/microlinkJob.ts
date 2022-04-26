@@ -7,6 +7,11 @@ import { EvidenceDB, JobFunction, JobResults } from './QueueProcessor';
 import createBrowserless from 'browserless';
 import youtubedl from 'youtube-dl-exec';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const errorHasStderr = (error: any): error is { stderr: string } => {
+  return error.stderr !== undefined;
+};
+
 const microlinkJob: JobFunction = async (evidence: EvidenceDB) => {
   const browserlessFactory = createBrowserless({
     defaultViewPort: { width: 1024, height: 768 },
@@ -36,11 +41,9 @@ const microlinkJob: JobFunction = async (evidence: EvidenceDB) => {
       format: 'worst',
     });
     video_path = path.join(evidence._id.toString(), 'video.mp4');
-  } catch (e: any) {
-    if (!(e.stderr && e.stderr.match(/Unsupported URL/))) {
+  } catch (e: unknown) {
+    if (errorHasStderr(e) && !e.stderr.match(/Unsupported URL/)) {
       throw e;
-    } else {
-      console.log(e);
     }
   }
 
