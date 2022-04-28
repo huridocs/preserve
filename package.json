@@ -23,7 +23,7 @@
     "lodash": "^4.17.21",
     "mongodb": "^4.5.0",
     "prom-client": "^14.0.1",
-    "puppeteer": "^13.6.0",
+    "puppeteer": "^13.7.0",
     "winston": "^3.7.2",
     "youtube-dl-exec": "^2.0.11"
   },
