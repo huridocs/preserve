@@ -1,11 +1,11 @@
 FROM node:16.14.2 AS base
 
-RUN apt-get update && apt-get install -y  \
-    libxss1 \
-    libgconf-2-4 \
-    default-jre \
-    gosu \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install curl gnupg gosu -y \
+  && curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+  && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+  && apt-get update \
+  && apt-get install google-chrome-stable -y --no-install-recommends \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl && \
      chmod a+rx /usr/local/bin/youtube-dl
