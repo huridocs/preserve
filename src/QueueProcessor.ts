@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Vault } from './Vault';
 
-type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
+export type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
 
 export type EvidenceBase = {
   attributes: {

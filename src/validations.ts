@@ -6,9 +6,15 @@ export const validateQuery = (request?: ApiRequestFilter): boolean => {
   if (!request?.query?.filter) {
     return true;
   }
+
   if (request?.query?.filter.date && request?.query?.filter.date?.gt) {
     return true;
   }
+
+  if (request?.query?.filter.status) {
+    return true;
+  }
+
   throw new ValidationError('only filter[date][gt]= is accepted as filter');
 };
 
