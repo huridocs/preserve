@@ -75,23 +75,21 @@ const Api = (vault: Vault, logger: Logger) => {
   });
 
   app.get('/api/evidences', async (req: ApiRequestFilter, res, next) => {
-
     try {
       validateQuery(req);
       validatePagination(req);
-      const dateFilter = req.query.filter?.date?.gt
-        ? {
-            'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
-          }
-        : {};
-
-      const statusFilter = req.query.filter?.status
-        ? {
-            'attributes.status': req.query.filter.status,
-          }
-        : {};
-
-      const filter = { ...dateFilter, ...statusFilter };
+      const filter = {
+        ...(req.query.filter?.date?.gt
+          ? {
+              'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
+            }
+          : {}),
+        ...(req.query.filter?.status
+          ? {
+              'attributes.status': req.query.filter.status,
+            }
+          : {}),
+      };
 
       res.json({
         data: (
