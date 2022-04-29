@@ -319,49 +319,49 @@
     serialize-error "~8.1.0"
     whoops "~4.1.0"
 
-"@browserless/goto@^9.3.13":
-  version "9.3.13"
-  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.3.13.tgz#4693f6b752b1c4c15ea1f8b5ebc1379c38be6162"
-  integrity sha512-lkId9wIL33zGpNRRcZOpxn++sB02BlTkn44VBDKkBMLaLkYW4aL3Tx8ry/0+5/FrO7SW+oNSxC/lZWgrc0wxZg==
+"@browserless/goto@^9.3.14":
+  version "9.3.14"
+  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.3.14.tgz#48ead60d462a8d52d930b7f9931c03c575e723c8"
+  integrity sha512-SVlPDdXl9TUIRWabbmbM3IRm77qXhNJMxaDbXGHnFqi0AV7ceOJJ7Wex3pTZj+fWnn5ULsE/bMfBa9UbvAbvSw==
   dependencies:
     "@browserless/devices" "^9.3.6"
-    "@cliqz/adblocker-puppeteer" "~1.23.6"
+    "@cliqz/adblocker-puppeteer" "~1.23.7"
     debug-logfmt "~1.0.4"
     got "~11.8.3"
-    is-url-http "~2.2.7"
+    is-url-http "~2.3.0"
     p-reflect "~2.1.0"
     p-timeout "~4.1.0"
     pretty-ms "~7.0.1"
     shallow-equal "~1.2.1"
     time-span "~4.0.0"
-    top-user-agents "~1.0.40"
+    top-user-agents "~1.0.43"
     tough-cookie "~4.0.0"
     unique-random-array "~2.0.0"
 
-"@browserless/pdf@^9.3.13":
-  version "9.3.13"
-  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.3.13.tgz#b47073f1490d619b5af9d3e2b619a967122790b4"
-  integrity sha512-VTdHajcOHuoKxgjcTWdBfck5TY5j3w8ZuJftTKKKFhqLxOBbGUar7rqP1NAOfX7NalX37Sm/z17rwkseN4Lunw==
+"@browserless/pdf@^9.3.14":
+  version "9.3.14"
+  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.3.14.tgz#3df108c0b6cb19c0f4befec9038cdca7d9f7f952"
+  integrity sha512-M1FL93dQlxjshf/McNTjUrpEmr7HbaOCTJSlI17L3Uh7baxEL19ujW+Q+rP0/zvQYJv49pcyroKPjr4Z5J1iKw==
   dependencies:
-    "@browserless/goto" "^9.3.13"
+    "@browserless/goto" "^9.3.14"
 
-"@browserless/screenshot@^9.3.13":
-  version "9.3.13"
-  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.3.13.tgz#192d4af986e49f7d51e09ccc6734362ee7d83548"
-  integrity sha512-b2CRlFJlIg3x1cV54LXSguY50EC6mzJN5EPUXs+EK8kapEqwB1tqgzhhDhzl+sL+r6wqgzJKPCN7bhhkjG2azw==
+"@browserless/screenshot@^9.3.14":
+  version "9.3.14"
+  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.3.14.tgz#a5e5a50baade9ef767d78ed8bc7b0b3c6cbf1883"
+  integrity sha512-wyyqlkfIPTD+shH1tFBaOi9lHlCVX+yI8tpU0IgIjs0fV1uinTf2Mdx+nyu2tiGRR1gfzMe8J4/dRnA3UBWKIg==
   dependencies:
-    "@browserless/goto" "^9.3.13"
+    "@browserless/goto" "^9.3.14"
     debug-logfmt "~1.0.4"
     got "~11.8.3"
     is-html-content "~1.0.0"
-    is-url-http "~2.2.7"
+    is-url-http "~2.3.0"
     jimp "~0.16.1"
     map-values-deep "~1.0.2"
-    mime-types "~2.1.34"
+    mime-types "~2.1.35"
     p-reflect "~2.1.0"
     pretty-ms "~7.0.1"
     prism-themes "~1.9.0"
-    sharp "~0.30.1"
+    sharp "~0.30.4"
     svg-gradient "~1.0.3"
     time-span "~4.0.0"
 
@@ -377,7 +377,7 @@
   resolved "https://registry.yarnpkg.com/@cliqz/adblocker-extended-selectors/-/adblocker-extended-selectors-1.23.7.tgz#4782829c97b7ed229789a14d4e39b2339825077d"
   integrity sha512-3y1eeHHZS3qvvv3dDZDjVVr6g03GeUBbDExCW/GOiHdo+qKYmM2K40EaLN+Upzc2ppuum9UKvzsHxG8Hs9R/kQ==
 
-"@cliqz/adblocker-puppeteer@~1.23.6":
+"@cliqz/adblocker-puppeteer@~1.23.7":
   version "1.23.7"
   resolved "https://registry.yarnpkg.com/@cliqz/adblocker-puppeteer/-/adblocker-puppeteer-1.23.7.tgz#18367ddefa603d9abf03a72e6e4ecb584430df1d"
   integrity sha512-n6xPyRHApAirFVFowK5ngxTOF8ilV/QTNxzHjhmEtJXxiLD55Q4UrwgH7mj22wDhSkOKWUjY6CeCaUdYYb9JVA==
@@ -1871,21 +1871,20 @@ browser-process-hrtime@^1.0.0:
   resolved "https://registry.yarnpkg.com/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz#3c9b4b7d782c8121e56f10106d84c0d0ffc94626"
   integrity sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==
 
-browserless@9.3.13:
-  version "9.3.13"
-  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.3.13.tgz#66f901e35b4e7f002c28572db65d49bf37e9963b"
-  integrity sha512-UiVQxJWwBpJb0K61MgqK+igFRdXHq4utfsmzlM70jFCHFnJ0Etq364soDm2vzkAdJU+m5bLDNJeVKcZt8K1t7A==
+browserless@9.3.14:
+  version "9.3.14"
+  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.3.14.tgz#2a8b66b2e012269d3a77e87c004fdbb4aae88234"
+  integrity sha512-BezuOGl3ZW6gKsf9BYCx9Q6IUIfsaC+aHVsX6DXefgZrcAERwrzwE61iAqWo7RjSJJCro0/au0UFQQwq4VhPgg==
   dependencies:
     "@browserless/errors" "^9.3.0"
-    "@browserless/goto" "^9.3.13"
-    "@browserless/pdf" "^9.3.13"
-    "@browserless/screenshot" "^9.3.13"
+    "@browserless/goto" "^9.3.14"
+    "@browserless/pdf" "^9.3.14"
+    "@browserless/screenshot" "^9.3.14"
     debug-logfmt "~1.0.4"
     mutexify "~1.4.0"
     p-reflect "~2.1.0"
     p-retry "~4.6.1"
     p-timeout "~4.1.0"
-    pidtree "~0.5.0"
     require-one-of "~1.0.15"
 
 browserslist@^4.17.5:
@@ -3492,10 +3491,10 @@ http2-wrapper@^1.0.0-beta.5.2:
     quick-lru "^5.1.1"
     resolve-alpn "^1.0.0"
 
-https-proxy-agent@5.0.0, https-proxy-agent@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-5.0.0.tgz#e2a90542abb68a762e0a0850f6c9edadfd8506b2"
-  integrity sha512-EkYm5BcKUGiduxzSt3Eppko+PiNWNEpa4ySk9vTC6wDsQJW9rHSa+UhGNJoRYp7bz6Ht1eaRIa6QaJqO5rCFbA==
+https-proxy-agent@5.0.1, https-proxy-agent@^5.0.0:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-5.0.1.tgz#c59ef224a04fe8b754f3db0063a25ea30d0005d6"
+  integrity sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==
   dependencies:
     agent-base "6"
     debug "4"
@@ -3765,13 +3764,12 @@ is-unix@~2.0.1:
   resolved "https://registry.yarnpkg.com/is-unix/-/is-unix-2.0.6.tgz#cc9a1573a8e944e3af4ce9e52b38d215ccc6fcde"
   integrity sha512-ohmo6/VYbDk2z7bvkv8/gC3x5a6z1WW8st1yG2OowQ9+6c7zIRSMMq3CvWycuReioTy024fOR4QKI6dprvPi3w==
 
-is-url-http@~2.2.7:
-  version "2.2.14"
-  resolved "https://registry.yarnpkg.com/is-url-http/-/is-url-http-2.2.14.tgz#f0e45e382a20c782a2234b23d72f2c222e7ddca7"
-  integrity sha512-85sAJuoSbwCrr01SiU0OMlGn14v8yD9bumor+BWSvE9kySyBRba82CX4cNi5EwvdGz1+TKIJ9eSAmYL6whg9QA==
+is-url-http@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/is-url-http/-/is-url-http-2.3.0.tgz#e4c36ead7abffadf098d1d0bf5d73b2d1243dc4a"
+  integrity sha512-8w669hVYkMgUdJlHW9jn4l0ymXGwx4S1CuUKPUReDRK9+bRz13RvbnALwaC/YZ2p8tNCRlXS4uWIUEENH1XLPg==
   dependencies:
-    re2 "~1.17.2"
-    url-regex-safe "~3.0.0"
+    url-http "~1.0.1"
 
 is-yarn-global@^0.3.0:
   version "0.3.0"
@@ -4581,7 +4579,7 @@ mime-db@1.52.0:
   resolved "https://registry.npmjs.org/mime-db/-/mime-db-1.52.0.tgz"
   integrity sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
 
-mime-types@^2.1.12, mime-types@~2.1.24, mime-types@~2.1.34:
+mime-types@^2.1.12, mime-types@~2.1.24, mime-types@~2.1.34, mime-types@~2.1.35:
   version "2.1.35"
   resolved "https://registry.npmjs.org/mime-types/-/mime-types-2.1.35.tgz"
   integrity sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
@@ -5157,11 +5155,6 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.2.3:
   resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
-pidtree@~0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/pidtree/-/pidtree-0.5.0.tgz#ad5fbc1de78b8a5f99d6fbdd4f6e4eee21d1aca1"
-  integrity sha512-9nxspIM7OpZuhBxPg73Zvyq7j1QMPMPsGKTqRc2XOaFQauDvoNz9fM1Wdkjmeo7l9GXOZiRs97sPkuayl39wjA==
-
 pirates@^4.0.4:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/pirates/-/pirates-4.0.5.tgz#feec352ea5c3268fb23a37c702ab1699f35a5f3b"
@@ -5339,16 +5332,16 @@ pupa@^2.1.1:
   dependencies:
     escape-goat "^2.0.0"
 
-puppeteer@^13.6.0:
-  version "13.6.0"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-13.6.0.tgz#3583fc60c1af59af838d65a09680f2d07f3608f9"
-  integrity sha512-EJXhTyY5bXNPLFXPGcY9JaF6EKJIX8ll8cGG3WUK+553Jx96oDf1cB+lkFOro9p0X16tY+9xx7zYWl+vnWgW2g==
+puppeteer@^13.7.0:
+  version "13.7.0"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-13.7.0.tgz#18e16f83e397cf02f7a0804c67c1603d381cfb0b"
+  integrity sha512-U1uufzBjz3+PkpCxFrWzh4OrMIdIb2ztzCu0YEPfRHjHswcSwHZswnK+WdsOQJsRV8WeTg3jLhJR4D867+fjsA==
   dependencies:
     cross-fetch "3.1.5"
     debug "4.3.4"
     devtools-protocol "0.0.981744"
     extract-zip "2.0.1"
-    https-proxy-agent "5.0.0"
+    https-proxy-agent "5.0.1"
     pkg-dir "4.2.0"
     progress "2.0.3"
     proxy-from-env "1.1.0"
@@ -5683,7 +5676,7 @@ shallow-equal@~1.2.1:
   resolved "https://registry.yarnpkg.com/shallow-equal/-/shallow-equal-1.2.1.tgz#4c16abfa56043aa20d050324efa68940b0da79da"
   integrity sha512-S4vJDjHHMBaiZuT9NPb616CSmLf618jawtv3sufLl6ivK8WocjAo58cXwbRV1cgqxH0Qbv+iUt6m05eqEa2IRA==
 
-sharp@~0.30.1:
+sharp@~0.30.4:
   version "0.30.4"
   resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.30.4.tgz#73d9daa63bbc20da189c9328d75d5d395fc8fb73"
   integrity sha512-3Onig53Y6lji4NIZo69s14mERXXY/GV++6CzOYx/Rd8bnTwbhFbL09WZd7Ag/CCnA0WxFID8tkY0QReyfL6v0Q==
@@ -6126,7 +6119,7 @@ toidentifier@1.0.1:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
-top-user-agents@~1.0.40:
+top-user-agents@~1.0.43:
   version "1.0.43"
   resolved "https://registry.yarnpkg.com/top-user-agents/-/top-user-agents-1.0.43.tgz#c7c84b250ac4e377edec0c5539b757f0e185fd09"
   integrity sha512-3qdpfTrXPPEbD57SmrSMoWCBtSELyerbfXcRF1IHvdaDBOwk5mmjtA/rmzj9Ih7mKc4KV9TwG6Sl2iKgcN08Kg==
@@ -6373,6 +6366,14 @@ uri-js@^4.2.2:
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
   dependencies:
     punycode "^2.1.0"
+
+url-http@~1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/url-http/-/url-http-1.0.1.tgz#bd244f4bfa55d7e2bb04a3496f9f1a9d03f54863"
+  integrity sha512-4eOKQ8qbqddyHO6QjBJs8V431wILBP1MI75rXpdqRgz8uJ1WlIjW06Fjhy/OcRwMcqEwqDt1H1s4SA6FfSS5Rw==
+  dependencies:
+    re2 "~1.17.2"
+    url-regex-safe "~3.0.0"
 
 url-parse-lax@^3.0.0:
   version "3.0.0"
