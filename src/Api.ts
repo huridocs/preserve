@@ -78,24 +78,25 @@ const Api = (vault: Vault, logger: Logger) => {
     try {
       validateQuery(req);
       validatePagination(req);
-      const filter = {
-        ...(req.query.filter?.date?.gt
-          ? {
-              'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
-            }
-          : {}),
-        ...(req.query.filter?.status
-          ? {
-              'attributes.status': req.query.filter.status,
-            }
-          : {}),
-      };
 
+      const dateFilter = req.query.filter?.date?.gt
+        ? {
+            'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
+          }
+        : {};
+      const statusFilter = req.query.filter?.status
+        ? {
+            'attributes.status': req.query.filter.status,
+          }
+        : {};
       res.json({
         data: (
           await vault.getByUser(
             req.user,
-            filter,
+            {
+              ...dateFilter,
+              ...statusFilter,
+            },
             req.query?.page?.limit ? parseInt(req.query.page.limit) : undefined
           )
         ).map(Response),

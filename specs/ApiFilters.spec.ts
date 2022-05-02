@@ -74,6 +74,15 @@ describe('Evidences endpoint pagination', () => {
       expect(evidences.data).toMatchObject([{ attributes: { url: 'evidence1' } }]);
     });
 
+    it('should be able to combine filters', async () => {
+      const { body: evidences } = await get(
+        `/api/evidences?filter[status]=PROCESSED&filter[date][gt]=${new Date(3).toISOString()}`,
+        'user1'
+      ).expect(200);
+
+      expect(evidences.data).toEqual([]);
+    });
+
     it('should only accept [date][gt] filter or nothing, return error otherwise', async () => {
       await get(`/api/evidences?filter[unsuported_property][gt]=value`, 'user1').expect(400);
       await get(`/api/evidences?filter[date][unsuported_filter]=value`, 'user1').expect(400);
