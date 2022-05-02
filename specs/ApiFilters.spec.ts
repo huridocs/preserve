@@ -46,12 +46,12 @@ describe('Evidences endpoint pagination', () => {
   });
 
   describe('/api/evidences', () => {
-    it('should return evidences sorted by date desc', async () => {
+    it('should return evidences sorted by date ascending', async () => {
       const { body: evidences } = await get('/api/evidences', 'user1').expect(200);
       expect(evidences.data).toMatchObject([
-        { attributes: { url: 'evidence1' } },
-        { attributes: { url: 'evidence3' } },
         { attributes: { url: 'evidence2' } },
+        { attributes: { url: 'evidence3' } },
+        { attributes: { url: 'evidence1' } },
       ]);
     });
 
@@ -62,8 +62,8 @@ describe('Evidences endpoint pagination', () => {
       ).expect(200);
 
       expect(evidences.data).toMatchObject([
-        { attributes: { url: 'evidence1' } },
         { attributes: { url: 'evidence3' } },
+        { attributes: { url: 'evidence1' } },
       ]);
     });
 
@@ -74,8 +74,8 @@ describe('Evidences endpoint pagination', () => {
       ).expect(200);
 
       expect(evidences.data).toMatchObject([
-        { attributes: { url: 'evidence1' } },
         { attributes: { url: 'evidence2' } },
+        { attributes: { url: 'evidence1' } },
       ]);
     });
 

@@ -32,7 +32,7 @@ export class Vault {
     if (!limit || limit > config.evidences_return_max_limit) {
       limit = config.evidences_return_max_limit;
     }
-    return this.collection.find(filter).sort({ 'attributes.date': 'desc' }).limit(limit).toArray();
+    return this.collection.find(filter).sort({ 'attributes.date': 'asc' }).limit(limit).toArray();
   }
 
   async processingNext() {
