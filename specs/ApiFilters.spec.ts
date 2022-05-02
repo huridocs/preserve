@@ -25,10 +25,14 @@ describe('Evidences endpoint pagination', () => {
     app = Api(vault, fakeLogger);
 
     const evidence1 = await vault.create('evidence1', user1);
-    vault.update(evidence1._id, { attributes: { ...evidence1.attributes, date: new Date(3) } });
+    vault.update(evidence1._id, {
+      attributes: { ...evidence1.attributes, date: new Date(3), status: 'PROCESSED' },
+    });
 
     const evidence2 = await vault.create('evidence2', user1);
-    vault.update(evidence2._id, { attributes: { ...evidence2.attributes, date: new Date(1) } });
+    vault.update(evidence2._id, {
+      attributes: { ...evidence2.attributes, date: new Date(1), status: 'PROCESSED' },
+    });
 
     const evidence3 = await vault.create('evidence3', user1);
     vault.update(evidence3._id, { attributes: { ...evidence3.attributes, date: new Date(2) } });
@@ -61,6 +65,27 @@ describe('Evidences endpoint pagination', () => {
         { attributes: { url: 'evidence1' } },
         { attributes: { url: 'evidence3' } },
       ]);
+    });
+
+    it('should be able to filter by status', async () => {
+      const { body: evidences } = await get(
+        `/api/evidences?filter[status]=PROCESSED`,
+        'user1'
+      ).expect(200);
+
+      expect(evidences.data).toMatchObject([
+        { attributes: { url: 'evidence1' } },
+        { attributes: { url: 'evidence2' } },
+      ]);
+    });
+
+    it('should be able to combine filters', async () => {
+      const { body: evidences } = await get(
+        `/api/evidences?filter[status]=PROCESSED&filter[date][gt]=${new Date(2).toISOString()}`,
+        'user1'
+      ).expect(200);
+
+      expect(evidences.data).toMatchObject([{ attributes: { url: 'evidence1' } }]);
     });
 
     it('should only accept [date][gt] filter or nothing, return error otherwise', async () => {

@@ -13,11 +13,13 @@ import { Response } from './Response';
 import { errorMiddleware } from './errorMiddleware';
 import { Logger } from 'winston';
 import { validateBody, validatePagination, validateQuery } from './validations';
+import { status } from './QueueProcessor';
 
 export interface ApiRequestFilter extends Request {
   query: {
     filter?: {
       date: { gt: string };
+      status: status;
     };
     page?: {
       limit: string;
@@ -76,15 +78,25 @@ const Api = (vault: Vault, logger: Logger) => {
     try {
       validateQuery(req);
       validatePagination(req);
+
+      const dateFilter = req.query.filter?.date?.gt
+        ? {
+            'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
+          }
+        : {};
+      const statusFilter = req.query.filter?.status
+        ? {
+            'attributes.status': req.query.filter.status,
+          }
+        : {};
       res.json({
         data: (
           await vault.getByUser(
             req.user,
-            req.query.filter?.date?.gt
-              ? {
-                  'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
-                }
-              : {},
+            {
+              ...dateFilter,
+              ...statusFilter,
+            },
             req.query?.page?.limit ? parseInt(req.query.page.limit) : undefined
           )
         ).map(Response),
