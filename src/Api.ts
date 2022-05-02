@@ -14,6 +14,7 @@ import { errorMiddleware } from './errorMiddleware';
 import { Logger } from 'winston';
 import { validateBody, validatePagination, validateQuery } from './validations';
 import { status } from './QueueProcessor';
+import cors from 'cors';
 
 export interface ApiRequestFilter extends Request {
   query: {
@@ -30,6 +31,7 @@ export interface ApiRequestFilter extends Request {
 const Api = (vault: Vault, logger: Logger) => {
   const app = express();
 
+  app.use(cors());
   app.use(prometheusMiddleware);
 
   if (config.sentry.dsn) {
