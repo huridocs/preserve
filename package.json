@@ -17,13 +17,13 @@
     "@sentry/node": "^6.19.7",
     "@sentry/tracing": "^6.19.7",
     "body-parser": "^1.20.0",
-    "browserless": "9.3.13",
+    "browserless": "9.3.14",
     "express": "^4.18.0",
     "express-prom-bundle": "^6.4.1",
     "lodash": "^4.17.21",
     "mongodb": "^4.5.0",
     "prom-client": "^14.0.1",
-    "puppeteer": "^13.6.0",
+    "puppeteer": "^13.7.0",
     "winston": "^3.7.2",
     "youtube-dl-exec": "^2.0.11"
   },
@@ -38,13 +38,13 @@
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.5.1",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.16",
     "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
     "supertest": "^6.2.3",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
-    "typescript": "^4.6.3",
+    "typescript": "^4.6.4",
     "wait-for-expect": "^3.0.2"
   }
 }
