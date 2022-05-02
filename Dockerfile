@@ -14,8 +14,7 @@ RUN groupmod -g 999 node && usermod -u 999 -g 999 node
 
 RUN mkdir -p /home/user/app
 WORKDIR /home/user/app
-COPY package.json ./
-COPY tsconfig.json ./
+COPY package.json yarn.lock tsconfig.json ./
 RUN yarn install
 
 COPY entrypoint.sh /bin/entrypoint.sh
