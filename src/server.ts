@@ -19,7 +19,7 @@ connectDB().then(db => {
     console.log(`Preserve API started on port ${config.PORT}`);
   });
 
-  startJobs(microlinkJob, new Vault(db), 1000);
+  startJobs(microlinkJob(logger), new Vault(db), 1000);
 
   process.on('SIGTERM', () => {
     process.stdout.write('SIGTERM signal received.\r\n');
