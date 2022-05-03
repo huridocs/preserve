@@ -6,6 +6,7 @@ import path from 'path';
 import { config } from 'src/config';
 import { JobResults } from 'src/QueueProcessor';
 import { microlinkJob } from 'src/microlinkJob';
+import { fakeLogger } from './fakeLogger';
 
 async function exists(path: string) {
   try {
@@ -35,7 +36,7 @@ describe('microlinkJob', () => {
       server = app.listen(5960, resolve);
     });
 
-    result = await microlinkJob({
+    result = await microlinkJob(fakeLogger)({
       _id: new ObjectId(),
       user: new ObjectId(),
       attributes: {
