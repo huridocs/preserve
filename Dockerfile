@@ -5,10 +5,8 @@ RUN apt-get update && apt-get install curl gnupg gosu -y \
   && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
   && apt-get update \
   && apt-get install google-chrome-stable -y --no-install-recommends \
+  && apt-get install ffmpeg -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
-
-RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl && \
-     chmod a+rx /usr/local/bin/youtube-dl
 
 RUN groupmod -g 999 node && usermod -u 999 -g 999 node
 
