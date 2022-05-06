@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "nodemon --watch src src/server.ts",
+    "worker": "nodemon --watch src src/worker.ts",
     "build": "rimraf dist/ && tsc",
     "start": "npm run build && node dist/src/server.js",
     "test": "jest",

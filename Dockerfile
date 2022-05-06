@@ -15,8 +15,8 @@ WORKDIR /home/user/app
 COPY package.json yarn.lock tsconfig.json ./
 RUN yarn install
 
-COPY entrypoint.sh /bin/entrypoint.sh
-RUN chmod +x /bin/entrypoint.sh
+COPY entrypoint.sh worker-entrypoint.sh /bin/
+RUN chmod +x /bin/entrypoint.sh /bin/worker-entrypoint.sh
 
 EXPOSE 4000
 
@@ -25,8 +25,6 @@ COPY src/ ./src
 RUN yarn build && yarn install --prod
 RUN rm -fr ./src && mv -f ./dist/* ./ && rm -fr ./dist ./specs
 ENV NODE_ENV=production
-ENTRYPOINT ["/bin/entrypoint.sh"]
 
 FROM base AS testing
 ENV NODE_ENV=development
-ENTRYPOINT ["/bin/entrypoint.sh"]
