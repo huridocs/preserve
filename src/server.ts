@@ -16,23 +16,23 @@ process.on('uncaughtException', uncaughtError);
 connectDB().then(db => {
   const app = Api(new Vault(db), logger);
   const server = app.listen(config.PORT, () => {
-    console.log(`Preserve API started on port ${config.PORT}`);
+    logger.info(`Preserve API started on port ${config.PORT}`);
   });
 
   startJobs(microlinkJob(logger), new Vault(db), 1000);
 
   process.on('SIGTERM', () => {
-    process.stdout.write('SIGTERM signal received.\r\n');
+    logger.info('SIGTERM signal received');
     server.close(error => {
-      process.stdout.write('Gracefully closing express connections\r\n');
+      logger.info('Gracefully closing express connections');
       if (error) {
-        process.stderr.write(error.toString());
+        logger.error(error.toString());
         process.exit(1);
       }
 
       disconnectDB().then(() => {
-        process.stdout.write('Disconnected from database\r\n');
-        process.stdout.write('Server closed successfully\r\n');
+        logger.info('Disconnected from database');
+        logger.info('Server closed successfully');
         process.exit(0);
       });
     });
