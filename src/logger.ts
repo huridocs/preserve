@@ -8,13 +8,9 @@ const logConfiguration = {
 };
 
 const productionConfiguration = {
-  // format: format.combine(format.errors({ stack: true }), format.timestamp(), format.json()),
-  format: format.combine(format.timestamp(), format.json()),
-  expressFormat: true,
-  defaultMeta: {
-    service: 'admin-service',
-  },
+  format: format.json(),
   transports: [
+    new transports.Console(),
     new WinstonGraylog2({
       name: 'Graylog',
       level: 'info',
@@ -22,13 +18,12 @@ const productionConfiguration = {
       handleExceptions: true,
       exceptionsLevel: 'error',
       graylog: {
-        servers: [{ host: 'graylog.huridata.org', port: 12201 }],
+        servers: [{ host: config.logger.host, port: config.logger.port }],
         hostname: os.hostname(),
-        facility: 'preserve-api',
+        facility: 'preserve',
       },
-      // staticMeta: { env: config.ENVIRONMENT },
+      staticMeta: { env: config.ENVIRONMENT },
     }),
-    new transports.Console(),
   ],
 };
 
@@ -37,6 +32,7 @@ const loggerFactory = (): Logger => {
     return createLogger(logConfiguration);
   }
 
+  // @ts-ignore
   return createLogger(productionConfiguration);
 };
 
