@@ -14,10 +14,32 @@ services:
       context: .
       dockerfile: Dockerfile
       target: production
+    entrypoint: /bin/entrypoint.sh
     volumes:
       - ./downloads:/home/user/app/downloads
     depends_on:
       - mongo
+
+  worker:
+    container_name: preserve-worker
+    init: true
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - USER_ID=${USER_ID}
+      - GROUP_ID=${GROUP_ID}
+      - ENVIRONMENT=${ENVIRONMENT}
+      - SENTRY_VAULT_API_DSN=${SENTRY_VAULT_API_DSN}
+    entrypoint: /bin/worker-entrypoint.sh
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    volumes:
+      - ./downloads:/home/user/app/downloads
+    depends_on:
+      - mongo
+
 
   mongo:
     container_name: preserve-mongodb
