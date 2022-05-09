@@ -87,4 +87,18 @@ describe('microlinkJob', () => {
   it('should not include video when not supported', async () => {
     expect(result.downloads.find(d => d.type === 'video')).not.toBeDefined();
   });
+
+  it('should bubble up page errors', async () => {
+    await expect(async () => {
+      result = await microlinkJob(fakeLogger)({
+        _id: new ObjectId(),
+        user: new ObjectId(),
+        attributes: {
+          status: 'PROCESSING',
+          url: 'chrome://crash',
+          downloads: [],
+        },
+      });
+    }).rejects.toEqual(new Error('Page crashed!'));
+  });
 });
