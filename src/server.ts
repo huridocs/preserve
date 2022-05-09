@@ -19,8 +19,6 @@ connectDB().then(db => {
     logger.info(`Preserve API started on port ${config.PORT}`);
   });
 
-  startJobs(microlinkJob(logger), new Vault(db), 1000);
-
   process.on('SIGTERM', () => {
     logger.info('SIGTERM signal received');
     server.close(error => {
@@ -36,6 +34,5 @@ connectDB().then(db => {
         process.exit(0);
       });
     });
-    stopJobs();
   });
 });
