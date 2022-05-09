@@ -17,11 +17,12 @@ connectDB().then(db => {
 
   process.on('SIGTERM', () => {
     logger.info('SIGTERM signal received');
-    disconnectDB().then(() => {
-      logger.info('Disconnected from database');
-      logger.info('Server closed successfully');
+    stopJobs().then(() => {
+      disconnectDB().then(() => {
+        logger.info('Disconnected from database');
+      });
+      logger.info('Worker stopped successfully');
       process.exit(0);
     });
-    stopJobs();
   });
 });
