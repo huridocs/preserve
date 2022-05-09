@@ -36,7 +36,7 @@ describe('microlinkJob', () => {
       server = app.listen(5960, resolve);
     });
 
-    result = await microlinkJob(fakeLogger)({
+    result = await microlinkJob(fakeLogger, { stepTimeout: 0 })({
       _id: new ObjectId(),
       user: new ObjectId(),
       attributes: {
@@ -78,7 +78,18 @@ describe('microlinkJob', () => {
       await exists(
         path.join(
           config.data_path,
-          result.downloads.find(d => d.type === 'screenshot')?.path || 'no_screenshot'
+          result.downloads.find(d => d.path.match(/screenshot.jpg/))?.path || 'no_screenshot'
+        )
+      )
+    ).toBe(true);
+  });
+
+  it('should perform full page screenshots and return the paths', async () => {
+    expect(
+      await exists(
+        path.join(
+          config.data_path,
+          result.downloads.find(d => d.path.match(/full_screenshot.jpg/))?.path || 'no_screenshot'
         )
       )
     ).toBe(true);
