@@ -90,7 +90,7 @@ const microlinkJob =
         try {
           await youtubedl(evidence.attributes.url, {
             output: path.join(evidence_dir, 'video.mp4'),
-            format: 'worst',
+            format: 'best',
           });
           video_path = path.join(evidence._id.toString(), 'video.mp4');
         } catch (e: unknown) {
