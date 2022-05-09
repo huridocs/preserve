@@ -2,9 +2,7 @@ import { config } from './config';
 import { connectDB, disconnectDB } from './DB';
 
 import { Api } from './Api';
-import { startJobs, stopJobs } from './QueueProcessor';
 import { Vault } from './Vault';
-import { microlinkJob } from './microlinkJob';
 import { logger } from './logger';
 
 const uncaughtError = (error: unknown) => {
