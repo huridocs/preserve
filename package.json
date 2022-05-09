@@ -26,6 +26,7 @@
     "mongodb": "^4.5.0",
     "prom-client": "^14.0.1",
     "puppeteer": "^13.7.0",
+    "puppeteer-full-page-screenshot": "^1.2.2",
     "winston": "^3.7.2",
     "winston-graylog2": "^2.1.2",
     "youtube-dl-exec": "^2.0.11"
