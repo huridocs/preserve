@@ -16,6 +16,20 @@ services:
     volumes:
       - ./downloads:/home/user/app/downloads
       - ./src:/home/user/app/src
+  worker:
+    network_mode: bridge
+    environment:
+      - MONGO_URI=mongodb://mongo:27019
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: testing
+    platform: linux/amd64
+    networks:
+      - preserve
+    volumes:
+      - ./downloads:/home/user/app/downloads
+      - ./src:/home/user/app/src
   mongo:
     network_mode: bridge
     ports:
