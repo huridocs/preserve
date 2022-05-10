@@ -21,7 +21,6 @@ services:
       - mongo
 
   worker:
-    container_name: preserve-worker
     init: true
     network_mode: host
     restart: unless-stopped
