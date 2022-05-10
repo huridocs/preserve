@@ -1,4 +1,6 @@
 import { ObjectId } from 'mongodb';
+import { checksumFile } from 'src/checksumFile';
+import { config } from './config';
 import { Vault } from './Vault';
 
 export type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
@@ -8,7 +10,7 @@ export type EvidenceBase = {
     date?: Date;
     status: status;
     url: string;
-    downloads: { path: string; type: string }[];
+    downloads: { path: string; type: string; sha256checksum: string }[];
   };
 };
 
@@ -23,6 +25,17 @@ export type JobFunction = (evidence: EvidenceDB) => Promise<JobResults>;
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
+const checksumDownloads = async (downloads: JobResults['downloads']) => {
+  const hashedDownloads: EvidenceBase['attributes']['downloads'] = [];
+  for (const download of downloads) {
+    hashedDownloads.push({
+      ...download,
+      sha256checksum: await checksumFile(`${config.data_path}/${download.path}`),
+    });
+  }
+  return hashedDownloads;
+};
+
 let resolvePromise: undefined | ((value: unknown) => void);
 const processJobs = async (job: JobFunction, vault: Vault, interval = 1000) => {
   while (!resolvePromise) {
@@ -36,6 +49,7 @@ const processJobs = async (job: JobFunction, vault: Vault, interval = 1000) => {
             date: new Date(),
             ...evidence.attributes,
             ...jobResult,
+            downloads: await checksumDownloads(jobResult.downloads),
             status: 'PROCESSED',
           },
         });

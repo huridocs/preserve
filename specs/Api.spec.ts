@@ -11,6 +11,7 @@ import waitForExpect from 'wait-for-expect';
 import { EvidenceResponse } from 'src/Response';
 import { FakeVault } from './FakeVault';
 import { fakeLogger } from './fakeLogger';
+import { checksumFile } from '../src/checksumFile';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -132,12 +133,27 @@ describe('Preserve API', () => {
             title: 'title',
             status: 'PROCESSED',
             downloads: [
-              { path: `/evidences/${newEvidence.data.id}/content.txt`, type: 'content' },
+              {
+                path: `/evidences/${newEvidence.data.id}/content.txt`,
+                sha256checksum: await checksumFile(
+                  `${config.data_path}/${newEvidence.data.id}/content.txt`
+                ),
+                type: 'content',
+              },
               {
                 path: `/evidences/${newEvidence.data.id}/screenshot.jpg`,
+                sha256checksum: await checksumFile(
+                  `${config.data_path}/${newEvidence.data.id}/screenshot.jpg`
+                ),
                 type: 'screenshot',
               },
-              { path: `/evidences/${newEvidence.data.id}/video.mp4`, type: 'video' },
+              {
+                path: `/evidences/${newEvidence.data.id}/video.mp4`,
+                sha256checksum: await checksumFile(
+                  `${config.data_path}/${newEvidence.data.id}/video.mp4`
+                ),
+                type: 'video',
+              },
             ],
           },
         },
