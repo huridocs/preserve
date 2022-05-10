@@ -3,7 +3,7 @@
 set -eo pipefail
 
 function start {
-  docker-compose up --build -d --scale worker=4 "${@}"
+  docker-compose up --build -d "${@}"
 }
 
 function start:local {
