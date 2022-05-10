@@ -8,6 +8,7 @@ export const config = {
     dsn: process.env.SENTRY_VAULT_API_DSN,
     tracesSampleRate: 0.1,
   },
+  video_downloader_path: process.env.VIDEO_DOWNLOADER_PATH,
   logger: { host: 'graylog.huridata.org', port: 12201 },
   ENVIRONMENT: process.env.ENVIRONMENT || 'development',
   VERSION: process.env.ENVIRONMENT ? version : `development-${version}`,
