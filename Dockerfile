@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install curl gnupg gosu -y \
   && apt-get install ffmpeg -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
+RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp  \
+  && chmod a+rx /usr/local/bin/yt-dlp
+
 RUN groupmod -g 999 node && usermod -u 999 -g 999 node
 
 RUN mkdir -p /home/user/app
