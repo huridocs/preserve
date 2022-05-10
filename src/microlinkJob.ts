@@ -2,7 +2,7 @@ import { appendFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { config } from './config';
 import { EvidenceDB, JobFunction, JobResults } from './QueueProcessor';
-import youtubedl from 'youtube-dl-exec';
+import { create as createYoutubeDl } from 'youtube-dl-exec';
 import { Logger } from 'winston';
 import createBrowserless from 'browserless';
 import { Page } from 'puppeteer';
@@ -88,6 +88,7 @@ const microlinkJob =
 
         let video_path = '';
         try {
+          const youtubedl = createYoutubeDl(config.video_downloader_path);
           await youtubedl(evidence.attributes.url, {
             output: path.join(evidence_dir, 'video.mp4'),
             format: 'best',
