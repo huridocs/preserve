@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { checksumFile } from 'src/checksumFile';
+import { checksumFile } from './checksumFile';
 import { config } from './config';
 import { Vault } from './Vault';
 
