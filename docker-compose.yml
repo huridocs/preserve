@@ -20,6 +20,12 @@ services:
       - ./downloads:/home/user/app/downloads
     depends_on:
       - mongo
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:4000/api/health" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
 
   worker:
     init: true
