@@ -1,4 +1,4 @@
-FROM node:16.14.2 AS base
+FROM node:18.1.0 AS base
 
 RUN apt-get update && apt-get install curl gnupg gosu -y \
   && curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install curl gnupg gosu -y \
   && apt-get update \
   && apt-get install google-chrome-stable -y --no-install-recommends \
   && apt-get install ffmpeg -y --no-install-recommends \
+  && apt-get install python-is-python3  \
   && rm -rf /var/lib/apt/lists/*
 
 RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp  \
