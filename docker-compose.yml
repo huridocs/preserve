@@ -3,9 +3,10 @@ services:
   api:
     container_name: preserve-api
     init: true
-    network_mode: host
     restart: unless-stopped
+    platform: linux/amd64
     environment:
+      - MONGO_URI=mongodb://mongo
       - USER_ID=${USER_ID}
       - GROUP_ID=${GROUP_ID}
       - ENVIRONMENT=${ENVIRONMENT}
@@ -16,6 +17,8 @@ services:
       dockerfile: Dockerfile
       target: production
     entrypoint: /bin/entrypoint.sh
+    ports:
+      - "4000:4000"
     volumes:
       - ./downloads:/home/user/app/downloads
     depends_on:
@@ -23,9 +26,10 @@ services:
 
   worker:
     init: true
-    network_mode: host
     restart: unless-stopped
+    platform: linux/amd64
     environment:
+      - MONGO_URI=mongodb://mongo
       - USER_ID=${USER_ID}
       - GROUP_ID=${GROUP_ID}
       - ENVIRONMENT=${ENVIRONMENT}
@@ -42,10 +46,7 @@ services:
     depends_on:
       - mongo
 
-
   mongo:
     container_name: preserve-mongodb
-    network_mode: host
     restart: unless-stopped
-    command: mongod --port 27019
     image: "mongo:5.0.0"
