@@ -20,4 +20,4 @@ jobs:
       - name: check containers are not restarting
         run: sleep 5 && docker-compose top
       - name: check api is up
-        run: sleep 5 && wget --tries=5 --waitretry=5 --retry-connrefused -v http://localhost:4000/api/health
+        run: sleep 5 && wget --tries=5 --waitretry=10 --retry-connrefused -v http://localhost:4000/api/health
