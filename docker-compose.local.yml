@@ -1,40 +1,21 @@
 version: "3.8"
 services:
   api:
-    network_mode: bridge
-    environment:
-      - MONGO_URI=mongodb://mongo:27019
     build:
       context: .
       dockerfile: Dockerfile
       target: testing
-    platform: linux/amd64
-    ports:
-      - "4000:4000"
-    networks:
-      - preserve
     volumes:
       - ./downloads:/home/user/app/downloads
       - ./src:/home/user/app/src
   worker:
-    network_mode: bridge
-    environment:
-      - MONGO_URI=mongodb://mongo:27019
     build:
       context: .
       dockerfile: Dockerfile
       target: testing
-    platform: linux/amd64
-    networks:
-      - preserve
     volumes:
       - ./downloads:/home/user/app/downloads
       - ./src:/home/user/app/src
   mongo:
-    network_mode: bridge
     ports:
-      - "27019:27019"
-    networks:
-      - preserve
-networks:
-  preserve:
+      - "27019:27017"
