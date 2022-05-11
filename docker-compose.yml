@@ -21,10 +21,10 @@ services:
     depends_on:
       - mongo
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:4000/api/health" ]
-      interval: 5s
+      test: wget -v http://localhost:4000/api/health
+      interval: 2s
       timeout: 10s
-      retries: 3
+      retries: 5
       start_period: 5s
 
   worker:
