@@ -50,3 +50,5 @@ services:
     container_name: preserve-mongodb
     restart: unless-stopped
     image: "mongo:5.0.0"
+    volumes:
+      - mongodata:/data/db
