@@ -52,3 +52,6 @@ services:
     image: "mongo:5.0.0"
     volumes:
       - mongodata:/data/db
+
+volumes:
+  mongodata:
