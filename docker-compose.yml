@@ -10,7 +10,7 @@ services:
       - USER_ID=${USER_ID}
       - GROUP_ID=${GROUP_ID}
       - ENVIRONMENT=${ENVIRONMENT}
-      - SENTRY_VAULT_API_DSN=${SENTRY_VAULT_API_DSN}
+      - SENTRY_PRESERVE_API_DSN=${SENTRY_PRESERVE_API_DSN}
       - YOUTUBE_DL_SKIP_DOWNLOAD=true
     build:
       context: .
@@ -33,7 +33,7 @@ services:
       - USER_ID=${USER_ID}
       - GROUP_ID=${GROUP_ID}
       - ENVIRONMENT=${ENVIRONMENT}
-      - SENTRY_VAULT_API_DSN=${SENTRY_VAULT_API_DSN}
+      - SENTRY_PRESERVE_WORKER_DSN=${SENTRY_PRESERVE_WORKER_DSN}
       - YOUTUBE_DL_SKIP_DOWNLOAD=true
       - VIDEO_DOWNLOADER_PATH=/usr/local/bin/yt-dlp
     entrypoint: /bin/worker-entrypoint.sh
