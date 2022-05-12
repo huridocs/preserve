@@ -27,7 +27,7 @@ connectDB().then(db => {
       }
 
       disconnectDB().then(() => {
-        logger.info('Disconnected from database');
+        logger.info('Preserve API disconnected from database');
         logger.info('Server closed successfully');
         process.exit(0);
       });

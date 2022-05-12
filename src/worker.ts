@@ -34,9 +34,9 @@ connectDB().then(db => {
     logger.info('SIGTERM signal received');
     stopJobs().then(() => {
       disconnectDB().then(() => {
-        logger.info('Worker disconnected from database');
+        logger.info('Preserve worker disconnected from database');
       });
-      logger.info('Worker stopped successfully');
+      logger.info('Preserve worker stopped successfully');
       process.exit(0);
     });
   });
