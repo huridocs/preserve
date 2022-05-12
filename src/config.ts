@@ -5,7 +5,8 @@ export const config = {
   mongodb_uri: process.env.MONGO_URI || 'mongodb://localhost:27019',
   data_path: `${__dirname}/../downloads/`,
   sentry: {
-    dsn: process.env.SENTRY_VAULT_API_DSN,
+    api_dsn: process.env.SENTRY_PRESERVE_API_DSN,
+    worker_dsn: process.env.SENTRY_PRESERVE_WORKER_DSN,
     tracesSampleRate: 0.1,
   },
   video_downloader_path: process.env.VIDEO_DOWNLOADER_PATH || '/usr/local/bin/yt-dlp',

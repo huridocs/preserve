@@ -31,13 +31,10 @@ export interface ApiRequestFilter extends Request {
 const Api = (vault: Vault, logger: Logger) => {
   const app = express();
 
-  app.use(cors());
-  app.use(prometheusMiddleware);
-
-  if (config.sentry.dsn) {
+  if (config.sentry.api_dsn) {
     Sentry.init({
       release: config.VERSION,
-      dsn: config.sentry.dsn,
+      dsn: config.sentry.api_dsn,
       environment: config.ENVIRONMENT,
       integrations: [
         new Sentry.Integrations.Http({ tracing: true }),
@@ -52,6 +49,8 @@ const Api = (vault: Vault, logger: Logger) => {
     app.use(Sentry.Handlers.tracingHandler());
   }
 
+  app.use(cors());
+  app.use(prometheusMiddleware);
   app.use(bodyParser.json({ limit: '1mb' }));
 
   app.get('/api/health', (_req, res) => {
@@ -140,7 +139,7 @@ const Api = (vault: Vault, logger: Logger) => {
     }
   });
 
-  if (config.sentry.dsn) {
+  if (config.sentry.api_dsn) {
     app.use(Sentry.Handlers.errorHandler());
   }
 
