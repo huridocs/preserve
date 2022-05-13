@@ -15,6 +15,7 @@ import { Logger } from 'winston';
 import { validateBody, validatePagination, validateQuery } from './validations';
 import { status } from './QueueProcessor';
 import cors from 'cors';
+import { PreserveEvidence } from './actions/PreserveEvidence';
 
 export interface ApiRequestFilter extends Request {
   query: {
@@ -66,9 +67,10 @@ const Api = (vault: Vault, logger: Logger) => {
   app.post('/api/evidences', async (req, res, next) => {
     try {
       validateBody(req.body);
+      const action = new PreserveEvidence(vault);
       res.status(202);
       res.json({
-        data: Response(await vault.create(req.body.url, req.user)),
+        data: Response(await action.execute(req.body.url, req.user)),
       });
     } catch (error) {
       next(error);
