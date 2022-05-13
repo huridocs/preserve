@@ -67,7 +67,7 @@ const Api = (vault: Vault, logger: Logger) => {
   app.post('/api/evidences', async (req, res, next) => {
     try {
       validateBody(req.body);
-      const action = new PreserveEvidence(vault);
+      const action = new PreserveEvidence(vault, logger);
       res.status(202);
       res.json({
         data: Response(await action.execute(req.body.url, req.user)),
