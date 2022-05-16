@@ -24,7 +24,7 @@ export type JobResults = {
 
 export type JobFunction = (evidence: EvidenceDB) => Promise<JobResults>;
 
-const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
+const timeout = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 let resolvePromise: undefined | ((value: unknown) => void);
 const processJobs = async (job: JobFunction, vault: Vault, logger: Logger, interval = 1000) => {
