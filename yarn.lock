@@ -1925,10 +1925,10 @@ browser-process-hrtime@^1.0.0:
   resolved "https://registry.yarnpkg.com/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz#3c9b4b7d782c8121e56f10106d84c0d0ffc94626"
   integrity sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==
 
-browserless@9.3.17:
-  version "9.3.17"
-  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.3.17.tgz#feba10f24e7f9b896bb0b2edf73b97b962799efc"
-  integrity sha512-lS0gNa5mn8WBXIuaME1sqg2dCEGYz1pAa7c9DJln5uv2YfSmuJwhOV4A9jQ1q7U8Q0vynGhXX5YqaWcQ8EHg7w==
+browserless@9.3.18:
+  version "9.3.18"
+  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.3.18.tgz#af2e7034d2f8cabf30432810cfb1a1fbf9582852"
+  integrity sha512-EYSOnaVOz0DFj5ft/GfThwpnM4vmcdVoAKaCS+ovYkK+GMRppM7mbEuE8A+1qu7ZbfBnd2mUanpbDESWcKBFLg==
   dependencies:
     "@browserless/errors" "^9.3.17"
     "@browserless/goto" "^9.3.17"
