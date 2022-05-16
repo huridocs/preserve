@@ -36,7 +36,7 @@ export class QueueProcessor {
   private action: ProcessJob;
   private resolvePromise: undefined | (() => void);
 
-  constructor(action: ProcessJob, interval = 10000) {
+  constructor(action: ProcessJob, interval = 1000) {
     this.action = action;
     this.interval = interval;
   }

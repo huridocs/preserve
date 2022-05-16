@@ -43,6 +43,7 @@ services:
       target: production
     volumes:
       - ./downloads:/home/user/app/downloads
+      - ./trusted_timestamps:/home/user/app/trusted_timestamps
     depends_on:
       - mongo
 
