@@ -2,14 +2,14 @@ import { Logger } from 'winston';
 // eslint-disable-next-line
 // @ts-ignore
 import fullPageScreenshot from 'puppeteer-full-page-screenshot';
-import { EvidenceDB, JobResults } from 'src/QueueProcessor';
-import createBrowserless from 'browserless';
-import path from 'path';
-import { config } from 'src/config';
-import { appendFile, mkdir } from 'fs/promises';
-import { create as createYoutubeDl } from 'youtube-dl-exec';
-import { JobOptions } from 'src/microlinkJob';
 import { Page } from 'puppeteer';
+import path from 'path';
+import createBrowserless from 'browserless';
+import { create as createYoutubeDl } from 'youtube-dl-exec';
+import { appendFile, mkdir } from 'fs/promises';
+import { EvidenceDB, JobResults } from '../QueueProcessor';
+import { config } from '../config';
+import { JobOptions } from '../microlinkJob';
 
 export class PreserveEvidence {
   private logger: Logger;

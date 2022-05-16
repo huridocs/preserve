@@ -1,8 +1,8 @@
 import { Logger } from 'winston';
-import { Vault } from 'src/Vault';
-import { EvidenceBase, JobFunction, JobResults } from 'src/QueueProcessor';
-import { checksumFile } from 'src/checksumFile';
-import { config } from 'src/config';
+import { Vault } from '../Vault';
+import { EvidenceBase, JobFunction, JobResults } from '../QueueProcessor';
+import { checksumFile } from '../checksumFile';
+import { config } from '../config';
 
 export class ProcessJob {
   private vault: Vault;

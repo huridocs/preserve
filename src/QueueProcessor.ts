@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { Logger } from 'winston';
 import { Vault } from './Vault';
 import { logger } from './logger';
-import { ProcessJob } from 'src/actions/ProcessJob';
+import { ProcessJob } from './actions/ProcessJob';
 
 export type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
 

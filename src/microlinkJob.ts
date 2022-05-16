@@ -1,6 +1,6 @@
 import { JobFunction } from './QueueProcessor';
 import { Logger } from 'winston';
-import { PreserveEvidence } from 'src/actions/PreserveEvidence';
+import { PreserveEvidence } from './actions/PreserveEvidence';
 
 export type JobOptions = {
   stepTimeout: number;
