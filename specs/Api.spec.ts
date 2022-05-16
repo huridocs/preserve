@@ -12,6 +12,9 @@ import { EvidenceResponse } from 'src/Response';
 import { FakeVault } from './FakeVault';
 import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/checksumFile';
+import { ProcessJob } from 'src/actions/ProcessJob';
+import { TSAService } from 'src/TSAService';
+import { basename } from 'path';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -30,6 +33,7 @@ describe('Preserve API', () => {
     request(app).get(url).set({ Authorization: token });
 
   let db: Db;
+  let vault: Vault;
   const user1Id = new ObjectId();
 
   const job: JobFunction = async (evidence: EvidenceDB) => {
@@ -49,12 +53,24 @@ describe('Preserve API', () => {
     return result;
   };
 
+  class FakeTSAService extends TSAService {
+    async timestamp(file: string, folder: string) {
+      return {
+        aggregateChecksum: `${basename(file)} ${folder}`,
+        timeStampRequest: `timeStampRequest`,
+        timeStampResponse: `timeStampResponse`,
+      };
+    }
+  }
+
   beforeAll(async () => {
     config.data_path = `${__dirname}/downloads`;
+    config.trusted_timestamps_path = `${__dirname}/trusted_timestamps`;
     db = await connectDB('preserve-api-testing');
-    const vault = new Vault(db);
+    vault = new Vault(db);
     app = Api(vault, fakeLogger);
-    queue = new QueueProcessor(job, vault, fakeLogger, 0);
+    const action = new ProcessJob(job, vault, fakeLogger, new FakeTSAService());
+    queue = new QueueProcessor(action, 0);
   });
 
   afterAll(async () => {
@@ -128,23 +144,21 @@ describe('Preserve API', () => {
       queue.start();
       await queue.stop();
 
+      const processedInDb = await vault.getOne(new ObjectId(newEvidence.data.id), {
+        _id: user1Id,
+        token: 'my_private_token',
+      });
+
+      expect(processedInDb?.tsa_files).toMatchObject({
+        aggregateChecksum: `aggregateChecksum.txt ${newEvidence.data.id}`,
+        timeStampRequest: `timeStampRequest`,
+        timeStampResponse: `timeStampResponse`,
+      });
+
       const { body } = await get(newEvidence.data.links.self).expect(200);
-
-      // const aggregateChecksumContent = await get(body.data.tsa_files.aggregateChecksum).expect(200);
-      // expect(aggregateChecksumContent.text).toMatchSnapshot();
-
-      ////temporary test
-      //const timeStampRequestContents = await get(body.data.tsa_files.timeStampRequest).expect(200);
-      //expect(timeStampRequestContents.body.toString()).toMatchSnapshot();
-
       expect(body).toMatchObject({
         data: {
           id: newEvidence.data.id,
-          // tsa_files: {
-          //   aggregateChecksum: `/evidences/${newEvidence.data.id}/aggregateChecksum.txt`,
-          //   timeStampRequest: `/evidences/${newEvidence.data.id}/tsaRequest.tsq`,
-          //   timeStampResponse: `/evidences/${newEvidence.data.id}/tsaResponse.tsr`,
-          // },
           attributes: {
             title: 'title',
             status: 'PROCESSED',
@@ -298,7 +312,9 @@ describe('Preserve API', () => {
           const fakeJob: JobFunction = async () => {
             throw new Error('Job error');
           };
-          queue = new QueueProcessor(fakeJob, vault, fakeLogger, 0);
+
+          const action = new ProcessJob(fakeJob, vault, fakeLogger, new FakeTSAService());
+          queue = new QueueProcessor(action, 0);
           queue.start();
           await waitForExpect(async () => {
             const { body } = await get(newEvidence.data.links.self).expect(200);

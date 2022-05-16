@@ -1,81 +1,37 @@
-import { exec } from 'child_process';
+import { mkdir, writeFile } from 'fs/promises';
 import { ObjectId } from 'mongodb';
-import { readFile, writeFile } from 'node:fs/promises';
 import path from 'path';
+import { TSAService } from 'src/TSAService';
 import { Logger } from 'winston';
 import { checksumFile } from '../checksumFile';
 import { config } from '../config';
 import { EvidenceBase, JobFunction, JobResults } from '../QueueProcessor';
 import { Vault } from '../Vault';
 
-const shell = (command: string) => {
-  return new Promise((resolve, reject) => {
-    const child = exec(command);
-    child.addListener('error', reject);
-    child.addListener('exit', resolve);
-  });
-};
-
-const tsa = async (evidenceId: ObjectId, downloads: EvidenceBase['attributes']['downloads']) => {
-  const aggregateChecksumPath = `/${evidenceId}/aggregateChecksum.txt`;
-  await writeFile(
-    path.join(config.data_path, aggregateChecksumPath),
-    downloads.map(download => `${download.sha512checksum}\n`)
-  );
-
-  const timeStampRequestPath = `/${evidenceId}/tsaRequest.tsq`;
-  // await writeFile(path.join(config.data_path, timeStampRequestPath), 'request not implemented');
-
-  await shell(
-    `openssl ts -query -data ${path.join(
-      config.data_path,
-      aggregateChecksumPath
-    )} -no_nonce -sha512 -cert -out ${path.join(config.data_path, timeStampRequestPath)}`
-  );
-
-  const timeStampResponsePath = `/${evidenceId}/tsaResponse.tsr`;
-
-  const response = await fetch('https://freetsa.org/tsr', {
-    method: 'POST',
-    body: await readFile(path.join(config.data_path, timeStampRequestPath)),
-    headers: {
-      'Content-Type': 'application/timestamp-query',
-    },
-  });
-
-  await writeFile(
-    path.join(config.data_path, timeStampResponsePath),
-    Buffer.from(await response.arrayBuffer())
-  );
-
-  return {
-    aggregateChecksum: `/evidences${aggregateChecksumPath}`,
-    timeStampRequest: `/evidences${timeStampRequestPath}`,
-    timeStampResponse: `/evidences${timeStampResponsePath}`,
-  };
-};
-
 export class ProcessJob {
   private vault: Vault;
   private logger: Logger;
+  private job: JobFunction;
+  private tsaservice: TSAService;
 
-  constructor(vault: Vault, logger: Logger) {
+  constructor(job: JobFunction, vault: Vault, logger: Logger, tsaservice: TSAService) {
     this.vault = vault;
     this.logger = logger;
+    this.job = job;
+    this.tsaservice = tsaservice;
   }
 
-  async execute(job: JobFunction) {
+  async execute() {
     const evidence = await this.vault.processingNext();
     if (evidence) {
       try {
         this.logger.info(`Preserving evidence for ${evidence.attributes.url}`);
         const start = Date.now();
-        const jobResult = await job(evidence);
+        const jobResult = await this.job(evidence);
         const downloads = await ProcessJob.checksumDownloads(jobResult.downloads);
+        const tsa_files = await this.trustedTimestamp(evidence._id, downloads);
         await this.vault.update(evidence._id, {
-          // tsa_files: {
-          //   ...(await tsa(evidence._id, downloads)),
-          // },
+          tsa_files,
           attributes: {
             date: new Date(),
             ...evidence.attributes,
@@ -99,6 +55,23 @@ export class ProcessJob {
         });
       }
     }
+  }
+
+  private async trustedTimestamp(
+    evidenceId: ObjectId,
+    downloads: EvidenceBase['attributes']['downloads']
+  ) {
+    await mkdir(`${config.trusted_timestamps_path}/${evidenceId}`);
+    const aggregateChecksumPath = `/${evidenceId}/aggregateChecksum.txt`;
+    await writeFile(
+      path.join(config.trusted_timestamps_path, aggregateChecksumPath),
+      downloads.map(download => `${download.sha512checksum}\n`)
+    );
+
+    return this.tsaservice.timestamp(
+      path.join(config.trusted_timestamps_path, aggregateChecksumPath),
+      evidenceId.toString()
+    );
   }
 
   private static async checksumDownloads(downloads: JobResults['downloads']) {

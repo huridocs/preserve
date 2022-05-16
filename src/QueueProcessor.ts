@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Logger } from 'winston';
 import { ProcessJob } from './actions/ProcessJob';
+import { TSAService } from './TSAService';
 import { Vault } from './Vault';
 
 export type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
@@ -31,25 +32,19 @@ export type JobFunction = (evidence: EvidenceDB) => Promise<JobResults>;
 const timeout = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 export class QueueProcessor {
-  private job: JobFunction;
-  private vault: Vault;
-  private logger: Logger;
   private interval: number;
-
+  private action: ProcessJob;
   private resolvePromise: undefined | (() => void);
 
-  constructor(job: JobFunction, vault: Vault, logger: Logger, interval = 1000) {
-    this.job = job;
-    this.vault = vault;
-    this.logger = logger;
+  constructor(action: ProcessJob, interval = 10000) {
+    this.action = action;
     this.interval = interval;
   }
 
   async processJobs() {
     while (!this.resolvePromise) {
       await timeout(this.interval);
-      const action = new ProcessJob(this.vault, this.logger);
-      await action.execute(this.job);
+      await this.action.execute();
     }
     this.resolvePromise();
   }

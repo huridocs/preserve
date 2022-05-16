@@ -1,10 +1,12 @@
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
+import { ProcessJob } from './actions/ProcessJob';
 import { config } from './config';
 import { connectDB, disconnectDB } from './DB';
 import { logger } from './logger';
 import { microlinkJob } from './microlinkJob';
 import { QueueProcessor } from './QueueProcessor';
+import { TSAService } from './TSAService';
 import { Vault } from './Vault';
 
 const uncaughtError = (error: unknown) => {
@@ -27,7 +29,9 @@ connectDB().then(db => {
       tracesSampleRate: config.sentry.tracesSampleRate,
     });
   }
-  const queue = new QueueProcessor(microlinkJob(logger), new Vault(db), logger);
+  const vault = new Vault(db);
+  const processJob = new ProcessJob(microlinkJob(logger), vault, logger, new TSAService());
+  const queue = new QueueProcessor(processJob);
   queue.start();
   logger.info(`Preserve jobs started`);
 
