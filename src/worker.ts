@@ -1,11 +1,11 @@
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
-import { connectDB, disconnectDB } from './DB';
-import { startJobs, stopJobs } from './QueueProcessor';
-import { Vault } from './Vault';
-import { microlinkJob } from './microlinkJob';
-import { logger } from './logger';
 import { config } from './config';
+import { connectDB, disconnectDB } from './DB';
+import { logger } from './logger';
+import { microlinkJob } from './microlinkJob';
+import { QueueProcessor } from './QueueProcessor';
+import { Vault } from './Vault';
 
 const uncaughtError = (error: unknown) => {
   throw error;
@@ -27,12 +27,13 @@ connectDB().then(db => {
       tracesSampleRate: config.sentry.tracesSampleRate,
     });
   }
-  startJobs(microlinkJob(logger), new Vault(db), 1000);
+  const queue = new QueueProcessor(microlinkJob(logger), new Vault(db), logger);
+  queue.start();
   logger.info(`Preserve jobs started`);
 
   process.on('SIGTERM', () => {
     logger.info('SIGTERM signal received');
-    stopJobs().then(() => {
+    queue.stop().then(() => {
       disconnectDB().then(() => {
         logger.info('Preserve worker disconnected from database');
       });
