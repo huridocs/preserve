@@ -51,7 +51,7 @@ export class ProcessJob {
     for (const download of downloads) {
       hashedDownloads.push({
         ...download,
-        sha256checksum: await checksumFile(`${config.data_path}/${download.path}`),
+        sha512checksum: await checksumFile(`${config.data_path}/${download.path}`),
       });
     }
     return hashedDownloads;

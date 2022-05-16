@@ -126,30 +126,43 @@ describe('Preserve API', () => {
       await stopJobs();
 
       const { body } = await get(newEvidence.data.links.self).expect(200);
+
+      const aggregateChecksumContent = await get(body.data.tsa_files.aggregateChecksum).expect(200);
+      expect(aggregateChecksumContent.text).toMatchSnapshot();
+
+      //temporary test
+      const timeStampRequestContents = await get(body.data.tsa_files.timeStampRequest).expect(200);
+      expect(timeStampRequestContents.body.toString()).toMatchSnapshot();
+
       expect(body).toMatchObject({
         data: {
           id: newEvidence.data.id,
+          tsa_files: {
+            aggregateChecksum: `/evidences/${newEvidence.data.id}/aggregateChecksum.txt`,
+            timeStampRequest: `/evidences/${newEvidence.data.id}/tsaRequest.tsq`,
+            timeStampResponse: `/evidences/${newEvidence.data.id}/tsaResponse.tsr`,
+          },
           attributes: {
             title: 'title',
             status: 'PROCESSED',
             downloads: [
               {
                 path: `/evidences/${newEvidence.data.id}/content.txt`,
-                sha256checksum: await checksumFile(
+                sha512checksum: await checksumFile(
                   `${config.data_path}/${newEvidence.data.id}/content.txt`
                 ),
                 type: 'content',
               },
               {
                 path: `/evidences/${newEvidence.data.id}/screenshot.jpg`,
-                sha256checksum: await checksumFile(
+                sha512checksum: await checksumFile(
                   `${config.data_path}/${newEvidence.data.id}/screenshot.jpg`
                 ),
                 type: 'screenshot',
               },
               {
                 path: `/evidences/${newEvidence.data.id}/video.mp4`,
-                sha256checksum: await checksumFile(
+                sha512checksum: await checksumFile(
                   `${config.data_path}/${newEvidence.data.id}/video.mp4`
                 ),
                 type: 'video',
