@@ -1,20 +1,22 @@
+import path from 'path';
 import express, { Request } from 'express';
 import bodyParser from 'body-parser';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
+import cors from 'cors';
+import { Logger } from 'winston';
 
-import { ObjectId } from 'mongodb';
-import path from 'path';
 import { config } from './config';
 import { authMiddleware } from './authMiddleware';
 import { prometheusMiddleware } from './prometheusMiddleware';
 import { Vault } from './Vault';
 import { Response } from './Response';
 import { errorMiddleware } from './errorMiddleware';
-import { Logger } from 'winston';
 import { validateBody, validatePagination, validateQuery } from './validations';
 import { status } from './QueueProcessor';
-import cors from 'cors';
+import { CreateEvidence } from './actions/CreateEvidence';
+import { RetrieveEvidence } from './actions/RetrieveEvidence';
+import { RetrieveUserEvidences } from './actions/RetrieveUserEvidences';
 
 export interface ApiRequestFilter extends Request {
   query: {
@@ -66,9 +68,12 @@ const Api = (vault: Vault, logger: Logger) => {
   app.post('/api/evidences', async (req, res, next) => {
     try {
       validateBody(req.body);
+      const action = new CreateEvidence(vault, logger);
+      const evidence = await action.execute(req.body.url, req.user);
+
       res.status(202);
       res.json({
-        data: Response(await vault.create(req.body.url, req.user)),
+        data: Response(evidence),
       });
     } catch (error) {
       next(error);
@@ -80,27 +85,11 @@ const Api = (vault: Vault, logger: Logger) => {
       validateQuery(req);
       validatePagination(req);
 
-      const dateFilter = req.query.filter?.date?.gt
-        ? {
-            'attributes.date': { $gt: new Date(req.query.filter?.date?.gt) },
-          }
-        : {};
-      const statusFilter = req.query.filter?.status
-        ? {
-            'attributes.status': req.query.filter.status,
-          }
-        : {};
+      const action = new RetrieveUserEvidences(vault);
+      const evidences = await action.execute(req.user, req.query);
+
       res.json({
-        data: (
-          await vault.getByUser(
-            req.user,
-            {
-              ...dateFilter,
-              ...statusFilter,
-            },
-            req.query?.page?.limit ? parseInt(req.query.page.limit) : undefined
-          )
-        ).map(Response),
+        data: evidences.map(Response),
       });
     } catch (error) {
       next(error);
@@ -109,7 +98,9 @@ const Api = (vault: Vault, logger: Logger) => {
 
   app.get('/api/evidences/:id', async (req, res, next) => {
     try {
-      const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
+      const action = new RetrieveEvidence(vault);
+      const evidence = await action.execute(req.params.id, req.user);
+
       if (evidence) {
         res.status(200);
         res.json({
@@ -126,7 +117,9 @@ const Api = (vault: Vault, logger: Logger) => {
 
   app.get('/evidences/:id/:filename', async (req, res, next) => {
     try {
-      const evidence = await vault.getOne(new ObjectId(req.params.id), req.user);
+      const action = new RetrieveEvidence(vault);
+      const evidence = await action.execute(req.params.id, req.user);
+
       if (evidence) {
         res.status(200);
         res.sendFile(path.resolve(`${config.data_path}/${req.params.id}/${req.params.filename}`));
