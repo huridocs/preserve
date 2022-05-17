@@ -23,7 +23,10 @@ describe('Preserve API', () => {
   let queue: QueueProcessor;
 
   const post = (
-    data: { url?: unknown; type?: 'evidences'; cookies?: Cookie[] } = { url: 'test-url', cookies: [] },
+    data: { url?: unknown; type?: 'evidences'; cookies?: Cookie[] } = {
+      url: 'test-url',
+      cookies: [],
+    },
     token = 'my_private_token'
   ) => {
     return request(app).post('/api/evidences').send(data).set({ Authorization: token });

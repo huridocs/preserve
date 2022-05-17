@@ -18,7 +18,12 @@ export type EvidenceBase = {
   };
 };
 
-export type EvidenceDB = EvidenceBase & { _id: ObjectId; user: ObjectId; cookies: Cookie[], error?: string };
+export type EvidenceDB = EvidenceBase & {
+  _id: ObjectId;
+  user: ObjectId;
+  cookies: Cookie[];
+  error?: string;
+};
 
 export type JobResults = {
   title: string;
