@@ -14,6 +14,10 @@ function bash:api {
   docker exec -it preserve-api /bin/bash
 }
 
+function mongo {
+  docker exec -it preserve-mongodb mongo
+}
+
 function stop {
   docker-compose stop
 }

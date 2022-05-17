@@ -43,6 +43,7 @@ services:
       target: production
     volumes:
       - ./downloads:/home/user/app/downloads
+      - ./files:/home/user/app/files
     depends_on:
       - mongo
 

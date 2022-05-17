@@ -5,18 +5,21 @@ import { Api } from 'src/Api';
 import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/DB';
 import { Vault } from 'src/Vault';
-import { EvidenceDB, JobFunction, JobResults, startJobs, stopJobs } from 'src/QueueProcessor';
+import { EvidenceDB, JobFunction, JobResults, QueueProcessor } from 'src/QueueProcessor';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 import { EvidenceResponse } from 'src/Response';
 import { FakeVault } from './FakeVault';
 import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/checksumFile';
+import { ProcessJob } from 'src/actions/ProcessJob';
+import { TSAService } from 'src/TSAService';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
 describe('Preserve API', () => {
   let app: Application;
+  let queue: QueueProcessor;
 
   const post = (
     data: { url?: unknown; type?: 'evidences' } = { url: 'test-url' },
@@ -29,6 +32,7 @@ describe('Preserve API', () => {
     request(app).get(url).set({ Authorization: token });
 
   let db: Db;
+  let vault: Vault;
   const user1Id = new ObjectId();
 
   const job: JobFunction = async (evidence: EvidenceDB) => {
@@ -48,10 +52,23 @@ describe('Preserve API', () => {
     return result;
   };
 
+  class FakeTSAService extends TSAService {
+    async timestamp(_file: string, folder: string) {
+      return {
+        tsRequestRelativePath: `${folder}/timeStampRequest`,
+        tsResponseRelativePath: `${folder}/timeStampResponse`,
+      };
+    }
+  }
+
   beforeAll(async () => {
     config.data_path = `${__dirname}/downloads`;
+    config.trusted_timestamps_path = `${__dirname}/trusted_timestamps`;
     db = await connectDB('preserve-api-testing');
-    app = Api(new Vault(db), fakeLogger);
+    vault = new Vault(db);
+    app = Api(vault, fakeLogger);
+    const action = new ProcessJob(job, vault, fakeLogger, new FakeTSAService());
+    queue = new QueueProcessor(action, 0);
   });
 
   afterAll(async () => {
@@ -102,7 +119,7 @@ describe('Preserve API', () => {
     it('should set the job to PROCESSING', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      startJobs(job, new Vault(db), 0);
+      queue.start();
       await waitForExpect(async () => {
         const { body } = await get(newEvidence.data.links.self).expect(200);
 
@@ -116,14 +133,32 @@ describe('Preserve API', () => {
           },
         });
       });
-      await stopJobs();
+      await queue.stop();
+    });
+
+    it('should timestamp the evidence using TSAService', async () => {
+      const { body: newEvidence } = await post().expect(202);
+
+      queue.start();
+      await queue.stop();
+
+      const processedInDb = await vault.getOne(new ObjectId(newEvidence.data.id), {
+        _id: user1Id,
+        token: 'my_private_token',
+      });
+
+      expect(processedInDb?.tsa_files).toMatchObject({
+        allChecksumsRelativePath: `${newEvidence.data.id}/aggregateChecksum.txt`,
+        tsRequestRelativePath: `${newEvidence.data.id}/timeStampRequest`,
+        tsResponseRelativePath: `${newEvidence.data.id}/timeStampResponse`,
+      });
     });
 
     it('should process the job', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      startJobs(job, new Vault(db), 0);
-      await stopJobs();
+      queue.start();
+      await queue.stop();
 
       const { body } = await get(newEvidence.data.links.self).expect(200);
       expect(body).toMatchObject({
@@ -135,21 +170,21 @@ describe('Preserve API', () => {
             downloads: [
               {
                 path: `/evidences/${newEvidence.data.id}/content.txt`,
-                sha256checksum: await checksumFile(
+                sha512checksum: await checksumFile(
                   `${config.data_path}/${newEvidence.data.id}/content.txt`
                 ),
                 type: 'content',
               },
               {
                 path: `/evidences/${newEvidence.data.id}/screenshot.jpg`,
-                sha256checksum: await checksumFile(
+                sha512checksum: await checksumFile(
                   `${config.data_path}/${newEvidence.data.id}/screenshot.jpg`
                 ),
                 type: 'screenshot',
               },
               {
                 path: `/evidences/${newEvidence.data.id}/video.mp4`,
-                sha256checksum: await checksumFile(
+                sha512checksum: await checksumFile(
                   `${config.data_path}/${newEvidence.data.id}/video.mp4`
                 ),
                 type: 'video',
@@ -163,8 +198,8 @@ describe('Preserve API', () => {
     it('should be able to download files on the processed job', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      startJobs(job, new Vault(db), 0);
-      await stopJobs();
+      queue.start();
+      await queue.stop();
       const { body } = await get(newEvidence.data.links.self).expect(200);
 
       const data: EvidenceResponse | null = body.data;
@@ -215,8 +250,8 @@ describe('Preserve API', () => {
       it('should respond 404 when trying to download files belonging to another token', async () => {
         const { body: newEvidence } = await post().expect(202);
 
-        startJobs(job, new Vault(db), 0);
-        await stopJobs();
+        queue.start();
+        await queue.stop();
 
         const { body } = await get(newEvidence.data.links.self).expect(200);
         await get(body.data.attributes.downloads[0].path, 'another_token').expect(404);
@@ -245,6 +280,7 @@ describe('Preserve API', () => {
 
     describe('Error handling', () => {
       beforeEach(() => {
+        app = Api(new FakeVault(db), fakeLogger);
         app = Api(new FakeVault(db), fakeLogger);
       });
       describe('POST', () => {
@@ -282,7 +318,9 @@ describe('Preserve API', () => {
             throw new Error('Job error');
           };
 
-          startJobs(fakeJob, new Vault(db), 0);
+          const action = new ProcessJob(fakeJob, vault, fakeLogger, new FakeTSAService());
+          queue = new QueueProcessor(action, 0);
+          queue.start();
           await waitForExpect(async () => {
             const { body } = await get(newEvidence.data.links.self).expect(200);
             expect(body).toMatchObject({
@@ -294,7 +332,7 @@ describe('Preserve API', () => {
               },
             });
           });
-          await stopJobs();
+          await queue.stop();
           expect(
             await vault.getOne(new ObjectId(newEvidence.data.id), {
               _id: user1Id,

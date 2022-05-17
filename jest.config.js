@@ -7,4 +7,5 @@ module.exports = {
   testMatch: ['**/specs/**spec.ts'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
   modulePaths: ['<rootDir>'],
+  globals: { fetch, Response, Request },
 };
