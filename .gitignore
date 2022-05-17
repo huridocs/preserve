@@ -131,8 +131,8 @@ dist
 .sugarcube_cache.json
 specs/downloads/*
 !specs/downloads/index.html
-trusted_timestamps/*
-!trusted_timestamps/index.html
+files/trusted_timestamps/*
+!files/trusted_timestamps/index.html
 specs/trusted_timestamps/*
 !specs/trusted_timestamps/index.html
 downloads/*

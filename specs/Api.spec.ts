@@ -14,7 +14,6 @@ import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/checksumFile';
 import { ProcessJob } from 'src/actions/ProcessJob';
 import { TSAService } from 'src/TSAService';
-import { basename } from 'path';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -54,11 +53,10 @@ describe('Preserve API', () => {
   };
 
   class FakeTSAService extends TSAService {
-    async timestamp(file: string, folder: string) {
+    async timestamp(_file: string, folder: string) {
       return {
-        aggregateChecksum: `${basename(file)} ${folder}`,
-        timeStampRequest: `timeStampRequest`,
-        timeStampResponse: `timeStampResponse`,
+        tsRequestRelativePath: `/${folder}/timeStampRequest`,
+        tsResponseRelativePath: `/${folder}/timeStampResponse`,
       };
     }
   }
@@ -138,7 +136,7 @@ describe('Preserve API', () => {
       await queue.stop();
     });
 
-    it('should process the job', async () => {
+    it('should timestamp the evidence using TSAService', async () => {
       const { body: newEvidence } = await post().expect(202);
 
       queue.start();
@@ -150,10 +148,17 @@ describe('Preserve API', () => {
       });
 
       expect(processedInDb?.tsa_files).toMatchObject({
-        aggregateChecksum: `aggregateChecksum.txt ${newEvidence.data.id}`,
-        timeStampRequest: `timeStampRequest`,
-        timeStampResponse: `timeStampResponse`,
+        allChecksumsRelativePath: `/${newEvidence.data.id}/aggregateChecksum.txt`,
+        tsRequestRelativePath: `/${newEvidence.data.id}/timeStampRequest`,
+        tsResponseRelativePath: `/${newEvidence.data.id}/timeStampResponse`,
       });
+    });
+
+    it('should process the job', async () => {
+      const { body: newEvidence } = await post().expect(202);
+
+      queue.start();
+      await queue.stop();
 
       const { body } = await get(newEvidence.data.links.self).expect(200);
       expect(body).toMatchObject({

@@ -1,16 +1,13 @@
 import { ObjectId } from 'mongodb';
-import { Logger } from 'winston';
 import { ProcessJob } from './actions/ProcessJob';
-import { TSAService } from './TSAService';
-import { Vault } from './Vault';
 
 export type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
 
 export type EvidenceBase = {
   tsa_files?: {
-    aggregateChecksum: string;
-    timeStampRequest: string;
-    timeStampResponse: string;
+    allChecksumsRelativePath: string;
+    tsRequestRelativePath: string;
+    tsResponseRelativePath: string;
   };
   attributes: {
     date?: Date;

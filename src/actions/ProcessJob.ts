@@ -68,10 +68,13 @@ export class ProcessJob {
       downloads.map(download => `${download.sha512checksum}\n`)
     );
 
-    return this.tsaservice.timestamp(
-      path.join(config.trusted_timestamps_path, aggregateChecksumPath),
-      evidenceId.toString()
-    );
+    return {
+      allChecksumsRelativePath: aggregateChecksumPath,
+      ...(await this.tsaservice.timestamp(
+        path.join(config.trusted_timestamps_path, aggregateChecksumPath),
+        evidenceId.toString()
+      )),
+    };
   }
 
   private static async checksumDownloads(downloads: JobResults['downloads']) {

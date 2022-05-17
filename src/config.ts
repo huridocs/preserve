@@ -2,6 +2,10 @@ import { version } from '../package.json';
 
 export const config = {
   evidences_return_max_limit: 50,
+  freetsa: {
+    pemFile: `${__dirname}/../files/freetsa/cacert.pem`,
+    crtFile: `${__dirname}/../files/freetsa/tsa.crt`,
+  },
   mongodb_uri: process.env.MONGO_URI || 'mongodb://localhost:27019',
   data_path: `${__dirname}/../downloads/`,
   trusted_timestamps_path: `${__dirname}/../trusted_timestamps/`,
