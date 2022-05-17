@@ -39,6 +39,7 @@ describe('microlinkJob', () => {
     result = await microlinkJob(fakeLogger, { stepTimeout: 0 })({
       _id: new ObjectId(),
       user: new ObjectId(),
+      cookies: [],
       attributes: {
         status: 'PROCESSING',
         url: 'http://localhost:5960/test_page',
@@ -104,6 +105,7 @@ describe('microlinkJob', () => {
       result = await microlinkJob(fakeLogger)({
         _id: new ObjectId(),
         user: new ObjectId(),
+        cookies: [],
         attributes: {
           status: 'PROCESSING',
           url: 'chrome://crash',
