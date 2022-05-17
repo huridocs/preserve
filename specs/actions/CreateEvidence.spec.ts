@@ -33,34 +33,6 @@ describe('Create evidence', () => {
   });
 
   it('creates an evidence without cookies', async () => {
-    const cookies = [
-      {
-        domain: '.github.com',
-        expirationDate: 1672732978.838891,
-        hostOnly: false,
-        httpOnly: false,
-        name: '_octo',
-        path: '/',
-        sameSite: 'lax',
-        secure: true,
-        session: false,
-        storeId: '0',
-        value: 'GH1.1.129557744.1641196970',
-      },
-      {
-        domain: 'github.com',
-        expirationDate: 1672732974.3706,
-        hostOnly: true,
-        httpOnly: true,
-        name: '_device_id',
-        path: '/',
-        sameSite: 'lax',
-        secure: true,
-        session: false,
-        storeId: '0',
-        value: '23ab1e1531b57acd1b2fe51859950d0b',
-      },
-    ];
     const evidence = await action.execute('http://example.com', user, []);
 
     expect(evidence).toMatchObject({
