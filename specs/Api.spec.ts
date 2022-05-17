@@ -55,8 +55,8 @@ describe('Preserve API', () => {
   class FakeTSAService extends TSAService {
     async timestamp(_file: string, folder: string) {
       return {
-        tsRequestRelativePath: `/${folder}/timeStampRequest`,
-        tsResponseRelativePath: `/${folder}/timeStampResponse`,
+        tsRequestRelativePath: `${folder}/timeStampRequest`,
+        tsResponseRelativePath: `${folder}/timeStampResponse`,
       };
     }
   }
@@ -148,9 +148,9 @@ describe('Preserve API', () => {
       });
 
       expect(processedInDb?.tsa_files).toMatchObject({
-        allChecksumsRelativePath: `/${newEvidence.data.id}/aggregateChecksum.txt`,
-        tsRequestRelativePath: `/${newEvidence.data.id}/timeStampRequest`,
-        tsResponseRelativePath: `/${newEvidence.data.id}/timeStampResponse`,
+        allChecksumsRelativePath: `${newEvidence.data.id}/aggregateChecksum.txt`,
+        tsRequestRelativePath: `${newEvidence.data.id}/timeStampRequest`,
+        tsResponseRelativePath: `${newEvidence.data.id}/timeStampResponse`,
       });
     });
 

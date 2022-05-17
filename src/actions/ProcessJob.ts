@@ -62,7 +62,7 @@ export class ProcessJob {
     downloads: EvidenceBase['attributes']['downloads']
   ) {
     await mkdir(`${config.trusted_timestamps_path}/${evidenceId}`);
-    const aggregateChecksumPath = `/${evidenceId}/aggregateChecksum.txt`;
+    const aggregateChecksumPath = `${evidenceId}/aggregateChecksum.txt`;
     await writeFile(
       path.join(config.trusted_timestamps_path, aggregateChecksumPath),
       downloads.map(download => `${download.sha512checksum}\n`)
