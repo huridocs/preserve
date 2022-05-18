@@ -24,17 +24,17 @@ describe('Evidences endpoint pagination', () => {
     const vault = new Vault(db);
     app = Api(vault, fakeLogger);
 
-    const evidence1 = await vault.create('evidence1', user1);
+    const evidence1 = await vault.create('evidence1', user1, []);
     vault.update(evidence1._id, {
       attributes: { ...evidence1.attributes, date: new Date(3), status: 'PROCESSED' },
     });
 
-    const evidence2 = await vault.create('evidence2', user1);
+    const evidence2 = await vault.create('evidence2', user1, []);
     vault.update(evidence2._id, {
       attributes: { ...evidence2.attributes, date: new Date(1), status: 'PROCESSED' },
     });
 
-    const evidence3 = await vault.create('evidence3', user1);
+    const evidence3 = await vault.create('evidence3', user1, []);
     vault.update(evidence3._id, { attributes: { ...evidence3.attributes, date: new Date(2) } });
 
     await db.collection('users').deleteMany({});

@@ -1,6 +1,7 @@
 import { Logger } from 'winston';
 import { Vault } from 'src/Vault';
 import { User } from 'src/authMiddleware';
+import { Cookie } from '../types/index';
 
 export class CreateEvidence {
   private vault: Vault;
@@ -11,8 +12,8 @@ export class CreateEvidence {
     this.logger = logger;
   }
 
-  async execute(url: string, user: User) {
-    const evidence = await this.vault.create(url, user);
+  async execute(url: string, user: User, cookies: Cookie[] | undefined) {
+    const evidence = await this.vault.create(url, user, cookies || []);
     this.logger.info(`Evidence created for url ${url}`);
 
     return evidence;

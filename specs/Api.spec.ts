@@ -14,6 +14,7 @@ import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/checksumFile';
 import { ProcessJob } from 'src/actions/ProcessJob';
 import { TSAService } from 'src/TSAService';
+import { Cookie } from '../src/types/index';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -22,7 +23,10 @@ describe('Preserve API', () => {
   let queue: QueueProcessor;
 
   const post = (
-    data: { url?: unknown; type?: 'evidences' } = { url: 'test-url' },
+    data: { url?: unknown; type?: 'evidences'; cookies?: Cookie[] } = {
+      url: 'test-url',
+      cookies: [],
+    },
     token = 'my_private_token'
   ) => {
     return request(app).post('/api/evidences').send(data).set({ Authorization: token });
@@ -94,15 +98,36 @@ describe('Preserve API', () => {
     });
 
     it('should not expose internal properties', async () => {
-      const { body: newEvidence } = await post({ url: 'http://my-url' }).expect(202);
+      const { body: newEvidence } = await post({
+        url: 'http://my-url',
+        cookies: [{ name: 'a_cookie', value: 'cookie_value' }],
+      }).expect(202);
       const { body: evidence } = await get(newEvidence.data.links.self).expect(200);
 
       expect(evidence.data._id).not.toBeDefined();
       expect(newEvidence.data._id).not.toBeDefined();
       expect(newEvidence.data.user).not.toBeDefined();
+      expect(newEvidence.data.cookies).not.toBeDefined();
     });
 
-    it('should respond with 202, and return job information', async () => {
+    it('should respond with 202, and return job information with cookies', async () => {
+      const { body: newEvidence } = await post({
+        url: 'http://my-url',
+        cookies: [{ name: 'a_cookie', value: 'cookie_value' }],
+      }).expect(202);
+      const { body: evidence } = await get(newEvidence.data.links.self).expect(200);
+
+      expect(evidence).toMatchObject({
+        data: {
+          attributes: {
+            url: 'http://my-url',
+            status: 'SCHEDULED',
+          },
+        },
+      });
+    });
+
+    it('should respond with 202, and return job information without cookies', async () => {
       const { body: newEvidence } = await post({ url: 'http://my-url' }).expect(202);
       const { body: evidence } = await get(newEvidence.data.links.self).expect(200);
 
@@ -222,14 +247,14 @@ describe('Preserve API', () => {
       describe('POST', () => {
         it('should respond 400 when no url passed', async () => {
           await post({}).expect(400);
-          await post({ url: 4 }).expect(400);
+          await post({ url: 4, cookies: [] }).expect(400);
         });
         it('should not add any job when validation fails', async () => {
           await post({}).expect(400);
           let { body } = await get().expect(200);
           expect(body).toMatchObject({ data: [] });
 
-          await post({ url: 4 }).expect(400);
+          await post({ url: 4, cookies: [] }).expect(400);
           ({ body } = await get().expect(200));
           expect(body).toMatchObject({ data: [] });
         });
@@ -259,8 +284,8 @@ describe('Preserve API', () => {
       });
 
       it('should respond only jobs authorized for the token sent', async () => {
-        const { body: newEvidence } = await post({ url: 'http://my-url' }).expect(202);
-        await post({ url: 'http://another-url' }, 'another_token').expect(202);
+        const { body: newEvidence } = await post({ url: 'http://my-url', cookies: [] }).expect(202);
+        await post({ url: 'http://another-url', cookies: [] }, 'another_token').expect(202);
 
         const { body: evidence } = await get().expect(200);
 

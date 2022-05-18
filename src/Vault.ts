@@ -2,6 +2,7 @@ import { Collection, Db, Filter, ObjectId } from 'mongodb';
 import { User } from './authMiddleware';
 import { config } from './config';
 import { EvidenceDB } from './QueueProcessor';
+import { Cookie } from '../src/types/index';
 
 export class Vault {
   private collection: Collection<EvidenceDB>;
@@ -9,11 +10,12 @@ export class Vault {
     this.collection = db.collection<EvidenceDB>('evidences');
   }
 
-  async create(url: string, user: User) {
+  async create(url: string, user: User, cookies: Cookie[]) {
     const _id = new ObjectId();
     await this.collection.insertOne({
       _id: _id,
       user: user._id,
+      cookies: cookies,
       attributes: { url: url, status: 'SCHEDULED', downloads: [] },
     });
     const evidence = await this.getOne(_id, user);

@@ -69,7 +69,7 @@ const Api = (vault: Vault, logger: Logger) => {
     try {
       validateBody(req.body);
       const action = new CreateEvidence(vault, logger);
-      const evidence = await action.execute(req.body.url, req.user);
+      const evidence = await action.execute(req.body.url, req.user, req.body.cookies);
 
       res.status(202);
       res.json({

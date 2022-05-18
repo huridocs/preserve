@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { ProcessJob } from './actions/ProcessJob';
+import { Cookie } from 'src/types/index';
 
 export type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
 
@@ -17,7 +18,12 @@ export type EvidenceBase = {
   };
 };
 
-export type EvidenceDB = EvidenceBase & { _id: ObjectId; user: ObjectId; error?: string };
+export type EvidenceDB = EvidenceBase & {
+  _id: ObjectId;
+  user: ObjectId;
+  cookies: Cookie[];
+  error?: string;
+};
 
 export type JobResults = {
   title: string;
