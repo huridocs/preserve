@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { ProcessJob } from './actions/ProcessJob';
-import Cookie = Preserve.Cookie;
+import { Cookie } from '../src/types/index';
 
 export type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
 

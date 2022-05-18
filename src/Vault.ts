@@ -2,7 +2,7 @@ import { Collection, Db, Filter, ObjectId } from 'mongodb';
 import { User } from './authMiddleware';
 import { config } from './config';
 import { EvidenceDB } from './QueueProcessor';
-import Cookie = Preserve.Cookie;
+import { Cookie } from '../src/types/index';
 
 export class Vault {
   private collection: Collection<EvidenceDB>;

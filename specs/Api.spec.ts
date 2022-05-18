@@ -14,7 +14,7 @@ import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/checksumFile';
 import { ProcessJob } from 'src/actions/ProcessJob';
 import { TSAService } from 'src/TSAService';
-import Cookie = Preserve.Cookie;
+import { Cookie } from '../src/types/index';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 

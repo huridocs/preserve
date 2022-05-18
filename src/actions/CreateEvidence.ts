@@ -1,7 +1,7 @@
 import { Logger } from 'winston';
 import { Vault } from 'src/Vault';
 import { User } from 'src/authMiddleware';
-import Cookie = Preserve.Cookie;
+import { Cookie } from '../types/index';
 
 export class CreateEvidence {
   private vault: Vault;
