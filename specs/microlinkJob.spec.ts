@@ -32,6 +32,16 @@ describe('microlinkJob', () => {
         )
       );
     });
+
+    app.get('/cookies_route', (_req, res) => {
+      res.set('Content-Type', 'text/html');
+      const cookie = _req.headers.cookie;
+      if (!cookie) {
+        res.send('');
+      }
+      res.status(200);
+      res.send(Buffer.from('</head><title>test title cookies</title></head><body></body>'));
+    });
     await new Promise<void>(resolve => {
       server = app.listen(5960, resolve);
     });
@@ -98,6 +108,21 @@ describe('microlinkJob', () => {
 
   it('should not include video when not supported', async () => {
     expect(result.downloads.find(d => d.type === 'video')).not.toBeDefined();
+  });
+
+  it('should send the cookies from the preserved URL', async () => {
+    result = await microlinkJob(fakeLogger, { stepTimeout: 0 })({
+      _id: new ObjectId(),
+      user: new ObjectId(),
+      cookies: [{ name: 'a_name', value: 'a_value', domain: 'localhost' }],
+      attributes: {
+        status: 'PROCESSING',
+        url: 'http://localhost:5960/cookies_route',
+        downloads: [],
+      },
+    });
+
+    expect(result.title).toBe('test title cookies');
   });
 
   it('should bubble up page errors', async () => {

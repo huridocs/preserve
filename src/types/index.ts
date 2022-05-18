@@ -6,7 +6,7 @@ export type Cookie = {
   hostOnly?: boolean;
   httpOnly?: boolean;
   path?: string;
-  sameSite?: string;
+  sameSite?: 'Strict' | 'Lax' | 'None';
   secure?: boolean;
   session?: boolean;
   storeId?: string;
