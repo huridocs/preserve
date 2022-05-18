@@ -4,6 +4,7 @@ import { Vault } from 'src/Vault';
 import { connectDB, disconnectDB } from 'src/DB';
 import { fakeLogger } from 'specs/fakeLogger';
 import { User } from 'src/authMiddleware';
+import { Cookie } from 'src/types/index';
 
 describe('Create evidence', () => {
   let db: Db;
@@ -48,7 +49,7 @@ describe('Create evidence', () => {
     });
 
     it('for an URL with cookies', async () => {
-      const cookies = [
+      const cookies: Cookie[] = [
         {
           domain: '.github.com',
           expirationDate: 1672732978.838891,
@@ -56,7 +57,7 @@ describe('Create evidence', () => {
           httpOnly: false,
           name: '_octo',
           path: '/',
-          sameSite: 'lax',
+          sameSite: 'Lax',
           secure: true,
           session: false,
           storeId: '0',
@@ -69,7 +70,7 @@ describe('Create evidence', () => {
           httpOnly: true,
           name: '_device_id',
           path: '/',
-          sameSite: 'lax',
+          sameSite: 'Lax',
           secure: true,
           session: false,
           storeId: '0',
@@ -88,7 +89,5 @@ describe('Create evidence', () => {
         cookies: cookies,
       });
     });
-  })
-
-
+  });
 });

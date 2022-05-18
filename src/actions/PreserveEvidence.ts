@@ -29,7 +29,7 @@ export class PreserveEvidence {
       await mkdir(evidence_dir);
 
       const page = await browserless.page();
-
+      await page.setCookie(...evidence.cookies);
       return new Promise(async (resolve, reject) => {
         page.on('error', (e: Error) => {
           reject(e);
