@@ -1,5 +1,4 @@
 declare namespace Preserve {
-  // Refer to via GreetingLib.Options.Log
   type Cookie = {
     domain?: string;
     expirationDate?: number;
