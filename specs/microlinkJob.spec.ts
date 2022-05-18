@@ -123,7 +123,7 @@ describe('microlinkJob', () => {
     });
 
     expect(result.title).toBe('test title cookies');
-  });
+  }, 10000);
 
   it('should bubble up page errors', async () => {
     await expect(async () => {
