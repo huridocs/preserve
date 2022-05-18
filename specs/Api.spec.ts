@@ -110,8 +110,25 @@ describe('Preserve API', () => {
       expect(newEvidence.data.cookies).not.toBeDefined();
     });
 
-    it('should respond with 202, and return job information', async () => {
-      const { body: newEvidence } = await post({ url: 'http://my-url', cookies: [] }).expect(202);
+    it('should respond with 202, and return job information with cookies', async () => {
+      const { body: newEvidence } = await post({
+        url: 'http://my-url',
+        cookies: [{ name: 'a_cookie', value: 'cookie_value' }],
+      }).expect(202);
+      const { body: evidence } = await get(newEvidence.data.links.self).expect(200);
+
+      expect(evidence).toMatchObject({
+        data: {
+          attributes: {
+            url: 'http://my-url',
+            status: 'SCHEDULED',
+          },
+        },
+      });
+    });
+
+    it('should respond with 202, and return job information without cookies', async () => {
+      const { body: newEvidence } = await post({ url: 'http://my-url' }).expect(202);
       const { body: evidence } = await get(newEvidence.data.links.self).expect(200);
 
       expect(evidence).toMatchObject({

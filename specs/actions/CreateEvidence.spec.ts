@@ -1,8 +1,8 @@
 import { Db, ObjectId } from 'mongodb';
-import { CreateEvidence } from '../../src/actions/CreateEvidence';
-import { Vault } from '../../src/Vault';
-import { connectDB, disconnectDB } from '../../src/DB';
-import { fakeLogger } from '../../specs/fakeLogger';
+import { CreateEvidence } from 'src/actions/CreateEvidence';
+import { Vault } from 'src/Vault';
+import { connectDB, disconnectDB } from 'src/DB';
+import { fakeLogger } from 'specs/fakeLogger';
 import { User } from 'src/authMiddleware';
 
 describe('Create evidence', () => {
@@ -34,7 +34,7 @@ describe('Create evidence', () => {
 
   describe('creates an scheduled evidence for a user', () => {
     it('for an URL without cookies', async () => {
-      const evidence = await action.execute('http://example.com', user, []);
+      const evidence = await action.execute('http://example.com', user, undefined);
 
       expect(evidence).toMatchObject({
         attributes: {
