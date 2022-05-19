@@ -27,6 +27,7 @@ services:
   worker:
     init: true
     restart: unless-stopped
+    stop_grace_period: 30s
     platform: linux/amd64
     environment:
       - MONGO_URI=mongodb://mongo
