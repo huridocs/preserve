@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 
 export const shell = (command: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
       if (error) {
         reject(stderr);
@@ -10,4 +10,10 @@ export const shell = (command: string) => {
       resolve(stdout);
     });
   });
+};
+
+export const extractTimestampFromTSAResponse = async (tsaResponseFile: string) => {
+  return shell(
+    `openssl ts -reply -in ${tsaResponseFile} -text | grep Time | cut -d":" -f2- | awk '{$1=$1;print}'`
+  );
 };
