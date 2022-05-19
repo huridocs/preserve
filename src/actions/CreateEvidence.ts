@@ -1,7 +1,7 @@
 import { Logger } from 'winston';
 import { Vault } from 'src/Vault';
-import { User } from 'src/authMiddleware';
-import { Cookie } from '../types/index';
+import { User } from 'src/types';
+import { Cookie } from 'src/types';
 
 export class CreateEvidence {
   private vault: Vault;

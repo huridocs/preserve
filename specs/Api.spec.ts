@@ -5,16 +5,16 @@ import { Api } from 'src/Api';
 import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/DB';
 import { Vault } from 'src/Vault';
-import { EvidenceDB, JobFunction, JobResults, QueueProcessor } from 'src/QueueProcessor';
+import { QueueProcessor } from 'src/QueueProcessor';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
-import { EvidenceResponse } from 'src/Response';
+import { EvidenceResponse } from 'src/types';
 import { FakeVault } from './FakeVault';
 import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/checksumFile';
 import { ProcessJob } from 'src/actions/ProcessJob';
 import { TSAService } from 'src/TSAService';
-import { Cookie } from '../src/types/index';
+import { Cookie, EvidenceDB, JobFunction, JobResults } from 'src/types';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 

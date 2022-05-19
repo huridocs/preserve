@@ -1,36 +1,4 @@
-import { ObjectId } from 'mongodb';
 import { ProcessJob } from './actions/ProcessJob';
-import { Cookie } from 'src/types/index';
-
-export type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
-
-export type EvidenceBase = {
-  tsa_files?: {
-    allChecksumsRelativePath: string;
-    tsRequestRelativePath: string;
-    tsResponseRelativePath: string;
-  };
-  attributes: {
-    date?: Date;
-    status: status;
-    url: string;
-    downloads: { path: string; type: string; sha512checksum: string }[];
-  };
-};
-
-export type EvidenceDB = EvidenceBase & {
-  _id: ObjectId;
-  user: ObjectId;
-  cookies: Cookie[];
-  error?: string;
-};
-
-export type JobResults = {
-  title: string;
-  downloads: { path: string; type: string }[];
-};
-
-export type JobFunction = (evidence: EvidenceDB) => Promise<JobResults>;
 
 const timeout = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds));
 

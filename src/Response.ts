@@ -1,6 +1,4 @@
-import { EvidenceBase, EvidenceDB } from './QueueProcessor';
-
-export type EvidenceResponse = EvidenceBase & { id: string; links: { self: string } };
+import { EvidenceDB, EvidenceResponse } from 'src/types';
 
 export const Response = (evidence: EvidenceDB): EvidenceResponse => {
   return {

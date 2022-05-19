@@ -1,5 +1,5 @@
 import { Vault } from 'src/Vault';
-import { User } from 'src/authMiddleware';
+import { User } from 'src/types';
 import { ObjectId } from 'mongodb';
 
 export class RetrieveEvidence {

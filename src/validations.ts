@@ -1,4 +1,4 @@
-import { ApiRequestFilter } from './Api';
+import { ApiRequestFilter } from 'src/types';
 
 export class ValidationError extends Error {}
 

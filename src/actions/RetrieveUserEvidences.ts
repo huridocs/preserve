@@ -1,6 +1,5 @@
 import { Vault } from 'src/Vault';
-import { User } from 'src/authMiddleware';
-import { ApiRequestFilter } from 'src/Api';
+import { ApiRequestFilter, User } from 'src/types';
 
 export class RetrieveUserEvidences {
   private vault: Vault;

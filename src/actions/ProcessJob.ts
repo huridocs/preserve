@@ -5,7 +5,7 @@ import { TSAService } from 'src/TSAService';
 import { Logger } from 'winston';
 import { checksumFile } from '../checksumFile';
 import { config } from '../config';
-import { EvidenceBase, JobFunction, JobResults } from '../QueueProcessor';
+import { EvidenceBase, JobFunction, JobResults } from 'src/types';
 import { Vault } from '../Vault';
 
 export class ProcessJob {
