@@ -59,8 +59,11 @@ describe('Preserve API', () => {
   class FakeTSAService extends TSAService {
     async timestamp(_file: string, folder: string) {
       return {
-        tsRequestRelativePath: `${folder}/timeStampRequest`,
-        tsResponseRelativePath: `${folder}/timeStampResponse`,
+        files: {
+          tsRequestRelativePath: `${folder}/timeStampRequest`,
+          tsResponseRelativePath: `${folder}/timeStampResponse`,
+        },
+        date: new Date('May 17 12:59:48 2022 GMT'),
       };
     }
   }
@@ -177,6 +180,8 @@ describe('Preserve API', () => {
         tsRequestRelativePath: `${newEvidence.data.id}/timeStampRequest`,
         tsResponseRelativePath: `${newEvidence.data.id}/timeStampResponse`,
       });
+
+      expect(processedInDb?.attributes.date?.toISOString()).toBe('2022-05-17T12:59:48.000Z');
     });
 
     it('should process the job', async () => {

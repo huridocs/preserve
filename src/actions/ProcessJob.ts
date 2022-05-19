@@ -29,11 +29,11 @@ export class ProcessJob {
         const start = Date.now();
         const jobResult = await this.job(evidence);
         const downloads = await ProcessJob.checksumDownloads(jobResult.downloads);
-        const tsa_files = await this.trustedTimestamp(evidence._id, downloads);
+        const { tsa_files, date } = await this.trustedTimestamp(evidence._id, downloads);
         await this.vault.update(evidence._id, {
           tsa_files,
           attributes: {
-            date: new Date(),
+            date,
             ...evidence.attributes,
             ...jobResult,
             downloads,
@@ -68,12 +68,17 @@ export class ProcessJob {
       downloads.map(download => `${download.sha512checksum}\n`)
     );
 
+    const { files, date } = await this.tsaservice.timestamp(
+      path.join(config.trusted_timestamps_path, aggregateChecksumPath),
+      evidenceId.toString()
+    );
+
     return {
-      allChecksumsRelativePath: aggregateChecksumPath,
-      ...(await this.tsaservice.timestamp(
-        path.join(config.trusted_timestamps_path, aggregateChecksumPath),
-        evidenceId.toString()
-      )),
+      tsa_files: {
+        allChecksumsRelativePath: aggregateChecksumPath,
+        ...files,
+      },
+      date,
     };
   }
 

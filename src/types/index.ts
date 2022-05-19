@@ -67,5 +67,3 @@ export type User = {
   _id: ObjectId;
   token: string;
 };
-
-

@@ -1,7 +1,7 @@
 import { appendFile, mkdir, rm } from 'fs/promises';
 import path from 'path';
 import { config } from 'src/config';
-import { shell } from 'src/shell';
+import { extractTimestampFromTSAResponse, shell } from 'src/shell';
 import { TSAService } from 'src/TSAService';
 
 describe('TSAService', () => {
@@ -19,11 +19,12 @@ describe('TSAService', () => {
   });
 
   describe('timestamp', () => {
-    it('should use freetsa.org to timestamp the file and store the request/response on a specific folder', async () => {
-      const { tsRequestRelativePath, tsResponseRelativePath } = await service.timestamp(
-        file,
-        'test'
-      );
+    it('should use freetsa.org to timestamp the file and store the request/response files on a specific folder', async () => {
+      const {
+        files: { tsRequestRelativePath, tsResponseRelativePath },
+        date,
+      } = await service.timestamp(file, 'test');
+
       const timeStampRequestFullPath = path.join(
         config.trusted_timestamps_path,
         tsRequestRelativePath
@@ -36,6 +37,9 @@ describe('TSAService', () => {
       await shell(
         `openssl ts -verify -in ${timeStampResponseFullPath} -queryfile ${timeStampRequestFullPath} -CAfile ${config.freetsa.pemFile} -untrusted ${config.freetsa.crtFile}`
       );
+
+      const timestamp = await extractTimestampFromTSAResponse(timeStampResponseFullPath);
+      expect(date).toEqual(new Date(timestamp));
     });
   });
 });

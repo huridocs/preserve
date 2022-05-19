@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
 import { config } from './config';
-import { shell } from './shell';
+import { extractTimestampFromTSAResponse, shell } from './shell';
 
 export class TSAService {
   async timestamp(file: string, subFolderName: string) {
@@ -23,14 +23,15 @@ export class TSAService {
       },
     });
 
-    await writeFile(
-      path.join(config.trusted_timestamps_path, timeStampResponsePath),
-      Buffer.from(await response.arrayBuffer())
-    );
+    const responseFullPath = path.join(config.trusted_timestamps_path, timeStampResponsePath);
+    await writeFile(responseFullPath, Buffer.from(await response.arrayBuffer()));
 
     return {
-      tsRequestRelativePath: timeStampRequestPath,
-      tsResponseRelativePath: timeStampResponsePath,
+      files: {
+        tsRequestRelativePath: timeStampRequestPath,
+        tsResponseRelativePath: timeStampResponsePath,
+      },
+      date: new Date(await extractTimestampFromTSAResponse(responseFullPath)),
     };
   }
 }
