@@ -1,8 +1,7 @@
 import { Collection, Db, Filter, ObjectId } from 'mongodb';
-import { User } from './authMiddleware';
+import { User } from 'src/types';
 import { config } from './config';
-import { EvidenceDB } from './QueueProcessor';
-import { Cookie } from '../src/types/index';
+import { Cookie, EvidenceDB } from './types';
 
 export class Vault {
   private collection: Collection<EvidenceDB>;

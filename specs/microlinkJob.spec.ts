@@ -4,7 +4,7 @@ import { Server } from 'http';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from 'src/config';
-import { JobResults } from 'src/QueueProcessor';
+import { JobResults } from 'src/types';
 import { microlinkJob } from 'src/microlinkJob';
 import { fakeLogger } from './fakeLogger';
 

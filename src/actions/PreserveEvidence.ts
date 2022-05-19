@@ -7,9 +7,8 @@ import path from 'path';
 import createBrowserless from 'browserless';
 import { create as createYoutubeDl } from 'youtube-dl-exec';
 import { appendFile, mkdir } from 'fs/promises';
-import { EvidenceDB, JobResults } from '../QueueProcessor';
 import { config } from '../config';
-import { JobOptions } from '../microlinkJob';
+import { EvidenceDB, JobOptions, JobResults } from 'src/types';
 
 export class PreserveEvidence {
   private logger: Logger;

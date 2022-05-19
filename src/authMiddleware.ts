@@ -1,19 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
 import { db } from './DB';
-
-export type User = {
-  _id: ObjectId;
-  token: string;
-};
-
-declare global {
-  namespace Express {
-    export interface Request {
-      user: User;
-    }
-  }
-}
+import { User } from './types';
 
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const user = await db.collection<User>('users').findOne({ token: req.get('Authorization') });

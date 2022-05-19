@@ -1,5 +1,5 @@
 import path from 'path';
-import express, { Request } from 'express';
+import express from 'express';
 import bodyParser from 'body-parser';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
@@ -9,26 +9,14 @@ import { Logger } from 'winston';
 import { config } from './config';
 import { authMiddleware } from './authMiddleware';
 import { prometheusMiddleware } from './prometheusMiddleware';
+import { ApiRequestFilter } from './types';
 import { Vault } from './Vault';
 import { Response } from './Response';
 import { errorMiddleware } from './errorMiddleware';
 import { validateBody, validatePagination, validateQuery } from './validations';
-import { status } from './QueueProcessor';
 import { CreateEvidence } from './actions/CreateEvidence';
 import { RetrieveEvidence } from './actions/RetrieveEvidence';
 import { RetrieveUserEvidences } from './actions/RetrieveUserEvidences';
-
-export interface ApiRequestFilter extends Request {
-  query: {
-    filter?: {
-      date: { gt: string };
-      status: status;
-    };
-    page?: {
-      limit: string;
-    };
-  };
-}
 
 const Api = (vault: Vault, logger: Logger) => {
   const app = express();

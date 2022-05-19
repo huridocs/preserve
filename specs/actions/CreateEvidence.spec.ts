@@ -3,8 +3,8 @@ import { CreateEvidence } from 'src/actions/CreateEvidence';
 import { Vault } from 'src/Vault';
 import { connectDB, disconnectDB } from 'src/DB';
 import { fakeLogger } from 'specs/fakeLogger';
-import { User } from 'src/authMiddleware';
-import { Cookie } from 'src/types/index';
+import { User } from 'src/types';
+import { Cookie } from 'src/types';
 
 describe('Create evidence', () => {
   let db: Db;
