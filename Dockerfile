@@ -24,11 +24,12 @@ RUN chmod +x /bin/entrypoint.sh /bin/worker-entrypoint.sh
 
 EXPOSE 4000
 
+FROM base AS development
+ENV NODE_ENV=development
+
 FROM base AS production
 COPY src/ ./src
 RUN yarn build && yarn install --prod
 RUN rm -fr ./src && mv -f ./dist/* ./ && rm -fr ./dist ./specs
 ENV NODE_ENV=production
 
-FROM base AS testing
-ENV NODE_ENV=development

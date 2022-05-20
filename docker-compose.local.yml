@@ -4,14 +4,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: testing
+      target: development
     volumes:
       - ./:/home/user/app/
   worker:
     build:
       context: .
       dockerfile: Dockerfile
-      target: testing
+      target: development
     volumes:
       - ./:/home/user/app/
   mongo:

@@ -3,10 +3,20 @@
 set -eo pipefail
 
 function test {
+  docker exec -it preserve-api env TERM=xterm-256color yarn test "${@}"
+}
+
+function test:ci {
+  docker exec preserve-api env yarn install
   docker exec preserve-api env TERM=xterm-256color yarn test "${@}"
 }
 
-function test:integration {
+function test_integration {
+  docker exec -it preserve-api env TERM=xterm-256color yarn test-integration "${@}"
+}
+
+function test_integration:ci {
+  docker exec preserve-api env yarn install
   docker exec preserve-api env TERM=xterm-256color yarn test-integration "${@}"
 }
 
