@@ -1,5 +1,4 @@
 .git
-./data
-./downloads
+./files
 node_modules
 dist

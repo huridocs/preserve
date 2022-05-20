@@ -6,7 +6,6 @@ services:
       dockerfile: Dockerfile
       target: testing
     volumes:
-      - ./downloads:/home/user/app/downloads
       - ./src:/home/user/app/src
   worker:
     build:
@@ -14,7 +13,6 @@ services:
       dockerfile: Dockerfile
       target: testing
     volumes:
-      - ./downloads:/home/user/app/downloads
       - ./src:/home/user/app/src
   mongo:
     ports:

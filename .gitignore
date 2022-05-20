@@ -135,11 +135,8 @@ files/trusted_timestamps/*
 !files/trusted_timestamps/index.html
 specs/trusted_timestamps/*
 !specs/trusted_timestamps/index.html
-downloads/*
-!downloads/index.html
-!data/index.html
-specs/data/*
-!specs/data/index.html
+files/downloads/*
+!files/downloads/index.html
 
 # Webstorm
 .idea
