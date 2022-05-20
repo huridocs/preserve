@@ -6,14 +6,14 @@ services:
       dockerfile: Dockerfile
       target: testing
     volumes:
-      - ./src:/home/user/app/src
+      - ./:/home/user/app/
   worker:
     build:
       context: .
       dockerfile: Dockerfile
       target: testing
     volumes:
-      - ./src:/home/user/app/src
+      - ./:/home/user/app/
   mongo:
     ports:
       - "27019:27017"

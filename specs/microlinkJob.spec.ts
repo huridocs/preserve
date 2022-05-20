@@ -38,9 +38,10 @@ describe('microlinkJob', () => {
       const cookie = _req.headers.cookie;
       if (!cookie) {
         res.send('');
+      } else {
+        res.status(200);
+        res.send(Buffer.from('</head><title>test title cookies</title></head><body></body>'));
       }
-      res.status(200);
-      res.send(Buffer.from('</head><title>test title cookies</title></head><body></body>'));
     });
     await new Promise<void>(resolve => {
       server = app.listen(5960, resolve);
@@ -123,7 +124,7 @@ describe('microlinkJob', () => {
     });
 
     expect(result.title).toBe('test title cookies');
-  }, 10000);
+  }, 20000);
 
   it('should bubble up page errors', async () => {
     await expect(async () => {
