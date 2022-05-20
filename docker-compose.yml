@@ -20,7 +20,7 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ./downloads:/home/user/app/downloads
+      - ./files:/home/user/app/files
     depends_on:
       - mongo
 
@@ -43,7 +43,6 @@ services:
       dockerfile: Dockerfile
       target: production
     volumes:
-      - ./downloads:/home/user/app/downloads
       - ./files:/home/user/app/files
     depends_on:
       - mongo

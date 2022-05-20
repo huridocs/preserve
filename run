@@ -15,7 +15,7 @@ function bash:api {
 }
 
 function mongo {
-  docker exec -it preserve-mongodb mongo
+  docker exec -it preserve-mongodb mongo localhost/preserve
 }
 
 function stop {
