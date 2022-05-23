@@ -9,8 +9,8 @@ services:
       - MONGO_URI=mongodb://mongo
       - USER_ID=${USER_ID}
       - GROUP_ID=${GROUP_ID}
-      - ENVIRONMENT=${ENVIRONMENT}
-      - SENTRY_PRESERVE_API_DSN=${SENTRY_PRESERVE_API_DSN}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - SENTRY_PRESERVE_API_DSN=${SENTRY_PRESERVE_API_DSN:-}
       - YOUTUBE_DL_SKIP_DOWNLOAD=true
     build:
       context: .
@@ -33,8 +33,8 @@ services:
       - MONGO_URI=mongodb://mongo
       - USER_ID=${USER_ID}
       - GROUP_ID=${GROUP_ID}
-      - ENVIRONMENT=${ENVIRONMENT}
-      - SENTRY_PRESERVE_WORKER_DSN=${SENTRY_PRESERVE_WORKER_DSN}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - SENTRY_PRESERVE_WORKER_DSN=${SENTRY_PRESERVE_WORKER_DSN:-}
       - YOUTUBE_DL_SKIP_DOWNLOAD=true
       - VIDEO_DOWNLOADER_PATH=/usr/local/bin/yt-dlp
     entrypoint: /bin/worker-entrypoint.sh
