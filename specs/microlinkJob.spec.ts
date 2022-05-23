@@ -27,9 +27,7 @@ describe('microlinkJob', () => {
     app.get('/test_page', (_req, res) => {
       res.set('Content-Type', 'text/html');
       res.send(
-        Buffer.from(
-          '</head><title>test title</title></head><body><h2>Test Page</h2><img src="https://github.com/critocrito/sugarcube/raw/main/logo.png"></body>'
-        )
+        Buffer.from('</head><title>test title</title></head><body><h2>Test Page</h2></body>')
       );
     });
 
@@ -84,6 +82,19 @@ describe('microlinkJob', () => {
     expect(content).toMatch('Test Page');
   });
 
+  it('should set the html content in a file and return as a download', async () => {
+    const content = await readFile(
+      path.join(
+        config.data_path,
+        result.downloads.find(d => d.path.match(/content.html/))?.path || 'no content'
+      ),
+      'utf-8'
+    );
+    expect(content).toMatch(
+      '</head><title>test title</title></head><body><h2>Test Page</h2></body>'
+    );
+  });
+
   it('should perform screenshots and return the paths', async () => {
     expect(
       await exists(
@@ -122,6 +133,14 @@ describe('microlinkJob', () => {
       },
     });
 
+    const html_content = await readFile(
+      path.join(
+        config.data_path,
+        result.downloads.find(d => d.path.match(/content.html/))?.path || 'no content'
+      ),
+      'utf-8'
+    );
+    expect(html_content).toMatch('</head><title>test title cookies</title></head><body></body>');
     expect(result.title).toBe('test title cookies');
   }, 10000);
 

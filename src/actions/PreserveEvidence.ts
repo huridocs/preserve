@@ -68,6 +68,13 @@ export class PreserveEvidence {
           const content_path = path.join(evidence._id.toString(), 'content.txt');
           await appendFile(path.join(evidence_dir, 'content.txt'), text);
 
+          const cookie = evidence.cookies.map(cookie => `${cookie.name}=${cookie.value}`).join(';');
+          const html_content = await (
+            await fetch(evidence.attributes.url, { headers: { cookie } })
+          ).text();
+          const html_content_path = path.join(evidence._id.toString(), 'content.html');
+          await appendFile(path.join(evidence_dir, 'content.html'), html_content);
+
           let video_path = '';
           try {
             const youtubedl = createYoutubeDl(config.video_downloader_path);
@@ -86,6 +93,7 @@ export class PreserveEvidence {
           const result: JobResults = {
             title: await page.title(),
             downloads: [
+              { path: html_content_path, type: 'html_content' },
               { path: content_path, type: 'content' },
               { path: screenshot_path, type: 'screenshot' },
               { path: full_screenshot_path, type: 'screenshot' },
