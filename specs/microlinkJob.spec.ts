@@ -42,6 +42,14 @@ describe('microlinkJob', () => {
       res.status(200);
       res.send(Buffer.from('</head><title>test title cookies</title></head><body></body>'));
     });
+
+    app.get('/pdf_route', (_req, res) => {
+      res.set('Content-Type', 'application/pdf');
+      res.status(200);
+      const filePath = __dirname + '/example.pdf';
+      res.sendFile(filePath);
+    });
+
     await new Promise<void>(resolve => {
       server = app.listen(5960, resolve);
     });
@@ -123,6 +131,29 @@ describe('microlinkJob', () => {
     });
 
     expect(result.title).toBe('test title cookies');
+  }, 10000);
+
+  it('should preserve file URLs', async () => {
+    result = await microlinkJob(fakeLogger, { stepTimeout: 0 })({
+      _id: new ObjectId(),
+      user: new ObjectId(),
+      cookies: [],
+      attributes: {
+        status: 'PROCESSING',
+        url: 'http://localhost:5960/pdf_route',
+        downloads: [],
+      },
+    });
+
+    expect(
+      await exists(
+        path.join(
+          config.data_path,
+          result.downloads.find(d => d.path.match(/screenshot.jpg/))?.path || 'no_screenshot'
+        )
+      )
+    ).toBe(false);
+    expect(result.title).toBe('');
   }, 10000);
 
   it('should bubble up page errors', async () => {

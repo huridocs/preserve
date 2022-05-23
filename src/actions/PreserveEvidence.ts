@@ -19,6 +19,17 @@ export class PreserveEvidence {
 
   execute(options: JobOptions) {
     return async (evidence: EvidenceDB): Promise<JobResults> => {
+      const ramon = await fetch(evidence.attributes.url, { method: 'HEAD' });
+      const contentType = ramon.headers.get('Content-Type') || '';
+      if (!contentType.includes('text/html')) {
+        return new Promise(resolve => {
+          const result: JobResults = {
+            title: '',
+            downloads: [],
+          };
+          resolve(result);
+        });
+      }
       const browserlessFactory = createBrowserless({
         defaultViewPort: { width: 1024, height: 768 },
       });
