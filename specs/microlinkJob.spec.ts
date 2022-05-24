@@ -46,7 +46,7 @@ describe('microlinkJob', () => {
     app.get('/pdf_route', (_req, res) => {
       res.set('Content-Type', 'application/pdf');
       res.status(200);
-      const filePath = __dirname + '/example.pdf';
+      const filePath = __dirname + '/content.pdf';
       res.sendFile(filePath);
     });
 
@@ -153,7 +153,25 @@ describe('microlinkJob', () => {
         )
       )
     ).toBe(false);
-    expect(result.title).toBe('');
+    expect(
+      await exists(
+        path.join(
+          config.data_path,
+          result.downloads.find(d => d.path.match(/full_screenshot.jpg/))?.path || 'no_screenshot'
+        )
+      )
+    ).toBe(false);
+    const preservedFile = await readFile(
+      path.join(
+        config.data_path,
+        result.downloads.find(d => d.type === 'content')?.path || 'no content'
+      ),
+      'utf-8'
+    );
+
+    const originalFile = await readFile(path.join(__dirname, 'content.pdf'), 'utf-8');
+    expect(originalFile).toBe(preservedFile);
+    expect(result.title).toBe('pdf_route');
   }, 10000);
 
   it('should bubble up page errors', async () => {

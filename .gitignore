@@ -140,3 +140,7 @@ files/downloads/*
 
 # Webstorm
 .idea
+
+
+# Mac Os
+.DS_Store
