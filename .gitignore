@@ -129,7 +129,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 .sugarcube_cache.json
-specs/downloads/*
+specs/files/downloads/*
 !specs/downloads/index.html
 files/trusted_timestamps/*
 !files/trusted_timestamps/index.html

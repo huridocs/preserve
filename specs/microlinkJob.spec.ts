@@ -1,4 +1,5 @@
 import express from 'express';
+import { rm } from 'fs/promises';
 import { access, readFile } from 'fs/promises';
 import { Server } from 'http';
 import { ObjectId } from 'mongodb';
@@ -25,6 +26,7 @@ describe('microlinkJob', () => {
   let result: JobResults;
 
   beforeAll(async () => {
+    config.data_path = `${__dirname}/files/downloads/`;
     jest.spyOn(console, 'log').mockImplementation(() => false);
     const app = express();
     app.get('/test_page', (_req, res) => {
