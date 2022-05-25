@@ -1,5 +1,4 @@
 import express from 'express';
-import { rm } from 'fs/promises';
 import { access, readFile } from 'fs/promises';
 import { Server } from 'http';
 import { ObjectId } from 'mongodb';
