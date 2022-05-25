@@ -9,25 +9,24 @@ import { EvidenceDB, JobOptions, JobResults } from 'src/types';
 import { Logger } from 'winston';
 import { create as createYoutubeDl } from 'youtube-dl-exec';
 import { config } from '../config';
+import { FetchClient } from 'src/types';
 
 export class PreserveEvidence {
   private logger: Logger;
+  private httpClient: FetchClient;
 
-  constructor(logger: Logger) {
+  constructor(logger: Logger, httpClient: FetchClient) {
     this.logger = logger;
+    this.httpClient = httpClient;
   }
 
   execute(options: JobOptions) {
     return async (evidence: EvidenceDB): Promise<JobResults> => {
       const evidence_dir = path.join(config.data_path, evidence._id.toString());
       await mkdir(evidence_dir);
-      const response = await fetch(evidence.attributes.url, {
-        headers: {
-          'Content-Type': 'application/pdf; charset=',
-        },
-      });
+      const response = await this.httpClient.fetch(evidence.attributes.url);
       const contentType = response.headers.get('Content-Type') || 'text/html';
-      if (contentType !== 'text/html') {
+      if (contentType.includes('application/pdf')) {
         const content_path = path.join(evidence._id.toString(), 'content.pdf');
         const array = new Uint8Array(await response.arrayBuffer());
         await appendFile(path.join(evidence_dir, 'content.pdf'), array);
