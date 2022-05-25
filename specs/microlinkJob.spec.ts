@@ -6,7 +6,8 @@ import path from 'path';
 import { config } from 'src/config';
 import { JobResults } from 'src/types';
 import { microlinkJob } from 'src/microlinkJob';
-import { HTTPClient } from '../src/HTTPClient';
+import { HTTPClient } from 'src/HTTPClient';
+import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
 import { FakeHTTPClient } from './FakeHTTPClient';
 import { fakeLogger } from './fakeLogger';
 
@@ -62,7 +63,14 @@ describe('microlinkJob', () => {
 
   describe('preserving HTML sites', () => {
     beforeAll(async () => {
-      result = await microlinkJob(fakeLogger, new HTTPClient(), { stepTimeout: 0 })({
+      result = await microlinkJob(
+        fakeLogger,
+        new HTTPClient(),
+        new YoutubeDLVideoDownloader(fakeLogger),
+        {
+          stepTimeout: 0,
+        }
+      )({
         _id: new ObjectId(),
         user: new ObjectId(),
         cookies: [{ name: 'a_name', value: 'a_value', domain: 'localhost' }],
@@ -131,7 +139,14 @@ describe('microlinkJob', () => {
 
   describe('preserving PDF URLs', () => {
     it('should preserve only the served file', async () => {
-      result = await microlinkJob(fakeLogger, new HTTPClient(), { stepTimeout: 0 })({
+      result = await microlinkJob(
+        fakeLogger,
+        new HTTPClient(),
+        new YoutubeDLVideoDownloader(fakeLogger),
+        {
+          stepTimeout: 0,
+        }
+      )({
         _id: new ObjectId(),
         user: new ObjectId(),
         cookies: [],

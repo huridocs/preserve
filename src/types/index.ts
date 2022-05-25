@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { ObjectId } from 'mongodb';
+import { YtFlags } from 'youtube-dl-exec';
 
 export type Cookie = {
   name: string;
@@ -70,4 +71,9 @@ export type User = {
 
 export interface FetchClient {
   fetch: (url: string, options?: object) => Promise<Response>;
+}
+export type VideoDownloaderFlags = YtFlags;
+
+export interface VideoDownloader {
+  download: (evidence: EvidenceDB, flags: VideoDownloaderFlags) => Promise<string>;
 }
