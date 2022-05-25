@@ -69,7 +69,7 @@ describe('Preserve API', () => {
   }
 
   beforeAll(async () => {
-    config.data_path = `${__dirname}/downloads`;
+    config.data_path = `${__dirname}/files/downloads`;
     config.trusted_timestamps_path = `${__dirname}/trusted_timestamps`;
     db = await connectDB('preserve-api-testing');
     vault = new Vault(db);
