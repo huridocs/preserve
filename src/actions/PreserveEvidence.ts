@@ -1,31 +1,48 @@
-import { Logger } from 'winston';
+import createBrowserless from 'browserless';
+import { appendFile, mkdir } from 'fs/promises';
+import path from 'path';
+import { Page } from 'puppeteer';
 // eslint-disable-next-line
 // @ts-ignore
 import fullPageScreenshot from 'puppeteer-full-page-screenshot';
-import { Page } from 'puppeteer';
-import path from 'path';
-import createBrowserless from 'browserless';
-import { create as createYoutubeDl } from 'youtube-dl-exec';
-import { appendFile, mkdir } from 'fs/promises';
-import { config } from '../config';
 import { EvidenceDB, JobOptions, JobResults } from 'src/types';
+import { Logger } from 'winston';
+import { create as createYoutubeDl } from 'youtube-dl-exec';
+import { config } from '../config';
+import { FetchClient } from 'src/types';
 
 export class PreserveEvidence {
   private logger: Logger;
+  private httpClient: FetchClient;
 
-  constructor(logger: Logger) {
+  constructor(logger: Logger, httpClient: FetchClient) {
     this.logger = logger;
+    this.httpClient = httpClient;
   }
 
   execute(options: JobOptions) {
     return async (evidence: EvidenceDB): Promise<JobResults> => {
+      const evidence_dir = path.join(config.data_path, evidence._id.toString());
+      await mkdir(evidence_dir);
+      const response = await this.httpClient.fetch(evidence.attributes.url);
+      const contentType = response.headers.get('Content-Type') || 'text/html';
+      if (contentType.includes('application/pdf')) {
+        const content_path = path.join(evidence._id.toString(), 'content.pdf');
+        const array = new Uint8Array(await response.arrayBuffer());
+        await appendFile(path.join(evidence_dir, 'content.pdf'), array);
+        const fileName = evidence.attributes.url.split('/').pop();
+        return new Promise(resolve => {
+          const result: JobResults = {
+            title: fileName || '',
+            downloads: [{ path: content_path, type: 'content' }],
+          };
+          resolve(result);
+        });
+      }
       const browserlessFactory = createBrowserless({
         defaultViewPort: { width: 1024, height: 768 },
       });
       const browserless = await browserlessFactory.createContext();
-
-      const evidence_dir = path.join(config.data_path, evidence._id.toString());
-      await mkdir(evidence_dir);
 
       const page = await browserless.page();
       await page.setCookie(...evidence.cookies);

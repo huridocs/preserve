@@ -67,3 +67,7 @@ export type User = {
   _id: ObjectId;
   token: string;
 };
+
+export interface FetchClient {
+  fetch: (url: string, options?: object) => Promise<Response>;
+}
