@@ -24,7 +24,10 @@ export class PreserveEvidence {
     return async (evidence: EvidenceDB): Promise<JobResults> => {
       const evidence_dir = path.join(config.data_path, evidence._id.toString());
       await mkdir(evidence_dir);
-      const response = await this.httpClient.fetch(evidence.attributes.url);
+      const cookie = evidence.cookies.map(cookie => `${cookie.name}=${cookie.value}`).join(';');
+      const response = await this.httpClient.fetch(evidence.attributes.url, {
+        headers: { cookie },
+      });
       const contentType = response.headers.get('Content-Type') || 'text/html';
       if (contentType.includes('application/pdf')) {
         const content_path = path.join(evidence._id.toString(), 'content.pdf');
@@ -43,6 +46,9 @@ export class PreserveEvidence {
         defaultViewPort: { width: 1024, height: 768 },
       });
       const browserless = await browserlessFactory.createContext();
+
+      const html_content_path = path.join(evidence._id.toString(), 'content.html');
+      await appendFile(path.join(evidence_dir, 'content.html'), await response.text());
 
       const page = await browserless.page();
       await page.setCookie(...evidence.cookies);
@@ -103,6 +109,7 @@ export class PreserveEvidence {
           const result: JobResults = {
             title: await page.title(),
             downloads: [
+              { path: html_content_path, type: 'content' },
               { path: content_path, type: 'content' },
               { path: screenshot_path, type: 'screenshot' },
               { path: full_screenshot_path, type: 'screenshot' },
