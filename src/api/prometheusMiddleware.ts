@@ -1,5 +1,5 @@
 import promBundle from 'express-prom-bundle';
-import { config } from './config';
+import { config } from '../config';
 
 export const prometheusMiddleware = promBundle({
   includeMethod: true,

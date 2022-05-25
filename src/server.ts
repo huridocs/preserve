@@ -1,9 +1,9 @@
 import { config } from './config';
-import { connectDB, disconnectDB } from './DB';
+import { connectDB, disconnectDB } from './infrastructure/DB';
 
-import { Api } from './Api';
-import { Vault } from './Vault';
-import { logger } from './logger';
+import { Api } from './api/Api';
+import { Vault } from './infrastructure/Vault';
+import { logger } from './infrastructure/logger';
 
 const uncaughtError = (error: unknown) => {
   throw error;

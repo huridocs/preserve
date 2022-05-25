@@ -1,9 +1,9 @@
 import { Application } from 'express';
 import { Db, ObjectId } from 'mongodb';
-import { Api } from 'src/Api';
+import { Api } from 'src/api/Api';
 import { config } from 'src/config';
-import { connectDB, disconnectDB } from 'src/DB';
-import { Vault } from 'src/Vault';
+import { connectDB, disconnectDB } from 'src/infrastructure/DB';
+import { Vault } from 'src/infrastructure/Vault';
 import request from 'supertest';
 import { fakeLogger } from './fakeLogger';
 

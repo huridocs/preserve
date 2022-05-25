@@ -1,12 +1,12 @@
 import { mkdir, writeFile } from 'fs/promises';
 import { ObjectId } from 'mongodb';
 import path from 'path';
-import { TSAService } from 'src/TSAService';
+import { TSAService } from 'src/infrastructure/TSAService';
 import { Logger } from 'winston';
-import { checksumFile } from '../checksumFile';
+import { checksumFile } from '../infrastructure/checksumFile';
 import { config } from '../config';
 import { EvidenceBase, JobFunction, JobResults } from 'src/types';
-import { Vault } from '../Vault';
+import { Vault } from '../infrastructure/Vault';
 
 export class ProcessJob {
   private vault: Vault;

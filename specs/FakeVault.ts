@@ -1,5 +1,5 @@
 import { Db } from 'mongodb';
-import { Vault } from 'src/Vault';
+import { Vault } from 'src/infrastructure/Vault';
 
 export class FakeVault extends Vault {
   constructor(db: Db) {

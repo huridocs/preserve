@@ -3,7 +3,7 @@ const winston = require('winston');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const WinstonGraylog2 = require('winston-graylog2');
 import * as os from 'os';
-import { config } from './config';
+import { config } from '../config';
 
 const logConfiguration = {
   transports: [new winston.transports.Console()],

@@ -1,7 +1,7 @@
 import { Collection, Db, Filter, ObjectId } from 'mongodb';
 import { User } from 'src/types';
-import { config } from './config';
-import { Cookie, EvidenceDB } from './types';
+import { config } from '../config';
+import { Cookie, EvidenceDB } from '../types';
 
 export class Vault {
   private collection: Collection<EvidenceDB>;

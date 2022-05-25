@@ -2,12 +2,12 @@ import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import { ProcessJob } from './actions/ProcessJob';
 import { config } from './config';
-import { connectDB, disconnectDB } from './DB';
-import { logger } from './logger';
+import { connectDB, disconnectDB } from './infrastructure/DB';
+import { logger } from './infrastructure/logger';
 import { microlinkJob } from './microlinkJob';
 import { QueueProcessor } from './QueueProcessor';
-import { TSAService } from './TSAService';
-import { Vault } from './Vault';
+import { TSAService } from './infrastructure/TSAService';
+import { Vault } from './infrastructure/Vault';
 
 const uncaughtError = (error: unknown) => {
   throw error;

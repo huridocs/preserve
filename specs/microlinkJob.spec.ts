@@ -6,7 +6,7 @@ import path from 'path';
 import { config } from 'src/config';
 import { JobResults } from 'src/types';
 import { microlinkJob } from 'src/microlinkJob';
-import { HTTPClient } from 'src/HTTPClient';
+import { HTTPClient } from 'src/infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
 import { FakeHTTPClient } from './FakeHTTPClient';
 import { fakeLogger } from './fakeLogger';

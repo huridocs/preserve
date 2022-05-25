@@ -1,4 +1,4 @@
-import { Vault } from 'src/Vault';
+import { Vault } from 'src/infrastructure/Vault';
 import { User } from 'src/types';
 import { ObjectId } from 'mongodb';
 
