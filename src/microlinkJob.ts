@@ -1,6 +1,6 @@
 import { Logger } from 'winston';
 import { PreserveEvidence } from './actions/PreserveEvidence';
-import { HTTPClient } from './HTTPClient';
+import { HTTPClient } from './infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from './infrastructure/YoutubeDLVideoDownloader';
 import { FetchClient, JobFunction, JobOptions, VideoDownloader } from './types';
 

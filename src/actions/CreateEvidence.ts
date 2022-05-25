@@ -1,5 +1,5 @@
 import { Logger } from 'winston';
-import { Vault } from 'src/Vault';
+import { Vault } from 'src/infrastructure/Vault';
 import { User } from 'src/types';
 import { Cookie } from 'src/types';
 

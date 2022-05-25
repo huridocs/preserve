@@ -6,17 +6,17 @@ import * as Tracing from '@sentry/tracing';
 import cors from 'cors';
 import { Logger } from 'winston';
 
-import { config } from './config';
+import { config } from '../config';
 import { authMiddleware } from './authMiddleware';
 import { prometheusMiddleware } from './prometheusMiddleware';
-import { ApiRequestFilter } from './types';
-import { Vault } from './Vault';
+import { ApiRequestFilter } from '../types';
+import { Vault } from '../infrastructure/Vault';
 import { Response } from './Response';
 import { errorMiddleware } from './errorMiddleware';
 import { validateBody, validatePagination, validateQuery } from './validations';
-import { CreateEvidence } from './actions/CreateEvidence';
-import { RetrieveEvidence } from './actions/RetrieveEvidence';
-import { RetrieveUserEvidences } from './actions/RetrieveUserEvidences';
+import { CreateEvidence } from '../actions/CreateEvidence';
+import { RetrieveEvidence } from '../actions/RetrieveEvidence';
+import { RetrieveUserEvidences } from '../actions/RetrieveUserEvidences';
 
 const Api = (vault: Vault, logger: Logger) => {
   const app = express();

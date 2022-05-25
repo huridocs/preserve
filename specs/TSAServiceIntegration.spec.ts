@@ -1,8 +1,8 @@
 import { appendFile, mkdir, rm } from 'fs/promises';
 import path from 'path';
 import { config } from 'src/config';
-import { extractTimestampFromTSAResponse, shell } from 'src/shell';
-import { TSAService } from 'src/TSAService';
+import { extractTimestampFromTSAResponse, shell } from 'src/infrastructure/shell';
+import { TSAService } from 'src/infrastructure/TSAService';
 
 describe('TSAService', () => {
   const service = new TSAService();

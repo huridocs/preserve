@@ -1,4 +1,4 @@
-import { Vault } from 'src/Vault';
+import { Vault } from 'src/infrastructure/Vault';
 import { ApiRequestFilter, User } from 'src/types';
 
 export class RetrieveUserEvidences {

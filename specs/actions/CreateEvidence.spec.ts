@@ -1,7 +1,7 @@
 import { Db, ObjectId } from 'mongodb';
 import { CreateEvidence } from 'src/actions/CreateEvidence';
-import { Vault } from 'src/Vault';
-import { connectDB, disconnectDB } from 'src/DB';
+import { Vault } from 'src/infrastructure/Vault';
+import { connectDB, disconnectDB } from 'src/infrastructure/DB';
 import { fakeLogger } from 'specs/fakeLogger';
 import { User } from 'src/types';
 import { Cookie } from 'src/types';

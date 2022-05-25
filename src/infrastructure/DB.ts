@@ -1,5 +1,5 @@
 import { Db, MongoClient } from 'mongodb';
-import { config } from './config';
+import { config } from '../config';
 
 const DB_NAME = 'preserve';
 

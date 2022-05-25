@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { db } from './DB';
-import { User } from './types';
+import { db } from '../infrastructure/DB';
+import { User } from '../types';
 
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const user = await db.collection<User>('users').findOne({ token: req.get('Authorization') });

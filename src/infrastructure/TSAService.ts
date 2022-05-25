@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
-import { config } from './config';
+import { config } from '../config';
 import { extractTimestampFromTSAResponse, shell } from './shell';
 
 export class TSAService {
