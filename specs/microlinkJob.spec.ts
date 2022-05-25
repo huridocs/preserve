@@ -25,7 +25,6 @@ describe('microlinkJob', () => {
   let result: JobResults;
 
   beforeAll(async () => {
-    config.data_path = `${__dirname}/files/downloads/`;
     jest.spyOn(console, 'log').mockImplementation(() => false);
     const app = express();
     app.get('/test_page', (_req, res) => {
