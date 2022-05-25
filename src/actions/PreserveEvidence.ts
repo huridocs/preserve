@@ -95,6 +95,7 @@ export class PreserveEvidence {
           const video_path = await this.videoDownloader.download(evidence, {
             output: path.join(evidence_dir, 'video.mp4'),
             format: 'best',
+            cookies: cookie,
           });
 
           const result: JobResults = {
