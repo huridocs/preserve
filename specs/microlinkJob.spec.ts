@@ -33,9 +33,7 @@ describe('microlinkJob', () => {
         res.send('');
       }
       res.send(
-        Buffer.from(
-          '</head><title>test title</title></head><body><h2>Test Page</h2><img src="https://github.com/critocrito/sugarcube/raw/main/logo.png"></body>'
-        )
+        Buffer.from('</head><title>test title</title></head><body><h2>Test Page</h2></body>')
       );
     });
 
@@ -80,15 +78,28 @@ describe('microlinkJob', () => {
       expect(result.title).toBe('test title');
     });
 
-    it('should set the content in a file and return as a download', async () => {
+    it('should set the text content in a file and return as a download', async () => {
       const content = await readFile(
         path.join(
           config.data_path,
-          result.downloads.find(d => d.type === 'content')?.path || 'no content'
+          result.downloads.find(d => d.path.includes('content.txt'))?.path || 'no content'
         ),
         'utf-8'
       );
       expect(content).toMatch('Test Page');
+    });
+
+    it('should set the html content in a file and return as a download', async () => {
+      const content = await readFile(
+        path.join(
+          config.data_path,
+          result.downloads.find(d => d.path.includes('content.html'))?.path || 'no content'
+        ),
+        'utf-8'
+      );
+      expect(content).toMatch(
+        '</head><title>test title</title></head><body><h2>Test Page</h2></body>'
+      );
     });
 
     it('should perform screenshots and return the paths', async () => {

@@ -8,6 +8,9 @@ export class FakeHTTPClient implements FetchClient {
           return 'text/html';
         },
       },
+      async text() {
+        return 'text';
+      },
     } as unknown as Response;
   }
 }
