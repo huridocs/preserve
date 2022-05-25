@@ -1,16 +1,30 @@
 import path from 'path';
-import { VideoDownloader, VideoDownloaderFlags } from 'src/types';
+import { EvidenceDB, VideoDownloader, VideoDownloaderFlags } from 'src/types';
+import { Logger } from 'winston';
 import { create as createYoutubeDl } from 'youtube-dl-exec';
 import { config } from '../config';
 
-class YoutubeDLVideoDownloader implements VideoDownloader {
-  download(url: string, path: string, flags: VideoDownloaderFlags): unknown {
-    const youtubedl = createYoutubeDl(config.video_downloader_path);
-    await youtubedl(evidence.attributes.url, {
-      output: path.join(evidence_dir, 'video.mp4'),
-      format: 'best',
-    });
-    video_path = path.join(evidence._id.toString(), 'video.mp4');
+export class YoutubeDLVideoDownloader implements VideoDownloader {
+  private readonly downloader;
+  private logger: Logger;
+
+  constructor(logger: Logger) {
+    this.logger = logger;
+    this.downloader = createYoutubeDl(config.video_downloader_path);
   }
 
+  async download(evidence: EvidenceDB, flags: VideoDownloaderFlags): Promise<string> {
+    let videoPath = '';
+    try {
+      await this.downloader(evidence.attributes.url, flags);
+      videoPath = path.join(evidence._id.toString(), 'video.mp4');
+    } catch (error: unknown) {
+      if (!(error instanceof Error)) {
+        throw error;
+      }
+      this.logger.error(error.message, { stacktrace: error.stack });
+    }
+
+    return videoPath;
+  }
 }

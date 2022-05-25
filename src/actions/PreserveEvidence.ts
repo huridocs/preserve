@@ -5,19 +5,20 @@ import { Page } from 'puppeteer';
 // eslint-disable-next-line
 // @ts-ignore
 import fullPageScreenshot from 'puppeteer-full-page-screenshot';
-import { EvidenceDB, JobOptions, JobResults } from 'src/types';
+import { EvidenceDB, JobOptions, JobResults, VideoDownloader } from 'src/types';
 import { Logger } from 'winston';
-import { create as createYoutubeDl } from 'youtube-dl-exec';
 import { config } from '../config';
 import { FetchClient } from 'src/types';
 
 export class PreserveEvidence {
   private logger: Logger;
   private httpClient: FetchClient;
+  private videoDownloader: VideoDownloader;
 
-  constructor(logger: Logger, httpClient: FetchClient) {
+  constructor(logger: Logger, httpClient: FetchClient, videoDownloader: VideoDownloader) {
     this.logger = logger;
     this.httpClient = httpClient;
+    this.videoDownloader = videoDownloader;
   }
 
   execute(options: JobOptions) {
@@ -91,20 +92,10 @@ export class PreserveEvidence {
           const content_path = path.join(evidence._id.toString(), 'content.txt');
           await appendFile(path.join(evidence_dir, 'content.txt'), text);
 
-          let video_path = '';
-          try {
-            const youtubedl = createYoutubeDl(config.video_downloader_path);
-            await youtubedl(evidence.attributes.url, {
-              output: path.join(evidence_dir, 'video.mp4'),
-              format: 'best',
-            });
-            video_path = path.join(evidence._id.toString(), 'video.mp4');
-          } catch (e: unknown) {
-            if (!(e instanceof Error)) {
-              throw e;
-            }
-            this.logger.error(e.message, { stacktrace: e.stack });
-          }
+          const video_path = await this.videoDownloader.download(evidence, {
+            output: path.join(evidence_dir, 'video.mp4'),
+            format: 'best',
+          });
 
           const result: JobResults = {
             title: await page.title(),
