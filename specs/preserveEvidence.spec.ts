@@ -25,8 +25,7 @@ describe('PreserveEvidence', () => {
   let result: PreservationResults;
   const preserveEvidence = new PreserveEvidence(
     new HTTPClient(),
-    new YoutubeDLVideoDownloader(fakeLogger),
-    { stepTimeout: 0 }
+    new YoutubeDLVideoDownloader(fakeLogger)
   );
 
   beforeAll(async () => {
@@ -68,16 +67,19 @@ describe('PreserveEvidence', () => {
 
   describe('preserving HTML sites', () => {
     beforeAll(async () => {
-      result = await preserveEvidence.execute({
-        _id: new ObjectId(),
-        user: new ObjectId(),
-        cookies: [{ name: 'a_name', value: 'a_value', domain: 'localhost' }],
-        attributes: {
-          status: 'PROCESSING',
-          url: 'http://localhost:5960/test_page',
-          downloads: [],
+      result = await preserveEvidence.execute(
+        {
+          _id: new ObjectId(),
+          user: new ObjectId(),
+          cookies: [{ name: 'a_name', value: 'a_value', domain: 'localhost' }],
+          attributes: {
+            status: 'PROCESSING',
+            url: 'http://localhost:5960/test_page',
+            downloads: [],
+          },
         },
-      });
+        { stepTimeout: 0 }
+      );
     }, 20000);
 
     it('should return the url title', async () => {
@@ -137,16 +139,19 @@ describe('PreserveEvidence', () => {
 
   describe('preserving PDF URLs', () => {
     it('should preserve only the served file', async () => {
-      result = await preserveEvidence.execute({
-        _id: new ObjectId(),
-        user: new ObjectId(),
-        cookies: [],
-        attributes: {
-          status: 'PROCESSING',
-          url: 'http://localhost:5960/pdf_route',
-          downloads: [],
+      result = await preserveEvidence.execute(
+        {
+          _id: new ObjectId(),
+          user: new ObjectId(),
+          cookies: [],
+          attributes: {
+            status: 'PROCESSING',
+            url: 'http://localhost:5960/pdf_route',
+            downloads: [],
+          },
         },
-      });
+        { stepTimeout: 0 }
+      );
 
       expect(
         await exists(
@@ -183,18 +188,20 @@ describe('PreserveEvidence', () => {
       await expect(async () => {
         result = await new PreserveEvidence(
           new FakeHTTPClient(),
-          new YoutubeDLVideoDownloader(fakeLogger),
-          { stepTimeout: 0 }
-        ).execute({
-          _id: new ObjectId(),
-          user: new ObjectId(),
-          cookies: [],
-          attributes: {
-            status: 'PROCESSING',
-            url: 'chrome://crash',
-            downloads: [],
+          new YoutubeDLVideoDownloader(fakeLogger)
+        ).execute(
+          {
+            _id: new ObjectId(),
+            user: new ObjectId(),
+            cookies: [],
+            attributes: {
+              status: 'PROCESSING',
+              url: 'chrome://crash',
+              downloads: [],
+            },
           },
-        });
+          { stepTimeout: 0 }
+        );
       }).rejects.toEqual(new Error('Page crashed!'));
     });
   });

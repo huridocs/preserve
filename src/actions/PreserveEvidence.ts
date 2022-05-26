@@ -12,19 +12,16 @@ import { FetchClient } from 'src/types';
 export class PreserveEvidence {
   private httpClient: FetchClient;
   private videoDownloader: VideoDownloader;
-  private options: PreservationOptions;
 
-  constructor(
-    httpClient: FetchClient,
-    videoDownloader: VideoDownloader,
-    options: PreservationOptions
-  ) {
+  constructor(httpClient: FetchClient, videoDownloader: VideoDownloader) {
     this.httpClient = httpClient;
     this.videoDownloader = videoDownloader;
-    this.options = options;
   }
 
-  async execute(evidence: EvidenceDB): Promise<PreservationResults> {
+  async execute(
+    evidence: EvidenceDB,
+    options: PreservationOptions = { stepTimeout: 2000 }
+  ): Promise<PreservationResults> {
     const evidence_dir = path.join(config.data_path, evidence._id.toString());
     await mkdir(evidence_dir);
     const cookie = evidence.cookies.map(cookie => `${cookie.name}=${cookie.value}`).join(';');
@@ -76,16 +73,16 @@ export class PreserveEvidence {
         const screenshot_path = path.join(evidence._id.toString(), 'screenshot.jpg');
         const full_screenshot_path = path.join(evidence._id.toString(), 'full_screenshot.jpg');
         await this.removeAllStickyAndFixedElements(page);
-        await page.waitForTimeout(this.options.stepTimeout);
+        await page.waitForTimeout(options.stepTimeout);
         await page.screenshot({
           path: path.join(evidence_dir, 'screenshot.jpg'),
         });
         await this.scrollDown(page, 600);
-        await page.waitForTimeout(this.options.stepTimeout);
+        await page.waitForTimeout(options.stepTimeout);
         await this.removeAllStickyAndFixedElements(page);
         await this.scrollDown(page, 0);
         await this.removeAllStickyAndFixedElements(page);
-        await page.waitForTimeout(this.options.stepTimeout);
+        await page.waitForTimeout(options.stepTimeout);
         await fullPageScreenshot(page, {
           path: path.join(evidence_dir, 'full_screenshot.jpg'),
         });

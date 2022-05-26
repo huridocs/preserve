@@ -44,7 +44,7 @@ describe('Preserve API', () => {
 
   class FakePreserveEvidence extends PreserveEvidence {
     constructor() {
-      super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger), { stepTimeout: 0 });
+      super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
     }
 
     async execute(evidence: EvidenceDB) {
@@ -360,7 +360,7 @@ describe('Preserve API', () => {
 
           class ErrorPreserveEvidence extends PreserveEvidence {
             constructor() {
-              super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger), { stepTimeout: 0 });
+              super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
             }
 
             async execute(): Promise<PreservationResults> {
