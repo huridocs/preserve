@@ -1,9 +1,6 @@
 name: Check types
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
 
 concurrency:
