@@ -5,7 +5,7 @@ import { Page } from 'puppeteer';
 // eslint-disable-next-line
 // @ts-ignore
 import fullPageScreenshot from 'puppeteer-full-page-screenshot';
-import { EvidenceDB, JobOptions, JobResults, VideoDownloader } from 'src/types';
+import { EvidenceDB, PreservationOptions, PreservationResults, VideoDownloader } from 'src/types';
 import { Logger } from 'winston';
 import { config } from '../config';
 import { FetchClient } from 'src/types';
@@ -21,8 +21,8 @@ export class PreserveEvidence {
     this.videoDownloader = videoDownloader;
   }
 
-  execute(options: JobOptions) {
-    return async (evidence: EvidenceDB): Promise<JobResults> => {
+  execute(options: PreservationOptions) {
+    return async (evidence: EvidenceDB): Promise<PreservationResults> => {
       const evidence_dir = path.join(config.data_path, evidence._id.toString());
       await mkdir(evidence_dir);
       const cookie = evidence.cookies.map(cookie => `${cookie.name}=${cookie.value}`).join(';');
@@ -36,7 +36,7 @@ export class PreserveEvidence {
         await appendFile(path.join(evidence_dir, 'content.pdf'), array);
         const fileName = evidence.attributes.url.split('/').pop();
         return new Promise(resolve => {
-          const result: JobResults = {
+          const result: PreservationResults = {
             title: fileName || '',
             downloads: [{ path: content_path, type: 'content' }],
           };
@@ -97,7 +97,7 @@ export class PreserveEvidence {
             format: 'best',
           });
 
-          const result: JobResults = {
+          const result: PreservationResults = {
             title: await page.title(),
             downloads: [
               { path: html_content_path, type: 'content' },

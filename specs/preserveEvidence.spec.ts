@@ -4,7 +4,7 @@ import { Server } from 'http';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from 'src/config';
-import { JobResults } from 'src/types';
+import { PreservationResults } from 'src/types';
 import { HTTPClient } from 'src/infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
 import { FakeHTTPClient } from './FakeHTTPClient';
@@ -22,7 +22,7 @@ async function exists(path: string) {
 
 describe('PreserveEvidence', () => {
   let server: Server;
-  let result: JobResults;
+  let result: PreservationResults;
   const preserveEvidence = new PreserveEvidence(
     fakeLogger,
     new HTTPClient(),

@@ -5,7 +5,7 @@ import { TSAService } from 'src/infrastructure/TSAService';
 import { Logger } from 'winston';
 import { checksumFile } from '../infrastructure/checksumFile';
 import { config } from '../config';
-import { EvidenceBase, JobResults } from 'src/types';
+import { EvidenceBase, PreservationResults } from 'src/types';
 import { Vault } from '../infrastructure/Vault';
 import { PreserveEvidence } from './PreserveEvidence';
 
@@ -83,7 +83,7 @@ export class ProcessJob {
     };
   }
 
-  private static async checksumDownloads(downloads: JobResults['downloads']) {
+  private static async checksumDownloads(downloads: PreservationResults['downloads']) {
     const hashedDownloads: EvidenceBase['attributes']['downloads'] = [];
     for (const download of downloads) {
       hashedDownloads.push({

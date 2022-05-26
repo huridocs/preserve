@@ -14,7 +14,7 @@ import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/infrastructure/checksumFile';
 import { ProcessJob } from 'src/actions/ProcessJob';
 import { TSAService } from 'src/infrastructure/TSAService';
-import { Cookie, EvidenceDB, JobResults } from 'src/types';
+import { Cookie, EvidenceDB, PreservationResults } from 'src/types';
 import { PreserveEvidence } from 'src/actions/PreserveEvidence';
 import { HTTPClient } from 'src/infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
@@ -48,13 +48,13 @@ describe('Preserve API', () => {
     }
 
     execute() {
-      return async (evidence: EvidenceDB): Promise<JobResults> => {
+      return async (evidence: EvidenceDB): Promise<PreservationResults> => {
         await timeout(100);
         await mkdir(`${config.data_path}/${evidence._id}`);
         await appendFile(`${config.data_path}/${evidence._id}/screenshot.jpg`, 'screenshot');
         await appendFile(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
         await appendFile(`${config.data_path}/${evidence._id}/content.txt`, 'content');
-        const result: JobResults = {
+        const result: PreservationResults = {
           title: 'title',
           downloads: [
             { path: `${evidence._id}/content.txt`, type: 'content' },
@@ -366,7 +366,7 @@ describe('Preserve API', () => {
             }
 
             execute() {
-              return async (): Promise<JobResults> => {
+              return async (): Promise<PreservationResults> => {
                 throw new Error('Job error');
               };
             }
