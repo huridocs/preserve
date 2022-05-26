@@ -12,23 +12,21 @@ import { Vault } from './infrastructure/Vault';
 export class ProcessJob {
   private vault: Vault;
   private logger: Logger;
-  private action: PreserveEvidence;
   private tsaservice: TSAService;
 
-  constructor(action: PreserveEvidence, vault: Vault, logger: Logger, tsaservice: TSAService) {
+  constructor(vault: Vault, logger: Logger, tsaservice: TSAService) {
     this.vault = vault;
     this.logger = logger;
-    this.action = action;
     this.tsaservice = tsaservice;
   }
 
-  async execute() {
+  async execute(action: PreserveEvidence) {
     const evidence = await this.vault.processingNext();
     if (evidence) {
       try {
         this.logger.info(`Preserving evidence for ${evidence.attributes.url}`);
         const start = Date.now();
-        const jobResult = await this.action.execute(evidence);
+        const jobResult = await action.execute(evidence);
         const downloads = await ProcessJob.checksumDownloads(jobResult.downloads);
         const { tsa_files, date } = await this.trustedTimestamp(evidence._id, downloads);
         await this.vault.update(evidence._id, {

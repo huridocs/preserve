@@ -83,12 +83,7 @@ describe('Preserve API', () => {
     db = await connectDB('preserve-api-testing');
     vault = new Vault(db);
     app = Api(vault, fakeLogger);
-    const action = new ProcessJob(
-      new FakePreserveEvidence(),
-      vault,
-      fakeLogger,
-      new FakeTSAService()
-    );
+    const action = new ProcessJob(vault, fakeLogger, new FakeTSAService());
     queue = new QueueProcessor(action, 0);
   });
 
@@ -161,7 +156,7 @@ describe('Preserve API', () => {
     it('should set the job to PROCESSING', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      queue.start();
+      queue.start(new FakePreserveEvidence());
       await waitForExpect(async () => {
         const { body } = await get(newEvidence.data.links.self).expect(200);
 
@@ -181,7 +176,7 @@ describe('Preserve API', () => {
     it('should timestamp the evidence using TSAService', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      queue.start();
+      queue.start(new FakePreserveEvidence());
       await queue.stop();
 
       const processedInDb = await vault.getOne(new ObjectId(newEvidence.data.id), {
@@ -201,7 +196,7 @@ describe('Preserve API', () => {
     it('should process the job', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      queue.start();
+      queue.start(new FakePreserveEvidence());
       await queue.stop();
 
       const { body } = await get(newEvidence.data.links.self).expect(200);
@@ -242,7 +237,7 @@ describe('Preserve API', () => {
     it('should be able to download files on the processed job', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      queue.start();
+      queue.start(new FakePreserveEvidence());
       await queue.stop();
       const { body } = await get(newEvidence.data.links.self).expect(200);
 
@@ -294,7 +289,7 @@ describe('Preserve API', () => {
       it('should respond 404 when trying to download files belonging to another token', async () => {
         const { body: newEvidence } = await post().expect(202);
 
-        queue.start();
+        queue.start(new FakePreserveEvidence());
         await queue.stop();
 
         const { body } = await get(newEvidence.data.links.self).expect(200);
@@ -368,14 +363,9 @@ describe('Preserve API', () => {
             }
           }
 
-          const action = new ProcessJob(
-            new ErrorPreserveEvidence(),
-            vault,
-            fakeLogger,
-            new FakeTSAService()
-          );
+          const action = new ProcessJob(vault, fakeLogger, new FakeTSAService());
           queue = new QueueProcessor(action, 0);
-          queue.start();
+          queue.start(new ErrorPreserveEvidence());
           await waitForExpect(async () => {
             const { body } = await get(newEvidence.data.links.self).expect(200);
             expect(body).toMatchObject({
