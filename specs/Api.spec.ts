@@ -44,7 +44,7 @@ describe('Preserve API', () => {
 
   class FakePreserveEvidence extends PreserveEvidence {
     constructor() {
-      super(fakeLogger, new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
+      super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
     }
 
     execute() {
@@ -362,7 +362,7 @@ describe('Preserve API', () => {
 
           class ErrorPreserveEvidence extends PreserveEvidence {
             constructor() {
-              super(fakeLogger, new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
+              super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
             }
 
             execute() {

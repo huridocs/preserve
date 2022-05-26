@@ -34,7 +34,6 @@ connectDB().then(db => {
   const vault = new Vault(db);
 
   const preserveEvidence = new PreserveEvidence(
-    logger,
     new HTTPClient(),
     new YoutubeDLVideoDownloader(logger)
   );

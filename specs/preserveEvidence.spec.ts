@@ -24,7 +24,6 @@ describe('PreserveEvidence', () => {
   let server: Server;
   let result: PreservationResults;
   const preserveEvidence = new PreserveEvidence(
-    fakeLogger,
     new HTTPClient(),
     new YoutubeDLVideoDownloader(fakeLogger)
   );
@@ -186,7 +185,6 @@ describe('PreserveEvidence', () => {
     it('should bubble up the errors', async () => {
       await expect(async () => {
         result = await new PreserveEvidence(
-          fakeLogger,
           new FakeHTTPClient(),
           new YoutubeDLVideoDownloader(fakeLogger)
         ).execute({ stepTimeout: 0 })({

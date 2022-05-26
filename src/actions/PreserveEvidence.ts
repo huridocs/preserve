@@ -6,17 +6,14 @@ import { Page } from 'puppeteer';
 // @ts-ignore
 import fullPageScreenshot from 'puppeteer-full-page-screenshot';
 import { EvidenceDB, PreservationOptions, PreservationResults, VideoDownloader } from 'src/types';
-import { Logger } from 'winston';
 import { config } from '../config';
 import { FetchClient } from 'src/types';
 
 export class PreserveEvidence {
-  private logger: Logger;
   private httpClient: FetchClient;
   private videoDownloader: VideoDownloader;
 
-  constructor(logger: Logger, httpClient: FetchClient, videoDownloader: VideoDownloader) {
-    this.logger = logger;
+  constructor(httpClient: FetchClient, videoDownloader: VideoDownloader) {
     this.httpClient = httpClient;
     this.videoDownloader = videoDownloader;
   }
