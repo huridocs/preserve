@@ -12,9 +12,12 @@ import { EvidenceResponse } from 'src/types';
 import { FakeVault } from './FakeVault';
 import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/infrastructure/checksumFile';
-import { ProcessJob } from 'src/actions/ProcessJob';
+import { ProcessJob } from 'src/ProcessJob';
 import { TSAService } from 'src/infrastructure/TSAService';
-import { Cookie, EvidenceDB, JobFunction, JobResults } from 'src/types';
+import { Cookie, EvidenceDB, PreservationResults } from 'src/types';
+import { PreserveEvidence } from 'src/actions/PreserveEvidence';
+import { HTTPClient } from 'src/infrastructure/HTTPClient';
+import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -39,22 +42,28 @@ describe('Preserve API', () => {
   let vault: Vault;
   const user1Id = new ObjectId();
 
-  const job: JobFunction = async (evidence: EvidenceDB) => {
-    await timeout(100);
-    await mkdir(`${config.data_path}/${evidence._id}`);
-    await appendFile(`${config.data_path}/${evidence._id}/screenshot.jpg`, 'screenshot');
-    await appendFile(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
-    await appendFile(`${config.data_path}/${evidence._id}/content.txt`, 'content');
-    const result: JobResults = {
-      title: 'title',
-      downloads: [
-        { path: `${evidence._id}/content.txt`, type: 'content' },
-        { path: `${evidence._id}/screenshot.jpg`, type: 'screenshot' },
-        { path: `${evidence._id}/video.mp4`, type: 'video' },
-      ],
-    };
-    return result;
-  };
+  class FakePreserveEvidence extends PreserveEvidence {
+    constructor() {
+      super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
+    }
+
+    async execute(evidence: EvidenceDB) {
+      await timeout(100);
+      await mkdir(`${config.data_path}/${evidence._id}`);
+      await appendFile(`${config.data_path}/${evidence._id}/screenshot.jpg`, 'screenshot');
+      await appendFile(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
+      await appendFile(`${config.data_path}/${evidence._id}/content.txt`, 'content');
+      const result: PreservationResults = {
+        title: 'title',
+        downloads: [
+          { path: `${evidence._id}/content.txt`, type: 'content' },
+          { path: `${evidence._id}/screenshot.jpg`, type: 'screenshot' },
+          { path: `${evidence._id}/video.mp4`, type: 'video' },
+        ],
+      };
+      return result;
+    }
+  }
 
   class FakeTSAService extends TSAService {
     async timestamp(_file: string, folder: string) {
@@ -74,7 +83,7 @@ describe('Preserve API', () => {
     db = await connectDB('preserve-api-testing');
     vault = new Vault(db);
     app = Api(vault, fakeLogger);
-    const action = new ProcessJob(job, vault, fakeLogger, new FakeTSAService());
+    const action = new ProcessJob(vault, fakeLogger, new FakeTSAService());
     queue = new QueueProcessor(action, 0);
   });
 
@@ -147,7 +156,7 @@ describe('Preserve API', () => {
     it('should set the job to PROCESSING', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      queue.start();
+      queue.start(new FakePreserveEvidence());
       await waitForExpect(async () => {
         const { body } = await get(newEvidence.data.links.self).expect(200);
 
@@ -167,7 +176,7 @@ describe('Preserve API', () => {
     it('should timestamp the evidence using TSAService', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      queue.start();
+      queue.start(new FakePreserveEvidence());
       await queue.stop();
 
       const processedInDb = await vault.getOne(new ObjectId(newEvidence.data.id), {
@@ -187,7 +196,7 @@ describe('Preserve API', () => {
     it('should process the job', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      queue.start();
+      queue.start(new FakePreserveEvidence());
       await queue.stop();
 
       const { body } = await get(newEvidence.data.links.self).expect(200);
@@ -228,7 +237,7 @@ describe('Preserve API', () => {
     it('should be able to download files on the processed job', async () => {
       const { body: newEvidence } = await post().expect(202);
 
-      queue.start();
+      queue.start(new FakePreserveEvidence());
       await queue.stop();
       const { body } = await get(newEvidence.data.links.self).expect(200);
 
@@ -280,7 +289,7 @@ describe('Preserve API', () => {
       it('should respond 404 when trying to download files belonging to another token', async () => {
         const { body: newEvidence } = await post().expect(202);
 
-        queue.start();
+        queue.start(new FakePreserveEvidence());
         await queue.stop();
 
         const { body } = await get(newEvidence.data.links.self).expect(200);
@@ -344,13 +353,19 @@ describe('Preserve API', () => {
           app = Api(vault, fakeLogger);
           const { body: newEvidence } = await post().expect(202);
 
-          const fakeJob: JobFunction = async () => {
-            throw new Error('Job error');
-          };
+          class ErrorPreserveEvidence extends PreserveEvidence {
+            constructor() {
+              super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
+            }
 
-          const action = new ProcessJob(fakeJob, vault, fakeLogger, new FakeTSAService());
+            async execute(): Promise<PreservationResults> {
+              throw new Error('Job error');
+            }
+          }
+
+          const action = new ProcessJob(vault, fakeLogger, new FakeTSAService());
           queue = new QueueProcessor(action, 0);
-          queue.start();
+          queue.start(new ErrorPreserveEvidence());
           await waitForExpect(async () => {
             const { body } = await get(newEvidence.data.links.self).expect(200);
             expect(body).toMatchObject({

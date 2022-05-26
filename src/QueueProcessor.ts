@@ -1,28 +1,29 @@
-import { ProcessJob } from './actions/ProcessJob';
+import { PreserveEvidence } from './actions/PreserveEvidence';
+import { ProcessJob } from './ProcessJob';
 
 const timeout = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 export class QueueProcessor {
   private interval: number;
-  private action: ProcessJob;
+  private processJob: ProcessJob;
   private resolvePromise: undefined | (() => void);
 
-  constructor(action: ProcessJob, interval = 1000) {
-    this.action = action;
+  constructor(processJob: ProcessJob, interval = 1000) {
+    this.processJob = processJob;
     this.interval = interval;
   }
 
-  async processJobs() {
+  async processJobs(action: PreserveEvidence) {
     while (!this.resolvePromise) {
       await timeout(this.interval);
-      await this.action.execute();
+      await this.processJob.execute(action);
     }
     this.resolvePromise();
   }
 
-  start() {
+  start(action: PreserveEvidence) {
     this.resolvePromise = undefined;
-    this.processJobs();
+    this.processJobs(action);
   }
 
   async stop(): Promise<void> {

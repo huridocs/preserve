@@ -4,12 +4,12 @@ import { Server } from 'http';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from 'src/config';
-import { JobResults } from 'src/types';
-import { microlinkJob } from 'src/microlinkJob';
+import { PreservationResults } from 'src/types';
 import { HTTPClient } from 'src/infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
 import { FakeHTTPClient } from './FakeHTTPClient';
 import { fakeLogger } from './fakeLogger';
+import { PreserveEvidence } from 'src/actions/PreserveEvidence';
 
 async function exists(path: string) {
   try {
@@ -20,9 +20,13 @@ async function exists(path: string) {
   }
 }
 
-describe('microlinkJob', () => {
+describe('PreserveEvidence', () => {
   let server: Server;
-  let result: JobResults;
+  let result: PreservationResults;
+  const preserveEvidence = new PreserveEvidence(
+    new HTTPClient(),
+    new YoutubeDLVideoDownloader(fakeLogger)
+  );
 
   beforeAll(async () => {
     jest.spyOn(console, 'log').mockImplementation(() => false);
@@ -63,23 +67,19 @@ describe('microlinkJob', () => {
 
   describe('preserving HTML sites', () => {
     beforeAll(async () => {
-      result = await microlinkJob(
-        fakeLogger,
-        new HTTPClient(),
-        new YoutubeDLVideoDownloader(fakeLogger),
+      result = await preserveEvidence.execute(
         {
-          stepTimeout: 0,
-        }
-      )({
-        _id: new ObjectId(),
-        user: new ObjectId(),
-        cookies: [{ name: 'a_name', value: 'a_value', domain: 'localhost' }],
-        attributes: {
-          status: 'PROCESSING',
-          url: 'http://localhost:5960/test_page',
-          downloads: [],
+          _id: new ObjectId(),
+          user: new ObjectId(),
+          cookies: [{ name: 'a_name', value: 'a_value', domain: 'localhost' }],
+          attributes: {
+            status: 'PROCESSING',
+            url: 'http://localhost:5960/test_page',
+            downloads: [],
+          },
         },
-      });
+        { stepTimeout: 0 }
+      );
     }, 20000);
 
     it('should return the url title', async () => {
@@ -139,23 +139,19 @@ describe('microlinkJob', () => {
 
   describe('preserving PDF URLs', () => {
     it('should preserve only the served file', async () => {
-      result = await microlinkJob(
-        fakeLogger,
-        new HTTPClient(),
-        new YoutubeDLVideoDownloader(fakeLogger),
+      result = await preserveEvidence.execute(
         {
-          stepTimeout: 0,
-        }
-      )({
-        _id: new ObjectId(),
-        user: new ObjectId(),
-        cookies: [],
-        attributes: {
-          status: 'PROCESSING',
-          url: 'http://localhost:5960/pdf_route',
-          downloads: [],
+          _id: new ObjectId(),
+          user: new ObjectId(),
+          cookies: [],
+          attributes: {
+            status: 'PROCESSING',
+            url: 'http://localhost:5960/pdf_route',
+            downloads: [],
+          },
         },
-      });
+        { stepTimeout: 0 }
+      );
 
       expect(
         await exists(
@@ -190,19 +186,22 @@ describe('microlinkJob', () => {
   describe('on page errors', () => {
     it('should bubble up the errors', async () => {
       await expect(async () => {
-        result = await microlinkJob(
-          fakeLogger,
-          new FakeHTTPClient()
-        )({
-          _id: new ObjectId(),
-          user: new ObjectId(),
-          cookies: [],
-          attributes: {
-            status: 'PROCESSING',
-            url: 'chrome://crash',
-            downloads: [],
+        result = await new PreserveEvidence(
+          new FakeHTTPClient(),
+          new YoutubeDLVideoDownloader(fakeLogger)
+        ).execute(
+          {
+            _id: new ObjectId(),
+            user: new ObjectId(),
+            cookies: [],
+            attributes: {
+              status: 'PROCESSING',
+              url: 'chrome://crash',
+              downloads: [],
+            },
           },
-        });
+          { stepTimeout: 0 }
+        );
       }).rejects.toEqual(new Error('Page crashed!'));
     });
   });

@@ -16,10 +16,6 @@ export type Cookie = {
   storeId?: string;
 };
 
-export type JobOptions = {
-  stepTimeout: number;
-};
-
 export type status = 'SCHEDULED' | 'PROCESSING' | 'PROCESSED' | 'ERROR';
 
 export type EvidenceBase = {
@@ -43,12 +39,14 @@ export type EvidenceDB = EvidenceBase & {
   error?: string;
 };
 
-export type JobResults = {
+export type PreservationOptions = {
+  stepTimeout: number;
+};
+
+export type PreservationResults = {
   title: string;
   downloads: { path: string; type: string }[];
 };
-
-export type JobFunction = (evidence: EvidenceDB) => Promise<JobResults>;
 
 export type EvidenceResponse = EvidenceBase & { id: string; links: { self: string } };
 

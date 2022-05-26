@@ -1,13 +1,15 @@
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
-import { ProcessJob } from './actions/ProcessJob';
+import { ProcessJob } from './ProcessJob';
 import { config } from './config';
 import { connectDB, disconnectDB } from './infrastructure/DB';
 import { logger } from './infrastructure/logger';
-import { microlinkJob } from './microlinkJob';
 import { QueueProcessor } from './QueueProcessor';
 import { TSAService } from './infrastructure/TSAService';
 import { Vault } from './infrastructure/Vault';
+import { PreserveEvidence } from './actions/PreserveEvidence';
+import { HTTPClient } from './infrastructure/HTTPClient';
+import { YoutubeDLVideoDownloader } from './infrastructure/YoutubeDLVideoDownloader';
 
 const uncaughtError = (error: unknown) => {
   throw error;
@@ -30,9 +32,15 @@ connectDB().then(db => {
     });
   }
   const vault = new Vault(db);
-  const processJob = new ProcessJob(microlinkJob(logger), vault, logger, new TSAService());
+
+  const preserveEvidence = new PreserveEvidence(
+    new HTTPClient(),
+    new YoutubeDLVideoDownloader(logger)
+  );
+
+  const processJob = new ProcessJob(vault, logger, new TSAService());
   const queue = new QueueProcessor(processJob);
-  queue.start();
+  queue.start(preserveEvidence);
   logger.info(`Preserve jobs started`);
 
   process.on('SIGTERM', () => {

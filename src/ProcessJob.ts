@@ -2,32 +2,31 @@ import { mkdir, writeFile } from 'fs/promises';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { TSAService } from 'src/infrastructure/TSAService';
+import { EvidenceBase, PreservationResults } from 'src/types';
 import { Logger } from 'winston';
-import { checksumFile } from '../infrastructure/checksumFile';
-import { config } from '../config';
-import { EvidenceBase, JobFunction, JobResults } from 'src/types';
-import { Vault } from '../infrastructure/Vault';
+import { PreserveEvidence } from './actions/PreserveEvidence';
+import { config } from './config';
+import { checksumFile } from './infrastructure/checksumFile';
+import { Vault } from './infrastructure/Vault';
 
 export class ProcessJob {
   private vault: Vault;
   private logger: Logger;
-  private job: JobFunction;
   private tsaservice: TSAService;
 
-  constructor(job: JobFunction, vault: Vault, logger: Logger, tsaservice: TSAService) {
+  constructor(vault: Vault, logger: Logger, tsaservice: TSAService) {
     this.vault = vault;
     this.logger = logger;
-    this.job = job;
     this.tsaservice = tsaservice;
   }
 
-  async execute() {
+  async execute(action: PreserveEvidence) {
     const evidence = await this.vault.processingNext();
     if (evidence) {
       try {
         this.logger.info(`Preserving evidence for ${evidence.attributes.url}`);
         const start = Date.now();
-        const jobResult = await this.job(evidence);
+        const jobResult = await action.execute(evidence);
         const downloads = await ProcessJob.checksumDownloads(jobResult.downloads);
         const { tsa_files, date } = await this.trustedTimestamp(evidence._id, downloads);
         await this.vault.update(evidence._id, {
@@ -82,7 +81,7 @@ export class ProcessJob {
     };
   }
 
-  private static async checksumDownloads(downloads: JobResults['downloads']) {
+  private static async checksumDownloads(downloads: PreservationResults['downloads']) {
     const hashedDownloads: EvidenceBase['attributes']['downloads'] = [];
     for (const download of downloads) {
       hashedDownloads.push({
