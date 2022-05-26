@@ -14,7 +14,10 @@ import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/infrastructure/checksumFile';
 import { ProcessJob } from 'src/actions/ProcessJob';
 import { TSAService } from 'src/infrastructure/TSAService';
-import { Cookie, EvidenceDB, JobFunction, JobResults } from 'src/types';
+import { Cookie, EvidenceDB, JobResults } from 'src/types';
+import { PreserveEvidence } from 'src/actions/PreserveEvidence';
+import { HTTPClient } from 'src/infrastructure/HTTPClient';
+import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -39,22 +42,30 @@ describe('Preserve API', () => {
   let vault: Vault;
   const user1Id = new ObjectId();
 
-  const job: JobFunction = async (evidence: EvidenceDB) => {
-    await timeout(100);
-    await mkdir(`${config.data_path}/${evidence._id}`);
-    await appendFile(`${config.data_path}/${evidence._id}/screenshot.jpg`, 'screenshot');
-    await appendFile(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
-    await appendFile(`${config.data_path}/${evidence._id}/content.txt`, 'content');
-    const result: JobResults = {
-      title: 'title',
-      downloads: [
-        { path: `${evidence._id}/content.txt`, type: 'content' },
-        { path: `${evidence._id}/screenshot.jpg`, type: 'screenshot' },
-        { path: `${evidence._id}/video.mp4`, type: 'video' },
-      ],
-    };
-    return result;
-  };
+  class FakePreserveEvidence extends PreserveEvidence {
+    constructor() {
+      super(fakeLogger, new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
+    }
+
+    execute() {
+      return async (evidence: EvidenceDB): Promise<JobResults> => {
+        await timeout(100);
+        await mkdir(`${config.data_path}/${evidence._id}`);
+        await appendFile(`${config.data_path}/${evidence._id}/screenshot.jpg`, 'screenshot');
+        await appendFile(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
+        await appendFile(`${config.data_path}/${evidence._id}/content.txt`, 'content');
+        const result: JobResults = {
+          title: 'title',
+          downloads: [
+            { path: `${evidence._id}/content.txt`, type: 'content' },
+            { path: `${evidence._id}/screenshot.jpg`, type: 'screenshot' },
+            { path: `${evidence._id}/video.mp4`, type: 'video' },
+          ],
+        };
+        return result;
+      };
+    }
+  }
 
   class FakeTSAService extends TSAService {
     async timestamp(_file: string, folder: string) {
@@ -74,7 +85,12 @@ describe('Preserve API', () => {
     db = await connectDB('preserve-api-testing');
     vault = new Vault(db);
     app = Api(vault, fakeLogger);
-    const action = new ProcessJob(job, vault, fakeLogger, new FakeTSAService());
+    const action = new ProcessJob(
+      new FakePreserveEvidence(),
+      vault,
+      fakeLogger,
+      new FakeTSAService()
+    );
     queue = new QueueProcessor(action, 0);
   });
 
@@ -344,11 +360,24 @@ describe('Preserve API', () => {
           app = Api(vault, fakeLogger);
           const { body: newEvidence } = await post().expect(202);
 
-          const fakeJob: JobFunction = async () => {
-            throw new Error('Job error');
-          };
+          class ErrorPreserveEvidence extends PreserveEvidence {
+            constructor() {
+              super(fakeLogger, new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
+            }
 
-          const action = new ProcessJob(fakeJob, vault, fakeLogger, new FakeTSAService());
+            execute() {
+              return async (): Promise<JobResults> => {
+                throw new Error('Job error');
+              };
+            }
+          }
+
+          const action = new ProcessJob(
+            new ErrorPreserveEvidence(),
+            vault,
+            fakeLogger,
+            new FakeTSAService()
+          );
           queue = new QueueProcessor(action, 0);
           queue.start();
           await waitForExpect(async () => {

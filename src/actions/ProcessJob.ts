@@ -5,19 +5,20 @@ import { TSAService } from 'src/infrastructure/TSAService';
 import { Logger } from 'winston';
 import { checksumFile } from '../infrastructure/checksumFile';
 import { config } from '../config';
-import { EvidenceBase, JobFunction, JobResults } from 'src/types';
+import { EvidenceBase, JobResults } from 'src/types';
 import { Vault } from '../infrastructure/Vault';
+import { PreserveEvidence } from './PreserveEvidence';
 
 export class ProcessJob {
   private vault: Vault;
   private logger: Logger;
-  private job: JobFunction;
+  private action: PreserveEvidence;
   private tsaservice: TSAService;
 
-  constructor(job: JobFunction, vault: Vault, logger: Logger, tsaservice: TSAService) {
+  constructor(action: PreserveEvidence, vault: Vault, logger: Logger, tsaservice: TSAService) {
     this.vault = vault;
     this.logger = logger;
-    this.job = job;
+    this.action = action;
     this.tsaservice = tsaservice;
   }
 
@@ -27,7 +28,7 @@ export class ProcessJob {
       try {
         this.logger.info(`Preserving evidence for ${evidence.attributes.url}`);
         const start = Date.now();
-        const jobResult = await this.job(evidence);
+        const jobResult = await this.action.execute({ stepTimeout: 2000 })(evidence);
         const downloads = await ProcessJob.checksumDownloads(jobResult.downloads);
         const { tsa_files, date } = await this.trustedTimestamp(evidence._id, downloads);
         await this.vault.update(evidence._id, {
