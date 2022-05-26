@@ -12,7 +12,7 @@ import { EvidenceResponse } from 'src/types';
 import { FakeVault } from './FakeVault';
 import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/infrastructure/checksumFile';
-import { ProcessJob } from 'src/actions/ProcessJob';
+import { ProcessJob } from 'src/ProcessJob';
 import { TSAService } from 'src/infrastructure/TSAService';
 import { Cookie, EvidenceDB, PreservationResults } from 'src/types';
 import { PreserveEvidence } from 'src/actions/PreserveEvidence';

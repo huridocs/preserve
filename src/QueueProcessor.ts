@@ -1,4 +1,4 @@
-import { ProcessJob } from './actions/ProcessJob';
+import { ProcessJob } from './ProcessJob';
 
 const timeout = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds));
 

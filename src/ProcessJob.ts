@@ -2,12 +2,12 @@ import { mkdir, writeFile } from 'fs/promises';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { TSAService } from 'src/infrastructure/TSAService';
-import { Logger } from 'winston';
-import { checksumFile } from '../infrastructure/checksumFile';
-import { config } from '../config';
 import { EvidenceBase, PreservationResults } from 'src/types';
-import { Vault } from '../infrastructure/Vault';
-import { PreserveEvidence } from './PreserveEvidence';
+import { Logger } from 'winston';
+import { PreserveEvidence } from './actions/PreserveEvidence';
+import { config } from './config';
+import { checksumFile } from './infrastructure/checksumFile';
+import { Vault } from './infrastructure/Vault';
 
 export class ProcessJob {
   private vault: Vault;
