@@ -1,9 +1,6 @@
 name: Smoke test production build
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
 
 concurrency:
