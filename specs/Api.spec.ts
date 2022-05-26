@@ -44,26 +44,24 @@ describe('Preserve API', () => {
 
   class FakePreserveEvidence extends PreserveEvidence {
     constructor() {
-      super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
+      super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger), { stepTimeout: 0 });
     }
 
-    execute() {
-      return async (evidence: EvidenceDB): Promise<PreservationResults> => {
-        await timeout(100);
-        await mkdir(`${config.data_path}/${evidence._id}`);
-        await appendFile(`${config.data_path}/${evidence._id}/screenshot.jpg`, 'screenshot');
-        await appendFile(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
-        await appendFile(`${config.data_path}/${evidence._id}/content.txt`, 'content');
-        const result: PreservationResults = {
-          title: 'title',
-          downloads: [
-            { path: `${evidence._id}/content.txt`, type: 'content' },
-            { path: `${evidence._id}/screenshot.jpg`, type: 'screenshot' },
-            { path: `${evidence._id}/video.mp4`, type: 'video' },
-          ],
-        };
-        return result;
+    async execute(evidence: EvidenceDB) {
+      await timeout(100);
+      await mkdir(`${config.data_path}/${evidence._id}`);
+      await appendFile(`${config.data_path}/${evidence._id}/screenshot.jpg`, 'screenshot');
+      await appendFile(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
+      await appendFile(`${config.data_path}/${evidence._id}/content.txt`, 'content');
+      const result: PreservationResults = {
+        title: 'title',
+        downloads: [
+          { path: `${evidence._id}/content.txt`, type: 'content' },
+          { path: `${evidence._id}/screenshot.jpg`, type: 'screenshot' },
+          { path: `${evidence._id}/video.mp4`, type: 'video' },
+        ],
       };
+      return result;
     }
   }
 
@@ -362,13 +360,11 @@ describe('Preserve API', () => {
 
           class ErrorPreserveEvidence extends PreserveEvidence {
             constructor() {
-              super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger));
+              super(new HTTPClient(), new YoutubeDLVideoDownloader(fakeLogger), { stepTimeout: 0 });
             }
 
-            execute() {
-              return async (): Promise<PreservationResults> => {
-                throw new Error('Job error');
-              };
+            async execute(): Promise<PreservationResults> {
+              throw new Error('Job error');
             }
           }
 

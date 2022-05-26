@@ -35,7 +35,8 @@ connectDB().then(db => {
 
   const preserveEvidence = new PreserveEvidence(
     new HTTPClient(),
-    new YoutubeDLVideoDownloader(logger)
+    new YoutubeDLVideoDownloader(logger),
+    { stepTimeout: 2000 }
   );
 
   const processJob = new ProcessJob(preserveEvidence, vault, logger, new TSAService());

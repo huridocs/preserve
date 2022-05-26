@@ -28,7 +28,7 @@ export class ProcessJob {
       try {
         this.logger.info(`Preserving evidence for ${evidence.attributes.url}`);
         const start = Date.now();
-        const jobResult = await this.action.execute({ stepTimeout: 2000 })(evidence);
+        const jobResult = await this.action.execute(evidence);
         const downloads = await ProcessJob.checksumDownloads(jobResult.downloads);
         const { tsa_files, date } = await this.trustedTimestamp(evidence._id, downloads);
         await this.vault.update(evidence._id, {
