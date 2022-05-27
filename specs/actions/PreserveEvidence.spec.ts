@@ -4,11 +4,11 @@ import { Server } from 'http';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { config } from 'src/config';
-import { PreservationResults } from 'src/types';
+import { EvidenceDB, PreservationResults } from 'src/types';
 import { HTTPClient } from 'src/infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
-import { FakeHTTPClient } from './FakeHTTPClient';
-import { fakeLogger } from './fakeLogger';
+import { FakeHTTPClient } from '../FakeHTTPClient';
+import { fakeLogger } from '../fakeLogger';
 import { PreserveEvidence } from 'src/actions/PreserveEvidence';
 
 async function exists(path: string) {
@@ -23,10 +23,8 @@ async function exists(path: string) {
 describe('PreserveEvidence', () => {
   let server: Server;
   let result: PreservationResults;
-  const preserveEvidence = new PreserveEvidence(
-    new HTTPClient(),
-    new YoutubeDLVideoDownloader(fakeLogger)
-  );
+  const videoDownloader = new YoutubeDLVideoDownloader(fakeLogger);
+  const preserveEvidence = new PreserveEvidence(new HTTPClient(), videoDownloader);
 
   beforeAll(async () => {
     jest.spyOn(console, 'log').mockImplementation(() => false);
@@ -134,6 +132,30 @@ describe('PreserveEvidence', () => {
 
     it('should not include video when not supported', async () => {
       expect(result.downloads.find(d => d.type === 'video')).not.toBeDefined();
+    });
+
+    it('should download videos', async () => {
+      const videoDownloaderSpy = jest.spyOn(videoDownloader, 'download');
+      const evidence: EvidenceDB = {
+        _id: new ObjectId(),
+        user: new ObjectId(),
+        cookies: [
+          { name: 'a_name', value: 'a_value', domain: 'localhost' },
+          { name: 'another_name', value: 'another_value', domain: 'localhost' },
+        ],
+        attributes: {
+          status: 'PROCESSING',
+          url: 'http://localhost:5960/test_page',
+          downloads: [],
+        },
+      };
+      result = await preserveEvidence.execute(evidence, { stepTimeout: 0 });
+
+      expect(videoDownloaderSpy).toHaveBeenCalledWith(evidence, {
+        format: 'best',
+        output: expect.stringContaining(path.join(evidence._id.toString(), 'video.mp4')),
+        addHeader: 'Cookie:a_name=a_value;another_name=another_value',
+      });
     });
   });
 
