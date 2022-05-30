@@ -157,7 +157,7 @@ describe('PreserveEvidence', () => {
         addHeader: 'Cookie:a_name=a_value;another_name=another_value',
       });
       videoDownloaderSpy.mockClear();
-    });
+    }, 20000);
   });
 
   describe('preserving PDF URLs', () => {
@@ -224,7 +224,7 @@ describe('PreserveEvidence', () => {
 
       expect(videoDownloaderSpy).not.toHaveBeenCalled();
       videoDownloaderSpy.mockClear();
-    });
+    }, 20000);
   });
 
   describe('on page errors', () => {
