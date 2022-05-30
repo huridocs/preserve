@@ -12,6 +12,7 @@ import { HTTPClient } from './infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from './infrastructure/YoutubeDLVideoDownloader';
 
 const uncaughtError = (error: unknown) => {
+  Sentry.captureException(error);
   throw error;
 };
 process.on('unhandledRejection', uncaughtError);
