@@ -42,6 +42,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: production
+    shm_size: '512m'
     volumes:
       - ./files:/home/user/app/files
     depends_on:
