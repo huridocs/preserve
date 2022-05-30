@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from 'fs/promises';
 import { ObjectId } from 'mongodb';
 import path from 'path';
+import * as Sentry from '@sentry/node';
 import { TSAService } from 'src/infrastructure/TSAService';
 import { EvidenceBase, PreservationResults } from 'src/types';
 import { Logger } from 'winston';
@@ -21,6 +22,14 @@ export class ProcessJob {
   }
 
   async execute(action: PreserveEvidence) {
+    const sentryTransaction = Sentry.startTransaction({
+      op: 'process-job',
+      name: action.constructor.name,
+    });
+    Sentry.configureScope(scope => {
+      scope.setSpan(sentryTransaction);
+    });
+
     const evidence = await this.vault.processingNext();
     if (evidence) {
       try {
@@ -43,6 +52,7 @@ export class ProcessJob {
         this.logger.info(
           `Evidence preserved in ${(finish - start) / 1000} seconds for ${evidence.attributes.url}`
         );
+        sentryTransaction.finish();
       } catch (e) {
         await this.vault.update(evidence._id, {
           attributes: {
@@ -52,6 +62,7 @@ export class ProcessJob {
           },
           error: e instanceof Error ? e.message : 'unknown error',
         });
+        Sentry.captureException(e);
       }
     }
   }
