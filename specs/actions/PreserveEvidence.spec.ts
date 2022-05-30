@@ -153,14 +153,15 @@ describe('PreserveEvidence', () => {
 
       expect(videoDownloaderSpy).toHaveBeenCalledWith(evidence, {
         format: 'best',
-        output: expect.stringContaining(path.join(evidence._id.toString(), 'video.mp4')),
+        output: expect.stringContaining(`files/downloads/${evidence._id.toString()}/video.mp4`),
         addHeader: 'Cookie:a_name=a_value;another_name=another_value',
       });
+      videoDownloaderSpy.mockClear();
     });
   });
 
   describe('preserving PDF URLs', () => {
-    it('should preserve only the served file', async () => {
+    beforeAll(async () => {
       result = await preserveEvidence.execute(
         {
           _id: new ObjectId(),
@@ -174,7 +175,9 @@ describe('PreserveEvidence', () => {
         },
         { stepTimeout: 0 }
       );
+    }, 20000);
 
+    it('should preserve only the served file', async () => {
       expect(
         await exists(
           path.join(
@@ -216,11 +219,12 @@ describe('PreserveEvidence', () => {
           downloads: [],
         },
       };
+
       result = await preserveEvidence.execute(evidence, { stepTimeout: 0 });
 
       expect(videoDownloaderSpy).not.toHaveBeenCalled();
+      videoDownloaderSpy.mockClear();
     });
-
   });
 
   describe('on page errors', () => {
