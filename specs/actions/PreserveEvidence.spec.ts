@@ -203,6 +203,24 @@ describe('PreserveEvidence', () => {
       expect(originalFile).toBe(preservedFile);
       expect(result.title).toBe('pdf_route');
     }, 10000);
+
+    it('should not download videos', async () => {
+      const videoDownloaderSpy = jest.spyOn(videoDownloader, 'download');
+      const evidence: EvidenceDB = {
+        _id: new ObjectId(),
+        user: new ObjectId(),
+        cookies: [],
+        attributes: {
+          status: 'PROCESSING',
+          url: 'http://localhost:5960/pdf_route',
+          downloads: [],
+        },
+      };
+      result = await preserveEvidence.execute(evidence, { stepTimeout: 0 });
+
+      expect(videoDownloaderSpy).not.toHaveBeenCalled();
+    });
+
   });
 
   describe('on page errors', () => {
