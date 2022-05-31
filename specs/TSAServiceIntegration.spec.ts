@@ -1,11 +1,29 @@
 import { appendFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { config } from 'src/config';
-import { extractTimestampFromTSAResponse, shell } from 'src/infrastructure/shell';
+import { HTTPClient } from 'src/infrastructure/HTTPClient';
+import { shell } from 'src/infrastructure/shell';
 import { TSAService } from 'src/infrastructure/TSAService';
 
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toMatchDate(date: Date): R;
+    }
+  }
+}
+
+expect.extend({
+  toMatchDate(expected, toMatch) {
+    const match = expected.toISOString().split('T')[0] === toMatch.toISOString().split('T')[0];
+    return match
+      ? { pass: true, message: () => `Expected ${expected} to be the same date as ${toMatch}` }
+      : { pass: false, message: () => `Expected ${expected} to be the same date as ${toMatch}` };
+  },
+});
+
 describe('TSAService', () => {
-  const service = new TSAService();
+  const service = new TSAService(new HTTPClient());
   let file: string;
 
   beforeAll(async () => {
@@ -35,8 +53,7 @@ describe('TSAService', () => {
         `openssl ts -verify -in ${timeStampResponseFullPath} -queryfile ${timeStampRequestFullPath} -CAfile ${config.freetsa.pemFile} -untrusted ${config.freetsa.crtFile}`
       );
 
-      const timestamp = await extractTimestampFromTSAResponse(timeStampResponseFullPath);
-      expect(date).toEqual(new Date(timestamp));
+      expect(date).toMatchDate(new Date());
     });
   });
 });

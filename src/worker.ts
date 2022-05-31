@@ -39,7 +39,7 @@ connectDB().then(db => {
     new YoutubeDLVideoDownloader(logger)
   );
 
-  const processJob = new ProcessJob(vault, logger, new TSAService());
+  const processJob = new ProcessJob(vault, logger, new TSAService(new HTTPClient()));
   const queue = new QueueProcessor(processJob);
   queue.start(preserveEvidence);
   logger.info(`Preserve jobs started`);

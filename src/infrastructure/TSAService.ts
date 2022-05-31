@@ -1,9 +1,16 @@
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
+import { FetchClient } from 'src/types';
 import { config } from '../config';
-import { extractTimestampFromTSAResponse, shell } from './shell';
+import { shell } from './shell';
 
 export class TSAService {
+  private httpClient: FetchClient;
+
+  constructor(httpClient: FetchClient) {
+    this.httpClient = httpClient;
+  }
+
   async timestamp(file: string, subFolderName: string) {
     const timeStampRequestPath = `${subFolderName}/tsaRequest.tsq`;
     const timeStampResponsePath = `${subFolderName}/tsaResponse.tsr`;
@@ -15,7 +22,7 @@ export class TSAService {
       )}`
     );
 
-    const response = await fetch('https://freetsa.org/tsr', {
+    const response = await this.httpClient.fetch('https://freetsa.org/tsr', {
       method: 'POST',
       body: await readFile(path.join(config.trusted_timestamps_path, timeStampRequestPath)),
       headers: {
@@ -31,7 +38,11 @@ export class TSAService {
         tsRequestRelativePath: timeStampRequestPath,
         tsResponseRelativePath: timeStampResponsePath,
       },
-      date: new Date(await extractTimestampFromTSAResponse(responseFullPath)),
+      date: new Date(await TSAService.extractTimestampFromTSAResponse(responseFullPath)),
     };
+  }
+
+  private static async extractTimestampFromTSAResponse(tsaResponseFile: string) {
+    return shell(`openssl ts -reply -in ${tsaResponseFile} -text | grep Time | cut -d":" -f2-`);
   }
 }
