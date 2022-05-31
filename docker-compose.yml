@@ -4,7 +4,6 @@ services:
     container_name: preserve-api
     init: true
     restart: unless-stopped
-    platform: linux/amd64
     environment:
       - MONGO_URI=mongodb://mongo
       - USER_ID=${USER_ID}
@@ -28,7 +27,6 @@ services:
     init: true
     restart: unless-stopped
     stop_grace_period: 30s
-    platform: linux/amd64
     environment:
       - MONGO_URI=mongodb://mongo
       - USER_ID=${USER_ID}

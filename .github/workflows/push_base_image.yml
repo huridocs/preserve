@@ -4,6 +4,7 @@ on:
   push:
     branches: ['master']
     paths:
+      - 'package.json'
       - 'yarn.lock'
       - 'base.Dockerfile'
       - 'entrypoint.sh'

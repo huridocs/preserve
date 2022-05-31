@@ -18,3 +18,7 @@ To start the containers exposing the ports to your host machine:
 ```shell
 ./run start:local
 ```
+
+If you are working with Mac Apple Silicon chips, you will need to set your Docker default target platform environment variable:
+
+`export DOCKER_DEFAULT_PLATFORM=linux/amd64`
