@@ -22,6 +22,14 @@ function stop {
   docker-compose stop
 }
 
+function docker:build {
+  docker build -f base.Dockerfile -t ghcr.io/huridocs/preserve-base:latest .
+}
+
+function docker:push {
+  docker push ghcr.io/huridocs/preserve-base:latest
+}
+
 function help {
   printf "%s <task> \n\nTasks:\n" "${0}"
   compgen -A function | grep -v "^_" | cat -n
