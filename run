@@ -3,7 +3,7 @@
 set -eo pipefail
 
 function start {
-  docker-compose up --build -d "${@}"
+  docker-compose pull && docker-compose up --build -d "${@}"
 }
 
 function start:local {
