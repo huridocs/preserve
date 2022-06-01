@@ -14,6 +14,7 @@ services:
       target: testing
     volumes:
       - ./src:/home/user/app/src
+      - ./specs:/home/user/app/specs
   mongo:
     ports:
       - "27019:27017"
