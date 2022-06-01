@@ -7,7 +7,7 @@ function start {
 }
 
 function start:local {
-  docker-compose -f docker-compose.yml -f docker-compose.local.yml up --build -d "${@}"
+  docker pull ghcr.io/huridocs/preserve-base:latest && docker-compose -f docker-compose.yml -f docker-compose.local.yml up --build -d "${@}"
 }
 
 function bash:api {
