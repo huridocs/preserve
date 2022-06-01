@@ -1,6 +1,7 @@
 name: Create and publish base Docker image
 
 on:
+  workflow_dispatch:
   push:
     branches: ['master']
     paths:
