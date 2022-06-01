@@ -90,15 +90,20 @@ export class PreserveEvidence {
         const text = await page.evaluate(() => document.body.innerText);
         const content_path = path.join(evidence._id.toString(), 'content.txt');
         await appendFile(path.join(evidence_dir, 'content.txt'), text);
+        const title = (await page.title()) || evidence.attributes.url;
+
+        await browserless.destroyContext();
+        await browserlessFactory.close();
 
         const video_path = await this.videoDownloader.download(evidence, {
           output: path.join(evidence_dir, 'video.mp4'),
           format: 'best',
           addHeader: `Cookie:${cookie}`,
+          maxDownloads: 1,
         });
 
         const result: PreservationResults = {
-          title: (await page.title()) || evidence.attributes.url,
+          title,
           downloads: [
             { path: html_content_path, type: 'content' },
             { path: content_path, type: 'content' },
@@ -108,8 +113,6 @@ export class PreserveEvidence {
           ],
         };
 
-        await browserless.destroyContext();
-        await browserlessFactory.close();
         resolve(result);
       } catch (e) {
         reject(e);

@@ -175,6 +175,7 @@ describe('PreserveEvidence', () => {
         format: 'best',
         output: `${config.data_path}/${evidence._id.toString()}/video.mp4`,
         addHeader: 'Cookie:a_name=a_value;another_name=another_value',
+        maxDownloads: 1,
       });
       videoDownloaderSpy.mockClear();
     }, 20000);
