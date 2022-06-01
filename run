@@ -3,7 +3,7 @@
 set -eo pipefail
 
 function start {
-  docker-compose pull && docker-compose up --build -d "${@}"
+  docker pull ghcr.io/huridocs/preserve-base:latest && docker-compose up --build -d "${@}"
 }
 
 function start:local {

@@ -102,7 +102,7 @@ describe('PreserveEvidence', () => {
         { stepTimeout: 0 }
       );
       expect(emptyTitleResult.title).toBe('http://localhost:5960/no_title');
-    });
+    }, 20000);
 
     it('should set the text content in a file and return as a download', async () => {
       const content = await readFile(
