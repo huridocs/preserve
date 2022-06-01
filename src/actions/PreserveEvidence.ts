@@ -98,7 +98,7 @@ export class PreserveEvidence {
         });
 
         const result: PreservationResults = {
-          title: await page.title(),
+          title: (await page.title()) || evidence.attributes.url,
           downloads: [
             { path: html_content_path, type: 'content' },
             { path: content_path, type: 'content' },
