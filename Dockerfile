@@ -8,4 +8,5 @@ ENV NODE_ENV=production
 
 FROM base AS testing
 COPY specs/ ./specs
+COPY jest.config.js setupJest.ts ./
 ENV NODE_ENV=development
