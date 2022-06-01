@@ -30,6 +30,14 @@ function docker:push {
   docker push ghcr.io/huridocs/preserve-base:latest
 }
 
+function test:unit {
+  docker exec preserve-api yarn test
+}
+
+function test:integration {
+  docker exec preserve-api yarn test-integration
+}
+
 function help {
   printf "%s <task> \n\nTasks:\n" "${0}"
   compgen -A function | grep -v "^_" | cat -n

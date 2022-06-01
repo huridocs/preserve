@@ -15,7 +15,7 @@ jobs:
       - name: Build the docker-compose stack
         run: ./run start:local
       - name: Run test suite
-        run: docker exec preserve-api yarn test
+        run: ./run test:unit
   integration:
     runs-on: ubuntu-latest
     steps:
@@ -23,4 +23,4 @@ jobs:
       - name: Build the docker-compose stack
         run: ./run start:local
       - name: Run test suite
-        run: docker exec preserve-api yarn test-integration
+        run: ./run test:integration
