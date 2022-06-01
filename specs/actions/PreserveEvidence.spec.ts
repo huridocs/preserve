@@ -153,7 +153,7 @@ describe('PreserveEvidence', () => {
 
       expect(videoDownloaderSpy).toHaveBeenCalledWith(evidence, {
         format: 'best',
-        output: expect.stringContaining(`files/downloads/${evidence._id.toString()}/video.mp4`),
+        output: `${config.data_path}/${evidence._id.toString()}/video.mp4`,
         addHeader: 'Cookie:a_name=a_value;another_name=another_value',
       });
       videoDownloaderSpy.mockClear();

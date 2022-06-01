@@ -1,4 +1,4 @@
-import { appendFile, mkdir, rm } from 'fs/promises';
+import { appendFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { config } from 'src/config';
 import { extractTimestampFromTSAResponse, shell } from 'src/infrastructure/shell';
@@ -6,16 +6,13 @@ import { TSAService } from 'src/infrastructure/TSAService';
 
 describe('TSAService', () => {
   const service = new TSAService();
-  const folder = `${config.trusted_timestamps_path}test`;
-  const file = `${folder}/file_to_timestamp.txt`;
+  let file: string;
 
   beforeAll(async () => {
+    const folder = `${config.trusted_timestamps_path}/test`;
+    file = `${folder}/file_to_timestamp.txt`;
     await mkdir(`${config.trusted_timestamps_path}/test/`);
     await appendFile(file, 'plain text content');
-  });
-
-  afterAll(async () => {
-    await rm(folder, { recursive: true });
   });
 
   describe('timestamp', () => {
