@@ -16,7 +16,7 @@ jobs:
         ports:
           - 27019:27017
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Setup Nodejs
         uses: actions/setup-node@v3
         with:
@@ -35,7 +35,7 @@ jobs:
         ports:
           - 27019:27017
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Setup Nodejs
         uses: actions/setup-node@v3
         with:
