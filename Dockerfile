@@ -7,4 +7,5 @@ RUN rm -fr ./src && mv -f ./dist/* ./ && rm -fr ./dist ./specs
 ENV NODE_ENV=production
 
 FROM base AS testing
+COPY specs/ ./specs
 ENV NODE_ENV=development
