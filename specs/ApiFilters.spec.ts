@@ -18,7 +18,6 @@ describe('Evidences endpoint pagination', () => {
   const user1 = { _id: user1Id, token: 'user1' };
 
   beforeAll(async () => {
-    config.data_path = `${__dirname}/downloads`;
     db = await connectDB('preserve-api-testing-filters');
     await db.collection('evidences').deleteMany({});
     const vault = new Vault(db);

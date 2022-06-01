@@ -18,6 +18,7 @@ import { Cookie, EvidenceDB, PreservationResults } from 'src/types';
 import { PreserveEvidence } from 'src/actions/PreserveEvidence';
 import { HTTPClient } from 'src/infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
+import { FakeHTTPClient } from './FakeHTTPClient';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -78,12 +79,10 @@ describe('Preserve API', () => {
   }
 
   beforeAll(async () => {
-    config.data_path = `${__dirname}/downloads`;
-    config.trusted_timestamps_path = `${__dirname}/trusted_timestamps`;
     db = await connectDB('preserve-api-testing');
     vault = new Vault(db);
     app = Api(vault, fakeLogger);
-    const action = new ProcessJob(vault, fakeLogger, new FakeTSAService());
+    const action = new ProcessJob(vault, fakeLogger, new FakeTSAService(new FakeHTTPClient()));
     queue = new QueueProcessor(action, 0);
   });
 
@@ -363,7 +362,11 @@ describe('Preserve API', () => {
             }
           }
 
-          const action = new ProcessJob(vault, fakeLogger, new FakeTSAService());
+          const action = new ProcessJob(
+            vault,
+            fakeLogger,
+            new FakeTSAService(new FakeHTTPClient())
+          );
           queue = new QueueProcessor(action, 0);
           queue.start(new ErrorPreserveEvidence());
           await waitForExpect(async () => {

@@ -129,14 +129,16 @@ dist
 .yarn/install-state.gz
 .pnp.*
 .sugarcube_cache.json
-specs/downloads/*
-!specs/downloads/index.html
+
 files/trusted_timestamps/*
 !files/trusted_timestamps/index.html
-specs/trusted_timestamps/*
-!specs/trusted_timestamps/index.html
 files/downloads/*
 !files/downloads/index.html
+
+specs/testing_files/trusted_timestamps/*
+!specs/testing_files/trusted_timestamps/index.html
+specs/testing_files/downloads/*
+!specs/testing_files/downloads/index.html
 
 # Webstorm
 .idea

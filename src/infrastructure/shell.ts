@@ -11,7 +11,3 @@ export const shell = (command: string) => {
     });
   });
 };
-
-export const extractTimestampFromTSAResponse = async (tsaResponseFile: string) => {
-  return shell(`openssl ts -reply -in ${tsaResponseFile} -text | grep Time | cut -d":" -f2-`);
-};
