@@ -29,6 +29,9 @@ describe('PreserveEvidence', () => {
   beforeAll(async () => {
     jest.spyOn(console, 'log').mockImplementation(() => false);
     const app = express();
+    app.get('/no_title', (_req, res) => {
+      res.send(Buffer.from('</head><title></title></head><body></body>'));
+    });
     app.get('/test_page', (_req, res) => {
       res.set('Content-Type', 'text/html');
       const cookie = _req.headers.cookie;
@@ -80,9 +83,26 @@ describe('PreserveEvidence', () => {
       );
     }, 20000);
 
-    it('should return the url title', async () => {
+    it('should return the site title', async () => {
       expect(result.title).toBe('test title');
     });
+
+    it('should use the url as title when title is empty', async () => {
+      const emptyTitleResult = await preserveEvidence.execute(
+        {
+          _id: new ObjectId(),
+          user: new ObjectId(),
+          cookies: [],
+          attributes: {
+            status: 'PROCESSING',
+            url: 'http://localhost:5960/no_title',
+            downloads: [],
+          },
+        },
+        { stepTimeout: 0 }
+      );
+      expect(emptyTitleResult.title).toBe('http://localhost:5960/no_title');
+    }, 20000);
 
     it('should set the text content in a file and return as a download', async () => {
       const content = await readFile(
