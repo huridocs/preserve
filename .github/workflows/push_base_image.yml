@@ -45,6 +45,5 @@ jobs:
           context: .
           file: base.Dockerfile
           push: true
-          tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
+          tags: latest
           labels: ${{ steps.meta.outputs.labels }}
