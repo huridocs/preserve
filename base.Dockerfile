@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install curl gnupg gosu -y \
   && apt-get update \
   && apt-get install google-chrome-stable -y --no-install-recommends \
   && apt-get install ffmpeg -y --no-install-recommends \
-  && apt-get install python-is-python3  \
+  && apt-get install python-is-python3 fonts-indic fonts-noto fonts-noto-cjk fonts-arabeyes fonts-kacst fonts-freefont-ttf -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
 RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp  \
