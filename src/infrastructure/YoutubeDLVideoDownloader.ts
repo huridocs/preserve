@@ -1,15 +1,21 @@
 import path from 'path';
 import { EvidenceDB, VideoDownloader, VideoDownloaderFlags } from 'src/types';
-import { Logger } from 'winston';
 import { create as createYoutubeDl } from 'youtube-dl-exec';
 import { config } from '../config';
 
+export class VideoDownloaderError extends Error {
+  public originalError: unknown;
+  constructor(message: string, originalError: unknown) {
+    super(message);
+    this.originalError = originalError;
+    this.name = 'VideoDownloaderError';
+  }
+}
+
 export class YoutubeDLVideoDownloader implements VideoDownloader {
   private readonly downloader;
-  private logger: Logger;
 
-  constructor(logger: Logger) {
-    this.logger = logger;
+  constructor() {
     this.downloader = createYoutubeDl(config.video_downloader_path);
   }
 
@@ -19,10 +25,17 @@ export class YoutubeDLVideoDownloader implements VideoDownloader {
       await this.downloader(evidence.attributes.url, flags);
       videoPath = path.join(evidence._id.toString(), 'video.mp4');
     } catch (error: unknown) {
-      if (!(error instanceof Error)) {
-        throw error;
+      const { message, stderr } = error as { message: string; stderr?: string };
+
+      if (stderr?.includes('Unsupported URL')) {
+        return '';
       }
-      this.logger.error(error.message, { stacktrace: error.stack });
+
+      if (message) {
+        throw new VideoDownloaderError(message, error);
+      }
+
+      throw error;
     }
 
     return videoPath;
