@@ -1,5 +1,6 @@
 import createBrowserless, { BrowserlessFactory, BrowserlessContext } from 'browserless';
 import { Page } from 'puppeteer';
+import { Cookie } from '../types';
 
 export class Browser {
   context!: BrowserlessContext;
@@ -18,6 +19,23 @@ export class Browser {
   async close() {
     await this.context.destroyContext();
     await this.browserlessFactory.close();
+  }
+
+  async navigateTo(url: string) {
+    await this.context.goto(this.page, {
+      url: url,
+      waitUntil: 'networkidle0',
+    });
+
+    await this.page.setViewport({
+      width: 0,
+      height: 2000,
+      deviceScaleFactor: 1,
+    });
+  }
+
+  async setCookies(cookies: Cookie[]) {
+    await this.page.setCookie(...cookies);
   }
 
   async removeAllStickyAndFixedElements() {

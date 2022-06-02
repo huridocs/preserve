@@ -48,23 +48,15 @@ export class PreserveEvidence {
     const html_content_path = path.join(evidence._id.toString(), 'content.html');
     await appendFile(path.join(evidence_dir, 'content.html'), await response.text());
 
-    await this.browser.page.setCookie(...evidence.cookies);
     return new Promise(async (resolve, reject) => {
       this.browser.page.on('error', (e: Error) => {
         reject(e);
         this.browser.close();
       });
-      try {
-        await this.browser.context.goto(this.browser.page, {
-          url: evidence.attributes.url,
-          waitUntil: 'networkidle0',
-        });
 
-        await this.browser.page.setViewport({
-          width: 0,
-          height: 2000,
-          deviceScaleFactor: 1,
-        });
+      try {
+        await this.browser.setCookies(evidence.cookies);
+        await this.browser.navigateTo(evidence.attributes.url);
 
         const screenshot_path = path.join(evidence._id.toString(), 'screenshot.jpg');
         const full_screenshot_path = path.join(evidence._id.toString(), 'full_screenshot.jpg');
