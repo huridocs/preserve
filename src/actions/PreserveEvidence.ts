@@ -44,10 +44,6 @@ export class PreserveEvidence {
     }
     const browser = new Browser();
     await browser.init();
-    // const browserlessFactory = createBrowserless({
-    //   defaultViewPort: { width: 1024, height: 768 },
-    // });
-    // const browserless = await browserlessFactory.createContext();
 
     const html_content_path = path.join(evidence._id.toString(), 'content.html');
     await appendFile(path.join(evidence_dir, 'content.html'), await response.text());
@@ -56,8 +52,7 @@ export class PreserveEvidence {
     return new Promise(async (resolve, reject) => {
       browser.page.on('error', (e: Error) => {
         reject(e);
-        browser.context.destroyContext();
-        browser.browserlessFactory.close();
+        browser.close();
       });
       try {
         await browser.context.goto(browser.page, {
@@ -73,16 +68,16 @@ export class PreserveEvidence {
 
         const screenshot_path = path.join(evidence._id.toString(), 'screenshot.jpg');
         const full_screenshot_path = path.join(evidence._id.toString(), 'full_screenshot.jpg');
-        await this.removeAllStickyAndFixedElements(browser.page);
+        await browser.removeAllStickyAndFixedElements();
         await browser.page.waitForTimeout(options.stepTimeout);
         await browser.page.screenshot({
           path: path.join(evidence_dir, 'screenshot.jpg'),
         });
-        await this.scrollDown(browser.page, 600);
+        await browser.scrollDown(600);
         await browser.page.waitForTimeout(options.stepTimeout);
-        await this.removeAllStickyAndFixedElements(browser.page);
-        await this.scrollDown(browser.page, 0);
-        await this.removeAllStickyAndFixedElements(browser.page);
+        await browser.removeAllStickyAndFixedElements();
+        await browser.scrollDown(0);
+        await browser.removeAllStickyAndFixedElements();
         await browser.page.waitForTimeout(options.stepTimeout);
         await fullPageScreenshot(browser.page, {
           path: path.join(evidence_dir, 'full_screenshot.jpg'),
@@ -93,8 +88,7 @@ export class PreserveEvidence {
         await appendFile(path.join(evidence_dir, 'content.txt'), text);
         const title = (await browser.page.title()) || evidence.attributes.url;
 
-        await browser.context.destroyContext();
-        await browser.browserlessFactory.close();
+        await browser.close();
 
         const video_path = await this.videoDownloader.download(evidence, {
           output: path.join(evidence_dir, 'video.mp4'),
@@ -120,25 +114,5 @@ export class PreserveEvidence {
         reject(e);
       }
     });
-  }
-
-  private async removeAllStickyAndFixedElements(page: Page) {
-    await page.evaluate(() => {
-      const elements = document.querySelectorAll('body *') || [];
-      for (let i = 0; i < elements.length; i++) {
-        if (
-          getComputedStyle(elements[i]).position === 'fixed' ||
-          getComputedStyle(elements[i]).position === 'sticky'
-        ) {
-          elements[i]?.parentNode?.removeChild(elements[i]);
-        }
-      }
-    });
-  }
-
-  private async scrollDown(page: Page, amount: number) {
-    await page.evaluate((y: number) => {
-      window.scrollBy(0, y);
-    }, amount);
   }
 }
