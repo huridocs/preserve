@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
+import { Browser } from './infrastructure/Browser';
 import { ProcessJob } from './ProcessJob';
 import { config } from './config';
 import { connectDB, disconnectDB } from './infrastructure/DB';
@@ -34,7 +35,11 @@ connectDB().then(db => {
   }
   const vault = new Vault(db);
 
-  const preserveEvidence = new PreserveEvidence(new HTTPClient(), new YoutubeDLVideoDownloader());
+  const preserveEvidence = new PreserveEvidence(
+    new HTTPClient(),
+    new YoutubeDLVideoDownloader(),
+    new Browser()
+  );
 
   const processJob = new ProcessJob(vault, logger, new TSAService(new HTTPClient()));
   const queue = new QueueProcessor(processJob);

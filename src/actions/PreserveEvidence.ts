@@ -12,10 +12,12 @@ import { Browser } from '../infrastructure/Browser';
 export class PreserveEvidence {
   private httpClient: FetchClient;
   private videoDownloader: VideoDownloader;
+  private browser: Browser;
 
-  constructor(httpClient: FetchClient, videoDownloader: VideoDownloader) {
+  constructor(httpClient: FetchClient, videoDownloader: VideoDownloader, browser: Browser) {
     this.httpClient = httpClient;
     this.videoDownloader = videoDownloader;
+    this.browser = browser;
   }
 
   async execute(
@@ -42,25 +44,24 @@ export class PreserveEvidence {
         resolve(result);
       });
     }
-    const browser = new Browser();
-    await browser.init();
+    await this.browser.init();
 
     const html_content_path = path.join(evidence._id.toString(), 'content.html');
     await appendFile(path.join(evidence_dir, 'content.html'), await response.text());
 
-    await browser.page.setCookie(...evidence.cookies);
+    await this.browser.page.setCookie(...evidence.cookies);
     return new Promise(async (resolve, reject) => {
-      browser.page.on('error', (e: Error) => {
+      this.browser.page.on('error', (e: Error) => {
         reject(e);
-        browser.close();
+        this.browser.close();
       });
       try {
-        await browser.context.goto(browser.page, {
+        await this.browser.context.goto(this.browser.page, {
           url: evidence.attributes.url,
           waitUntil: 'networkidle0',
         });
 
-        await browser.page.setViewport({
+        await this.browser.page.setViewport({
           width: 0,
           height: 2000,
           deviceScaleFactor: 1,
@@ -68,27 +69,27 @@ export class PreserveEvidence {
 
         const screenshot_path = path.join(evidence._id.toString(), 'screenshot.jpg');
         const full_screenshot_path = path.join(evidence._id.toString(), 'full_screenshot.jpg');
-        await browser.removeAllStickyAndFixedElements();
-        await browser.page.waitForTimeout(options.stepTimeout);
-        await browser.page.screenshot({
+        await this.browser.removeAllStickyAndFixedElements();
+        await this.browser.page.waitForTimeout(options.stepTimeout);
+        await this.browser.page.screenshot({
           path: path.join(evidence_dir, 'screenshot.jpg'),
         });
-        await browser.scrollDown(600);
-        await browser.page.waitForTimeout(options.stepTimeout);
-        await browser.removeAllStickyAndFixedElements();
-        await browser.scrollDown(0);
-        await browser.removeAllStickyAndFixedElements();
-        await browser.page.waitForTimeout(options.stepTimeout);
-        await fullPageScreenshot(browser.page, {
+        await this.browser.scrollDown(600);
+        await this.browser.page.waitForTimeout(options.stepTimeout);
+        await this.browser.removeAllStickyAndFixedElements();
+        await this.browser.scrollDown(0);
+        await this.browser.removeAllStickyAndFixedElements();
+        await this.browser.page.waitForTimeout(options.stepTimeout);
+        await fullPageScreenshot(this.browser.page, {
           path: path.join(evidence_dir, 'full_screenshot.jpg'),
         });
 
-        const text = await browser.page.evaluate(() => document.body.innerText);
+        const text = await this.browser.page.evaluate(() => document.body.innerText);
         const content_path = path.join(evidence._id.toString(), 'content.txt');
         await appendFile(path.join(evidence_dir, 'content.txt'), text);
-        const title = (await browser.page.title()) || evidence.attributes.url;
+        const title = (await this.browser.page.title()) || evidence.attributes.url;
 
-        await browser.close();
+        await this.browser.close();
 
         const video_path = await this.videoDownloader.download(evidence, {
           output: path.join(evidence_dir, 'video.mp4'),
