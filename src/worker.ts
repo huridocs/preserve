@@ -34,10 +34,7 @@ connectDB().then(db => {
   }
   const vault = new Vault(db);
 
-  const preserveEvidence = new PreserveEvidence(
-    new HTTPClient(),
-    new YoutubeDLVideoDownloader(logger)
-  );
+  const preserveEvidence = new PreserveEvidence(new HTTPClient(), new YoutubeDLVideoDownloader());
 
   const processJob = new ProcessJob(vault, logger, new TSAService(new HTTPClient()));
   const queue = new QueueProcessor(processJob);

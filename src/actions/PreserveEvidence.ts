@@ -99,7 +99,8 @@ export class PreserveEvidence {
           output: path.join(evidence_dir, 'video.mp4'),
           format: 'best',
           addHeader: `Cookie:${cookie}`,
-          maxDownloads: 1,
+          noPlaylist: true,
+          playlistEnd: 1,
         });
 
         const result: PreservationResults = {

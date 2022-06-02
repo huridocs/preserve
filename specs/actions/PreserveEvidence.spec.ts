@@ -6,9 +6,11 @@ import path from 'path';
 import { config } from 'src/config';
 import { EvidenceDB, PreservationResults } from 'src/types';
 import { HTTPClient } from 'src/infrastructure/HTTPClient';
-import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
+import {
+  VideoDownloaderError,
+  YoutubeDLVideoDownloader,
+} from 'src/infrastructure/YoutubeDLVideoDownloader';
 import { FakeHTTPClient } from '../FakeHTTPClient';
-import { fakeLogger } from '../fakeLogger';
 import { PreserveEvidence } from 'src/actions/PreserveEvidence';
 
 async function exists(path: string) {
@@ -23,11 +25,10 @@ async function exists(path: string) {
 describe('PreserveEvidence', () => {
   let server: Server;
   let result: PreservationResults;
-  const videoDownloader = new YoutubeDLVideoDownloader(fakeLogger);
+  const videoDownloader = new YoutubeDLVideoDownloader();
   const preserveEvidence = new PreserveEvidence(new HTTPClient(), videoDownloader);
 
   beforeAll(async () => {
-    jest.spyOn(console, 'log').mockImplementation(() => false);
     const app = express();
     app.get('/no_title', (_req, res) => {
       res.send(Buffer.from('</head><title></title></head><body></body>'));
@@ -82,6 +83,10 @@ describe('PreserveEvidence', () => {
         { stepTimeout: 0 }
       );
     }, 20000);
+
+    it('should ignore "UNSUPORTED URL" error', async () => {
+      expect(result.downloads.find(download => download.type === 'video')).not.toBeDefined();
+    });
 
     it('should return the site title', async () => {
       expect(result.title).toBe('test title');
@@ -175,7 +180,8 @@ describe('PreserveEvidence', () => {
         format: 'best',
         output: `${config.data_path}/${evidence._id.toString()}/video.mp4`,
         addHeader: 'Cookie:a_name=a_value;another_name=another_value',
-        maxDownloads: 1,
+        noPlaylist: true,
+        playlistEnd: 1,
       });
       videoDownloaderSpy.mockClear();
     }, 20000);
@@ -253,7 +259,7 @@ describe('PreserveEvidence', () => {
       await expect(async () => {
         result = await new PreserveEvidence(
           new FakeHTTPClient(),
-          new YoutubeDLVideoDownloader(fakeLogger)
+          new YoutubeDLVideoDownloader()
         ).execute(
           {
             _id: new ObjectId(),
@@ -269,5 +275,28 @@ describe('PreserveEvidence', () => {
         );
       }).rejects.toEqual(new Error('Page crashed!'));
     });
+  });
+
+  describe('on video download errors', () => {
+    it('should bubble up video downloader error', async () => {
+      config.video_downloader_path = 'bad_executable';
+      const preserveAction = new PreserveEvidence(new HTTPClient(), new YoutubeDLVideoDownloader());
+      await expect(
+        async () =>
+          await preserveAction.execute(
+            {
+              _id: new ObjectId(),
+              user: new ObjectId(),
+              cookies: [],
+              attributes: {
+                status: 'PROCESSING',
+                url: 'http://localhost:5960/test_page',
+                downloads: [],
+              },
+            },
+            { stepTimeout: 0 }
+          )
+      ).rejects.toBeInstanceOf(VideoDownloaderError);
+    }, 20000);
   });
 });
