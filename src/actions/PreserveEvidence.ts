@@ -38,10 +38,9 @@ export class PreserveEvidence {
     if (contentType.includes('application/pdf')) {
       const array = new Uint8Array(await response.arrayBuffer());
       await appendFile(evidence.directoryFor(Preservation.PDF), array);
-      const fileName = evidence.url().split('/').pop();
       return new Promise(resolve => {
         const result: PreservationResults = {
-          title: fileName || '',
+          title: evidence.pdfFilename(),
           downloads: [...evidence.pdfDownloads()],
         };
         resolve(result);
@@ -107,7 +106,8 @@ export class PreserveEvidence {
 }
 
 export class Evidence {
-  private evidence: EvidenceDB;
+  private readonly evidence: EvidenceDB;
+
   constructor(evidence: EvidenceDB) {
     this.evidence = evidence;
   }
@@ -152,5 +152,9 @@ export class Evidence {
     };
 
     return preservations[preservation];
+  }
+
+  pdfFilename() {
+    return this.url().split('/').pop() || '';
   }
 }
