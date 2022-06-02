@@ -1,9 +1,10 @@
-import createBrowserless from 'browserless';
+import createBrowserless, { BrowserlessFactory, BrowserlessContext } from 'browserless';
+import { Page } from 'puppeteer';
 
-class Browser {
-  private context: BrowserlesContext;
-  private browserlessFactory: BrowserlessFactory;
-  private page: any;
+export class Browser {
+  context!: BrowserlessContext;
+  browserlessFactory!: BrowserlessFactory;
+  page!: Page;
 
   async init() {
     this.browserlessFactory = createBrowserless({
@@ -11,13 +12,6 @@ class Browser {
     });
 
     this.context = await this.browserlessFactory.createContext();
-    this.page = await this.browserlessFactory.page();
-  }
-
-  generatePDF() {
-    
+    this.page = await this.context.page();
   }
 }
-
-const browser = new Browser();
-await browser.init();
