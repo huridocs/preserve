@@ -1,6 +1,5 @@
 import { appendFile, mkdir } from 'fs/promises';
 import path from 'path';
-import { Page } from 'puppeteer';
 // eslint-disable-next-line
 // @ts-ignore
 import fullPageScreenshot from 'puppeteer-full-page-screenshot';
