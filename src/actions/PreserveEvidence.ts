@@ -3,7 +3,14 @@ import path from 'path';
 // eslint-disable-next-line
 // @ts-ignore
 import fullPageScreenshot from 'puppeteer-full-page-screenshot';
-import { EvidenceDB, FetchClient, PreservationOptions, PreservationResults, VideoDownloader, } from 'src/types';
+import {
+  EvidenceDB,
+  FetchClient,
+  Preservation,
+  PreservationOptions,
+  PreservationResults,
+  VideoDownloader,
+} from 'src/types';
 import { config } from '../config';
 import { Browser } from '../infrastructure/Browser';
 
@@ -19,31 +26,30 @@ export class PreserveEvidence {
   }
 
   async execute(
-    evidence: EvidenceDB,
+    _evidence: EvidenceDB,
     options: PreservationOptions = { stepTimeout: 2000 }
   ): Promise<PreservationResults> {
-    const domainEvidence = new Evidence(evidence);
-    await mkdir(domainEvidence.directory());
-    const cookie = evidence.cookies.map(cookie => `${cookie.name}=${cookie.value}`).join(';');
-    const response = await this.httpClient.fetch(evidence.attributes.url, {
-      headers: { cookie },
+    const evidence = new Evidence(_evidence);
+    await mkdir(evidence.directory());
+    const response = await this.httpClient.fetch(evidence.url(), {
+      headers: { cookie: evidence.headerCookies() },
     });
     const contentType = response.headers.get('Content-Type') || 'text/html';
     if (contentType.includes('application/pdf')) {
       const array = new Uint8Array(await response.arrayBuffer());
-      await appendFile(path.join(domainEvidence.directory(), 'content.pdf'), array);
-      const fileName = evidence.attributes.url.split('/').pop();
+      await appendFile(evidence.directoryFor(Preservation.PDF), array);
+      const fileName = evidence.url().split('/').pop();
       return new Promise(resolve => {
         const result: PreservationResults = {
           title: fileName || '',
-          downloads: [...domainEvidence.pdfDownloads()],
+          downloads: [...evidence.pdfDownloads()],
         };
         resolve(result);
       });
     }
     await this.browser.init();
 
-    await appendFile(path.join(domainEvidence.directory(), 'content.html'), await response.text());
+    await appendFile(evidence.directoryFor(Preservation.HTML), await response.text());
 
     return new Promise(async (resolve, reject) => {
       this.browser.page.on('error', (e: Error) => {
@@ -52,13 +58,13 @@ export class PreserveEvidence {
       });
 
       try {
-        await this.browser.setCookies(evidence.cookies);
-        await this.browser.navigateTo(evidence.attributes.url);
+        await this.browser.setCookies(evidence.rawCookies());
+        await this.browser.navigateTo(evidence.url());
 
         await this.browser.removeAllStickyAndFixedElements();
         await this.browser.page.waitForTimeout(options.stepTimeout);
         await this.browser.page.screenshot({
-          path: path.join(domainEvidence.directory(), 'screenshot.jpg'),
+          path: evidence.directoryFor(Preservation.SCREENSHOT),
         });
         await this.browser.scrollDown(600);
         await this.browser.page.waitForTimeout(options.stepTimeout);
@@ -67,19 +73,19 @@ export class PreserveEvidence {
         await this.browser.removeAllStickyAndFixedElements();
         await this.browser.page.waitForTimeout(options.stepTimeout);
         await fullPageScreenshot(this.browser.page, {
-          path: path.join(domainEvidence.directory(), 'full_screenshot.jpg'),
+          path: evidence.directoryFor(Preservation.FULL_SCREENSHOT),
         });
 
         const text = await this.browser.page.evaluate(() => document.body.innerText);
-        await appendFile(path.join(domainEvidence.directory(), 'content.txt'), text);
-        const title = (await this.browser.page.title()) || evidence.attributes.url;
+        await appendFile(evidence.directoryFor(Preservation.TXT), text);
+        const title = (await this.browser.page.title()) || evidence.url();
 
         await this.browser.close();
 
-        const videoPath = await this.videoDownloader.download(evidence, {
-          output: path.join(domainEvidence.directory(), 'video.mp4'),
+        const videoPath = await this.videoDownloader.download(_evidence, {
+          output: evidence.directoryFor(Preservation.VIDEO),
           format: 'best',
-          addHeader: `Cookie:${cookie}`,
+          addHeader: `Cookie:${evidence.headerCookies()}`,
           noPlaylist: true,
           playlistEnd: 1,
         });
@@ -87,7 +93,7 @@ export class PreserveEvidence {
         const result: PreservationResults = {
           title,
           downloads: [
-            ...domainEvidence.downloads(),
+            ...evidence.downloads(),
             ...(videoPath ? [{ path: videoPath, type: 'video' }] : []),
           ],
         };
@@ -100,7 +106,7 @@ export class PreserveEvidence {
   }
 }
 
-class Evidence {
+export class Evidence {
   private evidence: EvidenceDB;
   constructor(evidence: EvidenceDB) {
     this.evidence = evidence;
@@ -121,5 +127,30 @@ class Evidence {
 
   pdfDownloads() {
     return [{ path: path.join(this.evidence._id.toString(), 'content.pdf'), type: 'content' }];
+  }
+
+  rawCookies() {
+    return this.evidence.cookies;
+  }
+
+  headerCookies() {
+    return this.evidence.cookies.map(cookie => `${cookie.name}=${cookie.value}`).join(';');
+  }
+
+  url() {
+    return this.evidence.attributes.url;
+  }
+
+  directoryFor(preservation: Preservation) {
+    const preservations = {
+      pdf: path.join(this.directory(), 'content.pdf'),
+      html: path.join(this.directory(), 'content.html'),
+      txt: path.join(this.directory(), 'content.txt'),
+      video: path.join(this.directory(), 'video.mp4'),
+      fullScreenshot: path.join(this.directory(), 'full_screenshot.jpg'),
+      screenshot: path.join(this.directory(), 'screenshot.jpg'),
+    };
+
+    return preservations[preservation];
   }
 }

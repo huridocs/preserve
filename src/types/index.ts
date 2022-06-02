@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { ObjectId } from 'mongodb';
 import { YtFlags } from 'youtube-dl-exec';
+import { Evidence } from '../actions/PreserveEvidence';
 
 export type Cookie = {
   name: string;
@@ -74,4 +75,13 @@ export type VideoDownloaderFlags = YtFlags;
 
 export interface VideoDownloader {
   download: (evidence: EvidenceDB, flags: VideoDownloaderFlags) => Promise<string>;
+}
+
+export enum Preservation {
+  PDF = 'pdf',
+  HTML = 'html',
+  TXT = 'txt',
+  FULL_SCREENSHOT = 'fullScreenshot',
+  SCREENSHOT = 'screenshot',
+  VIDEO = 'video',
 }

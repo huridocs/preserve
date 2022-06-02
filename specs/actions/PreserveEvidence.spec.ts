@@ -258,7 +258,11 @@ describe('PreserveEvidence', () => {
   describe('on page errors', () => {
     it('should bubble up the errors', async () => {
       await expect(async () => {
-        result = await new PreserveEvidence(new FakeHTTPClient(), new YoutubeDLVideoDownloader(), new Browser()).execute(
+        result = await new PreserveEvidence(
+          new FakeHTTPClient(),
+          new YoutubeDLVideoDownloader(),
+          new Browser()
+        ).execute(
           {
             _id: new ObjectId(),
             user: new ObjectId(),
@@ -278,7 +282,11 @@ describe('PreserveEvidence', () => {
   describe('on video download errors', () => {
     it('should bubble up video downloader error', async () => {
       config.video_downloader_path = 'bad_executable';
-      const preserveAction = new PreserveEvidence(new HTTPClient(), new YoutubeDLVideoDownloader(), new Browser());
+      const preserveAction = new PreserveEvidence(
+        new HTTPClient(),
+        new YoutubeDLVideoDownloader(),
+        new Browser()
+      );
       await expect(
         async () =>
           await preserveAction.execute(
