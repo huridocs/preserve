@@ -59,6 +59,7 @@ export class PreserveEvidence {
         await this.browser.navigateTo(evidence.url());
         const screenshotsPaths = await this.browser.takeScreenshots(evidence, options.stepTimeout);
         const plaintTextPaths = await this.browser.extractPlainText(evidence);
+        const pdfPaths = await this.browser.takePdfScreenshot(evidence);
         const title = (await this.browser.pageTitle()) || evidence.url();
         await this.browser.close();
 
@@ -77,6 +78,7 @@ export class PreserveEvidence {
             ...screenshotsPaths,
             ...plaintTextPaths,
             ...videoPaths,
+            ...pdfPaths,
           ],
         };
 

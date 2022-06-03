@@ -70,6 +70,14 @@ export class Browser {
     return evidence.screenshotsPaths();
   }
 
+  async takePdfScreenshot(evidence: Evidence) {
+    await this.page.pdf({
+      path: evidence.directoryFor(Preservation.PDF),
+    });
+
+    return evidence.pdfPaths();
+  }
+
   async extractPlainText(evidence: Evidence) {
     const text = await this.page.evaluate(() => document.body.innerText);
     const path = evidence.directoryFor(Preservation.TXT);
