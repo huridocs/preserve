@@ -18,6 +18,7 @@ import { Cookie, EvidenceDB, PreservationResults } from 'src/types';
 import { PreserveEvidence } from 'src/actions/PreserveEvidence';
 import { HTTPClient } from 'src/infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
+import { Browser } from 'src/infrastructure/Browser';
 import { FakeHTTPClient } from './FakeHTTPClient';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
@@ -45,7 +46,7 @@ describe('Preserve API', () => {
 
   class FakePreserveEvidence extends PreserveEvidence {
     constructor() {
-      super(new HTTPClient(), new YoutubeDLVideoDownloader());
+      super(new HTTPClient(), new YoutubeDLVideoDownloader(), new Browser());
     }
 
     async execute(evidence: EvidenceDB) {
@@ -354,7 +355,7 @@ describe('Preserve API', () => {
 
           class ErrorPreserveEvidence extends PreserveEvidence {
             constructor() {
-              super(new HTTPClient(), new YoutubeDLVideoDownloader());
+              super(new HTTPClient(), new YoutubeDLVideoDownloader(), new Browser());
             }
 
             async execute(): Promise<PreservationResults> {

@@ -1,6 +1,6 @@
-import path from 'path';
-import { EvidenceDB, VideoDownloader, VideoDownloaderFlags } from 'src/types';
+import { EvidenceDB, Preservation, VideoDownloader, VideoDownloaderFlags } from '../types';
 import { create as createYoutubeDl } from 'youtube-dl-exec';
+import { Evidence } from '../actions/PreserveEvidence';
 import { config } from '../config';
 
 export class VideoDownloaderError extends Error {
@@ -19,16 +19,15 @@ export class YoutubeDLVideoDownloader implements VideoDownloader {
     this.downloader = createYoutubeDl(config.video_downloader_path);
   }
 
-  async download(evidence: EvidenceDB, flags: VideoDownloaderFlags): Promise<string> {
-    let videoPath = '';
+  async download(_evidence: EvidenceDB, flags: VideoDownloaderFlags) {
+    const evidence = new Evidence(_evidence);
     try {
-      await this.downloader(evidence.attributes.url, flags);
-      videoPath = path.join(evidence._id.toString(), 'video.mp4');
+      await this.downloader(evidence.url(), flags);
     } catch (error: unknown) {
       const { message, stderr } = error as { message: string; stderr?: string };
 
       if (stderr?.includes('Unsupported URL')) {
-        return '';
+        return [];
       }
 
       if (message) {
@@ -38,6 +37,6 @@ export class YoutubeDLVideoDownloader implements VideoDownloader {
       throw error;
     }
 
-    return videoPath;
+    return evidence.videoPaths();
   }
 }

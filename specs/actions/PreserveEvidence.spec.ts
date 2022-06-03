@@ -10,6 +10,7 @@ import {
   VideoDownloaderError,
   YoutubeDLVideoDownloader,
 } from 'src/infrastructure/YoutubeDLVideoDownloader';
+import { Browser } from 'src/infrastructure/Browser';
 import { FakeHTTPClient } from '../FakeHTTPClient';
 import { PreserveEvidence } from 'src/actions/PreserveEvidence';
 
@@ -26,7 +27,7 @@ describe('PreserveEvidence', () => {
   let server: Server;
   let result: PreservationResults;
   const videoDownloader = new YoutubeDLVideoDownloader();
-  const preserveEvidence = new PreserveEvidence(new HTTPClient(), videoDownloader);
+  const preserveEvidence = new PreserveEvidence(new HTTPClient(), videoDownloader, new Browser());
 
   beforeAll(async () => {
     const app = express();
@@ -259,7 +260,8 @@ describe('PreserveEvidence', () => {
       await expect(async () => {
         result = await new PreserveEvidence(
           new FakeHTTPClient(),
-          new YoutubeDLVideoDownloader()
+          new YoutubeDLVideoDownloader(),
+          new Browser()
         ).execute(
           {
             _id: new ObjectId(),
@@ -280,7 +282,11 @@ describe('PreserveEvidence', () => {
   describe('on video download errors', () => {
     it('should bubble up video downloader error', async () => {
       config.video_downloader_path = 'bad_executable';
-      const preserveAction = new PreserveEvidence(new HTTPClient(), new YoutubeDLVideoDownloader());
+      const preserveAction = new PreserveEvidence(
+        new HTTPClient(),
+        new YoutubeDLVideoDownloader(),
+        new Browser()
+      );
       await expect(
         async () =>
           await preserveAction.execute(

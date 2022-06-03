@@ -1,6 +1,6 @@
 declare module 'browserless' {
   import { HTTPResponse, Page, WaitForOptions } from 'puppeteer';
-  interface BrowserlessContext {
+  export interface BrowserlessContext {
     page(): Promise<Page>;
     goto(
       page: Page,
@@ -11,9 +11,11 @@ declare module 'browserless' {
     ): Promise<{ response: HTTPResponse }>;
     destroyContext(): Promise<void>;
   }
-  interface BrowserlessFactory {
+
+  export interface BrowserlessFactory {
     createContext(): Promise<BrowserlessContext>;
     close(): Promise<void>;
+    page(): Page;
   }
   function CreateBrowserless({}): BrowserlessFactory;
   export default CreateBrowserless;

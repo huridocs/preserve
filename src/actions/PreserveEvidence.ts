@@ -1,104 +1,71 @@
-import createBrowserless from 'browserless';
 import { appendFile, mkdir } from 'fs/promises';
 import path from 'path';
-import { Page } from 'puppeteer';
 // eslint-disable-next-line
 // @ts-ignore
-import fullPageScreenshot from 'puppeteer-full-page-screenshot';
-import { EvidenceDB, PreservationOptions, PreservationResults, VideoDownloader } from 'src/types';
 import { config } from '../config';
-import { FetchClient } from 'src/types';
+import { Browser } from '../infrastructure/Browser';
+import {
+  EvidenceDB,
+  FetchClient,
+  Preservation,
+  PreservationOptions,
+  PreservationResults,
+  VideoDownloader,
+} from '../types';
 
 export class PreserveEvidence {
   private httpClient: FetchClient;
   private videoDownloader: VideoDownloader;
+  private browser: Browser;
 
-  constructor(httpClient: FetchClient, videoDownloader: VideoDownloader) {
+  constructor(httpClient: FetchClient, videoDownloader: VideoDownloader, browser: Browser) {
     this.httpClient = httpClient;
     this.videoDownloader = videoDownloader;
+    this.browser = browser;
   }
 
   async execute(
-    evidence: EvidenceDB,
+    _evidence: EvidenceDB,
     options: PreservationOptions = { stepTimeout: 2000 }
   ): Promise<PreservationResults> {
-    const evidence_dir = path.join(config.data_path, evidence._id.toString());
-    await mkdir(evidence_dir);
-    const cookie = evidence.cookies.map(cookie => `${cookie.name}=${cookie.value}`).join(';');
-    const response = await this.httpClient.fetch(evidence.attributes.url, {
-      headers: { cookie },
+    const evidence = new Evidence(_evidence);
+    await mkdir(evidence.directory());
+    const response = await this.httpClient.fetch(evidence.url(), {
+      headers: { cookie: evidence.headerCookies() },
     });
     const contentType = response.headers.get('Content-Type') || 'text/html';
     if (contentType.includes('application/pdf')) {
-      const content_path = path.join(evidence._id.toString(), 'content.pdf');
       const array = new Uint8Array(await response.arrayBuffer());
-      await appendFile(path.join(evidence_dir, 'content.pdf'), array);
-      const fileName = evidence.attributes.url.split('/').pop();
+      await appendFile(evidence.directoryFor(Preservation.PDF), array);
       return new Promise(resolve => {
         const result: PreservationResults = {
-          title: fileName || '',
-          downloads: [{ path: content_path, type: 'content' }],
+          title: evidence.pdfFilename(),
+          downloads: [...evidence.pdfPaths()],
         };
         resolve(result);
       });
     }
-    const browserlessFactory = createBrowserless({
-      defaultViewPort: { width: 1024, height: 768 },
-    });
-    const browserless = await browserlessFactory.createContext();
+    await this.browser.init();
+    await appendFile(evidence.directoryFor(Preservation.HTML), await response.text());
 
-    const html_content_path = path.join(evidence._id.toString(), 'content.html');
-    await appendFile(path.join(evidence_dir, 'content.html'), await response.text());
-
-    const page = await browserless.page();
-    await page.setCookie(...evidence.cookies);
     return new Promise(async (resolve, reject) => {
-      page.on('error', (e: Error) => {
-        reject(e);
-        browserless.destroyContext();
-        browserlessFactory.close();
+      this.browser.onError(error => {
+        reject(error);
+        this.browser.close();
       });
+
       try {
-        await browserless.goto(page, {
-          url: evidence.attributes.url,
-          waitUntil: 'networkidle0',
-        });
+        await this.browser.setCookies(evidence.rawCookies());
+        await this.browser.navigateTo(evidence.url());
+        const screenshotsPaths = await this.browser.takeScreenshots(evidence, options.stepTimeout);
+        const plaintTextPaths = await this.browser.extractPlainText(evidence);
+        const title = (await this.browser.pageTitle()) || evidence.url();
+        await this.browser.close();
 
-        await page.setViewport({
-          width: 0,
-          height: 2000,
-          deviceScaleFactor: 1,
-        });
-
-        const screenshot_path = path.join(evidence._id.toString(), 'screenshot.jpg');
-        const full_screenshot_path = path.join(evidence._id.toString(), 'full_screenshot.jpg');
-        await this.removeAllStickyAndFixedElements(page);
-        await page.waitForTimeout(options.stepTimeout);
-        await page.screenshot({
-          path: path.join(evidence_dir, 'screenshot.jpg'),
-        });
-        await this.scrollDown(page, 600);
-        await page.waitForTimeout(options.stepTimeout);
-        await this.removeAllStickyAndFixedElements(page);
-        await this.scrollDown(page, 0);
-        await this.removeAllStickyAndFixedElements(page);
-        await page.waitForTimeout(options.stepTimeout);
-        await fullPageScreenshot(page, {
-          path: path.join(evidence_dir, 'full_screenshot.jpg'),
-        });
-
-        const text = await page.evaluate(() => document.body.innerText);
-        const content_path = path.join(evidence._id.toString(), 'content.txt');
-        await appendFile(path.join(evidence_dir, 'content.txt'), text);
-        const title = (await page.title()) || evidence.attributes.url;
-
-        await browserless.destroyContext();
-        await browserlessFactory.close();
-
-        const video_path = await this.videoDownloader.download(evidence, {
-          output: path.join(evidence_dir, 'video.mp4'),
+        const videoPaths = await this.videoDownloader.download(_evidence, {
+          output: evidence.directoryFor(Preservation.VIDEO),
           format: 'best',
-          addHeader: `Cookie:${cookie}`,
+          addHeader: `Cookie:${evidence.headerCookies()}`,
           noPlaylist: true,
           playlistEnd: 1,
         });
@@ -106,38 +73,81 @@ export class PreserveEvidence {
         const result: PreservationResults = {
           title,
           downloads: [
-            { path: html_content_path, type: 'content' },
-            { path: content_path, type: 'content' },
-            { path: screenshot_path, type: 'screenshot' },
-            { path: full_screenshot_path, type: 'screenshot' },
-            ...(video_path ? [{ path: video_path, type: 'video' }] : []),
+            ...evidence.htmlPaths(),
+            ...screenshotsPaths,
+            ...plaintTextPaths,
+            ...videoPaths,
           ],
         };
 
         resolve(result);
-      } catch (e) {
-        reject(e);
+      } catch (error) {
+        reject(error);
       }
     });
   }
+}
 
-  private async removeAllStickyAndFixedElements(page: Page) {
-    await page.evaluate(() => {
-      const elements = document.querySelectorAll('body *') || [];
-      for (let i = 0; i < elements.length; i++) {
-        if (
-          getComputedStyle(elements[i]).position === 'fixed' ||
-          getComputedStyle(elements[i]).position === 'sticky'
-        ) {
-          elements[i]?.parentNode?.removeChild(elements[i]);
-        }
-      }
-    });
+export class Evidence {
+  private readonly evidence: EvidenceDB;
+
+  constructor(evidence: EvidenceDB) {
+    this.evidence = evidence;
   }
 
-  private async scrollDown(page: Page, amount: number) {
-    await page.evaluate((y: number) => {
-      window.scrollBy(0, y);
-    }, amount);
+  directory() {
+    return path.join(config.data_path, this.evidence._id.toString());
+  }
+
+  screenshotsPaths() {
+    return [
+      { path: path.join(this.evidence._id.toString(), 'screenshot.jpg'), type: 'screenshot' },
+      { path: path.join(this.evidence._id.toString(), 'full_screenshot.jpg'), type: 'screenshot' },
+    ];
+  }
+
+  plainTextPaths() {
+    return [{ path: path.join(this.evidence._id.toString(), 'content.txt'), type: 'content' }];
+  }
+
+  htmlPaths() {
+    return [{ path: path.join(this.evidence._id.toString(), 'content.html'), type: 'content' }];
+  }
+
+  pdfPaths() {
+    return [{ path: path.join(this.evidence._id.toString(), 'content.pdf'), type: 'content' }];
+  }
+
+  videoPaths() {
+    return [{ path: path.join(this.evidence._id.toString(), 'video.mp4'), type: 'video' }];
+  }
+
+  rawCookies() {
+    return this.evidence.cookies;
+  }
+
+  headerCookies() {
+    return this.evidence.cookies.map(cookie => `${cookie.name}=${cookie.value}`).join(';');
+  }
+
+  url() {
+    return this.evidence.attributes.url;
+  }
+
+  directoryFor(preservation: Preservation) {
+    const preservations = {
+      pdf: path.join(this.directory(), 'content.pdf'),
+      html: path.join(this.directory(), 'content.html'),
+      txt: path.join(this.directory(), 'content.txt'),
+      video: path.join(this.directory(), 'video.mp4'),
+      fullScreenshot: path.join(this.directory(), 'full_screenshot.jpg'),
+      screenshot: path.join(this.directory(), 'screenshot.jpg'),
+    };
+
+    return preservations[preservation];
+  }
+
+  pdfFilename() {
+    return this.url().split('/').pop() || '';
   }
 }
