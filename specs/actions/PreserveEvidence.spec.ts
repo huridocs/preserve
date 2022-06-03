@@ -156,6 +156,17 @@ describe('PreserveEvidence', () => {
       ).toBe(true);
     });
 
+    it('should perform PDF page screenshots and return the paths', async () => {
+      expect(
+        await exists(
+          path.join(
+            config.data_path,
+            result.downloads.find(d => d.path.match(/content.pdf/))?.path || 'no pdf'
+          )
+        )
+      ).toBe(true);
+    });
+
     it('should not include video when not supported', async () => {
       expect(result.downloads.find(d => d.type === 'video')).not.toBeDefined();
     });
