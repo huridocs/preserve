@@ -1,11 +1,16 @@
-import createBrowserless, { BrowserlessFactory, BrowserlessContext } from 'browserless';
+import createBrowserless, { BrowserlessContext, BrowserlessFactory } from 'browserless';
+import { appendFile } from 'fs/promises';
 import { Page } from 'puppeteer';
-import { Cookie } from '../types';
+// eslint-disable-next-line
+// @ts-ignore
+import fullPageScreenshot from 'puppeteer-full-page-screenshot';
+import { Evidence } from '../actions/PreserveEvidence';
+import { Cookie, Preservation } from '../types';
 
 export class Browser {
-  context!: BrowserlessContext;
-  browserlessFactory!: BrowserlessFactory;
-  page!: Page;
+  private context!: BrowserlessContext;
+  private browserlessFactory!: BrowserlessFactory;
+  private page!: Page;
 
   async init() {
     this.browserlessFactory = createBrowserless({
@@ -16,9 +21,17 @@ export class Browser {
     this.page = await this.context.page();
   }
 
+  onError(callback: (reason?: unknown) => void) {
+    this.page.on('error', callback);
+  }
+
   async close() {
     await this.context.destroyContext();
     await this.browserlessFactory.close();
+  }
+
+  async pageTitle() {
+    return this.page.title();
   }
 
   async navigateTo(url: string) {
@@ -38,7 +51,34 @@ export class Browser {
     await this.page.setCookie(...cookies);
   }
 
-  async removeAllStickyAndFixedElements() {
+  async takeScreenshots(evidence: Evidence, stepTimeout: number) {
+    await this.removeAllStickyAndFixedElements();
+    await this.page.waitForTimeout(stepTimeout);
+    await this.page.screenshot({
+      path: evidence.directoryFor(Preservation.SCREENSHOT),
+    });
+    await this.scrollDown(600);
+    await this.page.waitForTimeout(stepTimeout);
+    await this.removeAllStickyAndFixedElements();
+    await this.scrollDown(0);
+    await this.removeAllStickyAndFixedElements();
+    await this.page.waitForTimeout(stepTimeout);
+    await fullPageScreenshot(this.page, {
+      path: evidence.directoryFor(Preservation.FULL_SCREENSHOT),
+    });
+
+    return evidence.screenshotsPaths();
+  }
+
+  async extractPlainText(evidence: Evidence) {
+    const text = await this.page.evaluate(() => document.body.innerText);
+    const path = evidence.directoryFor(Preservation.TXT);
+    await appendFile(path, text);
+
+    return evidence.plainTextPaths();
+  }
+
+  private async removeAllStickyAndFixedElements() {
     await this.page.evaluate(() => {
       const elements = document.querySelectorAll('body *') || [];
       for (let i = 0; i < elements.length; i++) {
@@ -52,7 +92,7 @@ export class Browser {
     });
   }
 
-  async scrollDown(amount: number) {
+  private async scrollDown(amount: number) {
     await this.page.evaluate((y: number) => {
       window.scrollBy(0, y);
     }, amount);

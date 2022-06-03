@@ -74,7 +74,7 @@ export interface FetchClient {
 export type VideoDownloaderFlags = YtFlags;
 
 export interface VideoDownloader {
-  download: (evidence: EvidenceDB, flags: VideoDownloaderFlags) => Promise<string>;
+  download: (evidence: EvidenceDB, flags: VideoDownloaderFlags) =>Promise<[] | { path: string; type: string }[]>;
 }
 
 export enum Preservation {
