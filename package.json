@@ -23,7 +23,7 @@
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "express": "^4.18.1",
-    "express-prom-bundle": "^6.4.1",
+    "express-prom-bundle": "^6.5.0",
     "lodash": "^4.17.21",
     "mongodb": "^4.7.0",
     "prom-client": "^14.0.1",
@@ -52,7 +52,7 @@
     "supertest": "^6.2.3",
     "ts-jest": "28.0.5",
     "ts-node": "^10.8.1",
-    "typescript": "^4.7.3",
+    "typescript": "^4.7.4",
     "wait-for-expect": "^3.0.2"
   }
 }
