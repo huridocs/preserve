@@ -13,7 +13,7 @@ The application receives an URL and preserves the following content:
 - A full snapshot .jpg file with the content scrolling down on the page.
 - If the page has videos, a .mp4 file with the videos downloaded at full resolution.
 
-When all the content is preserved, the every file is hashed and those hashes are saved on a single file, which is sent to a third-party [Trusted Timpestamping Authority](https://www.freetsa.org/) that ensures that the content was present on the Internet at the moment of preserving the given URL.
+When all the content is preserved, every file is hashed and those hashes are saved on a single file, which is sent to a third-party [Trusted Timpestamping Authority](https://www.freetsa.org/) that ensures that the content was present on the Internet at the moment of preserving the given URL.
 
 ## Requirements
 - Docker
