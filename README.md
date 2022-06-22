@@ -4,6 +4,16 @@
 
 Preserve is a tool for capturing and saving online digital content. It is in response to the growing need for using open source intelligence (OSINT) in human rights investigations and documentation. Integrated with [Uwazi](https://github.com/huridocs/uwazi), Preserve captures content from websites, social media and communication platforms, and archives them with accompanying key metadata to ensure evidentiary value by establishing and demonstrating authenticity and chain of custody.
 
+## Preservation process
+The application receives an URL and preserves the following content:
+- A .txt file with the page body as text.
+- A .html file with the page html.
+- A snapshot .jpg file with the content defined on the viewport size.
+- A full snapshot .jpg file with the content scrolling down on the page.
+- If the page has videos, a .mp4 file with the videos with full resolution.
+
+When all the content is preserved, the every file is hashed and those hashes are saved on a single file, which is sent to a third-party Trusted Timpestamping Authority that ensures that content was present on the Internet at the moment of preserving the given URL.
+
 ## Requirements
 - Docker
 - Docker compose (installed by default in Docker desktop for Mac/Windows)
