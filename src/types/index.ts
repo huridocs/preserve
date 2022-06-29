@@ -1,7 +1,6 @@
 import { Request } from 'express';
 import { ObjectId } from 'mongodb';
 import { YtFlags } from 'youtube-dl-exec';
-import { Evidence } from '../actions/PreserveEvidence';
 
 export type Cookie = {
   name: string;
@@ -40,6 +39,11 @@ export type EvidenceDB = EvidenceBase & {
   error?: string;
 };
 
+export type TokenDB = {
+  _id: ObjectId;
+  token: string;
+};
+
 export type PreservationOptions = {
   stepTimeout: number;
 };
@@ -74,7 +78,10 @@ export interface FetchClient {
 export type VideoDownloaderFlags = YtFlags;
 
 export interface VideoDownloader {
-  download: (evidence: EvidenceDB, flags: VideoDownloaderFlags) =>Promise<[] | { path: string; type: string }[]>;
+  download: (
+    evidence: EvidenceDB,
+    flags: VideoDownloaderFlags
+  ) => Promise<[] | { path: string; type: string }[]>;
 }
 
 export enum Preservation {

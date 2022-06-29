@@ -9,6 +9,8 @@ import { QueueProcessor } from 'src/QueueProcessor';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 import { EvidenceResponse } from 'src/types';
+import { TokenGenerator } from '../src/infrastructure/TokenGenerator';
+import { UsersRepository } from '../src/infrastructure/UsersRepository';
 import { FakeVault } from './FakeVault';
 import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/infrastructure/checksumFile';
@@ -42,6 +44,7 @@ describe('Preserve API', () => {
 
   let db: Db;
   let vault: Vault;
+  let tokensRepository: UsersRepository;
   const user1Id = new ObjectId();
 
   class FakePreserveEvidence extends PreserveEvidence {
@@ -82,7 +85,8 @@ describe('Preserve API', () => {
   beforeAll(async () => {
     db = await connectDB('preserve-api-testing');
     vault = new Vault(db);
-    app = Api(vault, fakeLogger);
+    tokensRepository = new UsersRepository(db);
+    app = Api(vault, tokensRepository, fakeLogger);
     const action = new ProcessJob(vault, fakeLogger, new FakeTSAService(new FakeHTTPClient()));
     queue = new QueueProcessor(action, 0);
   });
@@ -319,8 +323,8 @@ describe('Preserve API', () => {
 
     describe('Error handling', () => {
       beforeEach(() => {
-        app = Api(new FakeVault(db), fakeLogger);
-        app = Api(new FakeVault(db), fakeLogger);
+        app = Api(new FakeVault(db), tokensRepository, fakeLogger);
+        app = Api(new FakeVault(db), tokensRepository, fakeLogger);
       });
       describe('POST', () => {
         it('should respond 500 on errors', async () => {
@@ -350,7 +354,7 @@ describe('Preserve API', () => {
       describe('Job', () => {
         it('should set the job to ERROR', async () => {
           const vault = new Vault(db);
-          app = Api(vault, fakeLogger);
+          app = Api(vault, tokensRepository, fakeLogger);
           const { body: newEvidence } = await post().expect(202);
 
           class ErrorPreserveEvidence extends PreserveEvidence {
@@ -392,6 +396,35 @@ describe('Preserve API', () => {
           });
         });
       });
+    });
+  });
+
+  describe('/api/tokens', () => {
+    beforeAll(async () => {
+      await db.collection('authorization').insertOne({ token: 'main-token' });
+    });
+
+    afterAll(async () => {
+      await db.collection('authorization').drop();
+    });
+
+    it('should return generated token', async () => {
+      jest.spyOn(TokenGenerator.prototype, 'generate').mockReturnValue('generated-token');
+
+      await request(app)
+        .post('/api/tokens')
+        .set({ Authorization: 'main-token' })
+        .expect(201)
+        .expect({
+          data: {
+            token: 'generated-token',
+          },
+        });
+    });
+
+    it('should respond 401 when not authorized', async () => {
+      await request(app).post('/api/tokens').set({ Authorization: 'wrong-token' }).expect(401);
+      await request(app).post('/api/tokens').expect(401);
     });
   });
 });

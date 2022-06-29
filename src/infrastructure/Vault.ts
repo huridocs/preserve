@@ -5,6 +5,7 @@ import { Cookie, EvidenceDB } from '../types';
 
 export class Vault {
   private collection: Collection<EvidenceDB>;
+
   constructor(db: Db) {
     this.collection = db.collection<EvidenceDB>('evidences');
   }
