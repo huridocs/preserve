@@ -13,7 +13,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
-const mainAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+const tokenGenerationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const mainToken = await db
     .collection<TokenDB>('authorization')
     .findOne({ token: req.get('Authorization') });
@@ -25,4 +25,4 @@ const mainAuthMiddleware = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export { authMiddleware, mainAuthMiddleware };
+export { authMiddleware, tokenGenerationMiddleware };
