@@ -10,11 +10,12 @@ import { GenerateUserToken } from '../actions/GenerateUserToken';
 import { RetrieveEvidence } from '../actions/RetrieveEvidence';
 import { RetrieveUserEvidences } from '../actions/RetrieveUserEvidences';
 import { config } from '../config';
+import { db } from '../infrastructure/DB';
 import { TokenGenerator } from '../infrastructure/TokenGenerator';
 import { TokensRepository } from '../infrastructure/TokensRepository';
 import { Vault } from '../infrastructure/Vault';
-import { ApiRequestFilter } from '../types';
-import { authMiddleware } from './authMiddleware';
+import { ApiRequestFilter, TokenDB } from '../types';
+import { authMiddleware, mainAuthMiddleware } from './authMiddleware';
 import { errorMiddleware } from './errorMiddleware';
 import { prometheusMiddleware } from './prometheusMiddleware';
 import { Response } from './Response';
@@ -53,7 +54,7 @@ const Api = (vault: Vault, tokensRepository: TokensRepository, logger: Logger) =
     throw new Error('Intentionally thrown error');
   });
 
-  app.post('/api/tokens', async (req, res, next) => {
+  app.post('/api/tokens', mainAuthMiddleware, async (req, res, next) => {
     const action = new GenerateUserToken(new TokenGenerator(), tokensRepository);
     const token = await action.execute();
     res.status(201);
@@ -61,8 +62,6 @@ const Api = (vault: Vault, tokensRepository: TokensRepository, logger: Logger) =
   });
 
   app.use(authMiddleware);
-
-
   app.post('/api/evidences', async (req, res, next) => {
     try {
       validateBody(req.body);

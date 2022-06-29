@@ -400,6 +400,14 @@ describe('Preserve API', () => {
   });
 
   describe('/api/tokens', () => {
+    beforeAll(async () => {
+      await db.collection('authorization').insertOne({ token: 'main-token' });
+    });
+
+    afterAll(async () => {
+      await db.collection('authorization').drop();
+    });
+
     it('should return generated token', async () => {
       jest.spyOn(TokenGenerator.prototype, 'generate').mockReturnValue('generated-token');
 
@@ -412,6 +420,11 @@ describe('Preserve API', () => {
             token: 'generated-token',
           },
         });
+    });
+
+    it('should respond 401 when not authorized', async () => {
+      await request(app).post('/api/tokens').set({ Authorization: 'wrong-token' }).expect(401);
+      await request(app).post('/api/tokens').expect(401);
     });
   });
 });
