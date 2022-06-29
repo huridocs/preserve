@@ -8,7 +8,7 @@ export class UsersRepository {
     this.collection = db.collection<User>('users');
   }
 
-  async save(token: string) {
+  async create(token: string) {
     const _id = new ObjectId();
     await this.collection.insertOne({ _id, token });
 

@@ -12,10 +12,10 @@ describe('Users repository', () => {
     await disconnectDB();
   });
 
-  it('should save users', async () => {
+  it('should create users', async () => {
     const repo = new UsersRepository(db);
 
-    const user = await repo.save('token');
+    const user = await repo.create('token');
 
     expect(user).toEqual({
       _id: expect.any(ObjectId),
