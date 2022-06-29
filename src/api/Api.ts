@@ -51,7 +51,12 @@ const Api = (vault: Vault, logger: Logger) => {
     throw new Error('Intentionally thrown error');
   });
 
+  app.post('/api/tokens', () => {
+    throw new Error('Intentionally thrown error');
+  });
+
   app.use(authMiddleware);
+
 
   app.post('/api/evidences', async (req, res, next) => {
     try {

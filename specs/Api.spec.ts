@@ -23,6 +23,8 @@ import { FakeHTTPClient } from './FakeHTTPClient';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
+jest.mock('../src/infrastructure/TokenGenerator');
+
 describe('Preserve API', () => {
   let app: Application;
   let queue: QueueProcessor;
@@ -392,6 +394,16 @@ describe('Preserve API', () => {
           });
         });
       });
+    });
+  });
+
+  describe('/api/tokens', () => {
+    it('should return generated token', async () => {
+      await request(app)
+        .post('/api/tokens')
+        .set({ Authorization: 'main-token' })
+        .expect(201)
+        .expect({ token: 'generated-token' });
     });
   });
 });
