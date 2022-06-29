@@ -39,11 +39,9 @@ export type EvidenceDB = EvidenceBase & {
   error?: string;
 };
 
-type Token = string;
-
 export type TokenDB = {
   _id: ObjectId;
-  token: Token;
+  token: string;
 };
 
 export type PreservationOptions = {

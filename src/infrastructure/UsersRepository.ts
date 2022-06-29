@@ -1,11 +1,11 @@
 import { Collection, Db, ObjectId } from 'mongodb';
-import { TokenDB } from '../types';
+import { User } from '../types';
 
-export class TokensRepository {
-  private collection: Collection<TokenDB>;
+export class UsersRepository {
+  private collection: Collection<User>;
 
   constructor(db: Db) {
-    this.collection = db.collection<TokenDB>('tokens');
+    this.collection = db.collection<User>('users');
   }
 
   async save(token: string) {

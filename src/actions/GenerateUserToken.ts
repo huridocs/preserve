@@ -1,11 +1,11 @@
 import { TokenGenerator } from '../infrastructure/TokenGenerator';
-import { TokensRepository } from '../infrastructure/TokensRepository';
+import { UsersRepository } from '../infrastructure/UsersRepository';
 
 export class GenerateUserToken {
   private tokenGenerator: TokenGenerator;
-  private tokensRepository: TokensRepository;
+  private tokensRepository: UsersRepository;
 
-  constructor(tokenGenerator: TokenGenerator, tokensRepository: TokensRepository) {
+  constructor(tokenGenerator: TokenGenerator, tokensRepository: UsersRepository) {
     this.tokenGenerator = tokenGenerator;
     this.tokensRepository = tokensRepository;
   }

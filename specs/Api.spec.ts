@@ -10,7 +10,7 @@ import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 import { EvidenceResponse } from 'src/types';
 import { TokenGenerator } from '../src/infrastructure/TokenGenerator';
-import { TokensRepository } from '../src/infrastructure/TokensRepository';
+import { UsersRepository } from '../src/infrastructure/UsersRepository';
 import { FakeVault } from './FakeVault';
 import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/infrastructure/checksumFile';
@@ -44,7 +44,7 @@ describe('Preserve API', () => {
 
   let db: Db;
   let vault: Vault;
-  let tokensRepository: TokensRepository;
+  let tokensRepository: UsersRepository;
   const user1Id = new ObjectId();
 
   class FakePreserveEvidence extends PreserveEvidence {
@@ -85,7 +85,7 @@ describe('Preserve API', () => {
   beforeAll(async () => {
     db = await connectDB('preserve-api-testing');
     vault = new Vault(db);
-    tokensRepository = new TokensRepository(db);
+    tokensRepository = new UsersRepository(db);
     app = Api(vault, tokensRepository, fakeLogger);
     const action = new ProcessJob(vault, fakeLogger, new FakeTSAService(new FakeHTTPClient()));
     queue = new QueueProcessor(action, 0);
