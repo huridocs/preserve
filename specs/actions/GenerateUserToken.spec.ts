@@ -1,6 +1,6 @@
 import { Db, ObjectId } from 'mongodb';
 import { GenerateUserToken } from '../../src/actions/GenerateUserToken';
-import { connectDB } from '../../src/infrastructure/DB';
+import { connectDB, disconnectDB } from '../../src/infrastructure/DB';
 import { TokenGenerator } from '../../src/infrastructure/TokenGenerator';
 import { UsersRepository } from '../../src/infrastructure/UsersRepository';
 
@@ -12,6 +12,10 @@ describe('GenerateUserToken', () => {
 
   afterEach(async () => {
     await db.collection('users').drop();
+  });
+
+  afterAll(async () => {
+    await disconnectDB();
   });
 
   it('should generate a token', async () => {
