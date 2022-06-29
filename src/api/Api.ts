@@ -1,24 +1,26 @@
-import path from 'path';
-import express from 'express';
-import bodyParser from 'body-parser';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
+import bodyParser from 'body-parser';
 import cors from 'cors';
+import express from 'express';
+import path from 'path';
 import { Logger } from 'winston';
-
-import { config } from '../config';
-import { authMiddleware } from './authMiddleware';
-import { prometheusMiddleware } from './prometheusMiddleware';
-import { ApiRequestFilter } from '../types';
-import { Vault } from '../infrastructure/Vault';
-import { Response } from './Response';
-import { errorMiddleware } from './errorMiddleware';
-import { validateBody, validatePagination, validateQuery } from './validations';
 import { CreateEvidence } from '../actions/CreateEvidence';
+import { GenerateUserToken } from '../actions/GenerateUserToken';
 import { RetrieveEvidence } from '../actions/RetrieveEvidence';
 import { RetrieveUserEvidences } from '../actions/RetrieveUserEvidences';
+import { config } from '../config';
+import { TokenGenerator } from '../infrastructure/TokenGenerator';
+import { TokensRepository } from '../infrastructure/TokensRepository';
+import { Vault } from '../infrastructure/Vault';
+import { ApiRequestFilter } from '../types';
+import { authMiddleware } from './authMiddleware';
+import { errorMiddleware } from './errorMiddleware';
+import { prometheusMiddleware } from './prometheusMiddleware';
+import { Response } from './Response';
+import { validateBody, validatePagination, validateQuery } from './validations';
 
-const Api = (vault: Vault, logger: Logger) => {
+const Api = (vault: Vault, tokensRepository: TokensRepository, logger: Logger) => {
   const app = express();
 
   if (config.sentry.api_dsn) {
@@ -51,8 +53,11 @@ const Api = (vault: Vault, logger: Logger) => {
     throw new Error('Intentionally thrown error');
   });
 
-  app.post('/api/tokens', () => {
-    throw new Error('Intentionally thrown error');
+  app.post('/api/tokens', async (req, res, next) => {
+    const action = new GenerateUserToken(new TokenGenerator(), tokensRepository);
+    const token = await action.execute();
+    res.status(201);
+    res.json({ data: { token: token } });
   });
 
   app.use(authMiddleware);

@@ -5,6 +5,7 @@ import { config } from 'src/config';
 import { connectDB, disconnectDB } from 'src/infrastructure/DB';
 import { Vault } from 'src/infrastructure/Vault';
 import request from 'supertest';
+import { TokensRepository } from '../src/infrastructure/TokensRepository';
 import { fakeLogger } from './fakeLogger';
 
 describe('Evidences endpoint pagination', () => {
@@ -21,7 +22,8 @@ describe('Evidences endpoint pagination', () => {
     db = await connectDB('preserve-api-testing-filters');
     await db.collection('evidences').deleteMany({});
     const vault = new Vault(db);
-    app = Api(vault, fakeLogger);
+    const tokensRepository = new TokensRepository(db);
+    app = Api(vault, tokensRepository, fakeLogger);
 
     const evidence1 = await vault.create('evidence1', user1, []);
     vault.update(evidence1._id, {

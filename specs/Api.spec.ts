@@ -9,6 +9,8 @@ import { QueueProcessor } from 'src/QueueProcessor';
 import request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 import { EvidenceResponse } from 'src/types';
+import { TokenGenerator } from '../src/infrastructure/TokenGenerator';
+import { TokensRepository } from '../src/infrastructure/TokensRepository';
 import { FakeVault } from './FakeVault';
 import { fakeLogger } from './fakeLogger';
 import { checksumFile } from '../src/infrastructure/checksumFile';
@@ -22,8 +24,6 @@ import { Browser } from 'src/infrastructure/Browser';
 import { FakeHTTPClient } from './FakeHTTPClient';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
-
-jest.mock('../src/infrastructure/TokenGenerator');
 
 describe('Preserve API', () => {
   let app: Application;
@@ -44,6 +44,7 @@ describe('Preserve API', () => {
 
   let db: Db;
   let vault: Vault;
+  let tokensRepository: TokensRepository;
   const user1Id = new ObjectId();
 
   class FakePreserveEvidence extends PreserveEvidence {
@@ -84,7 +85,8 @@ describe('Preserve API', () => {
   beforeAll(async () => {
     db = await connectDB('preserve-api-testing');
     vault = new Vault(db);
-    app = Api(vault, fakeLogger);
+    tokensRepository = new TokensRepository(db);
+    app = Api(vault, tokensRepository, fakeLogger);
     const action = new ProcessJob(vault, fakeLogger, new FakeTSAService(new FakeHTTPClient()));
     queue = new QueueProcessor(action, 0);
   });
@@ -321,8 +323,8 @@ describe('Preserve API', () => {
 
     describe('Error handling', () => {
       beforeEach(() => {
-        app = Api(new FakeVault(db), fakeLogger);
-        app = Api(new FakeVault(db), fakeLogger);
+        app = Api(new FakeVault(db), tokensRepository, fakeLogger);
+        app = Api(new FakeVault(db), tokensRepository, fakeLogger);
       });
       describe('POST', () => {
         it('should respond 500 on errors', async () => {
@@ -352,7 +354,7 @@ describe('Preserve API', () => {
       describe('Job', () => {
         it('should set the job to ERROR', async () => {
           const vault = new Vault(db);
-          app = Api(vault, fakeLogger);
+          app = Api(vault, tokensRepository, fakeLogger);
           const { body: newEvidence } = await post().expect(202);
 
           class ErrorPreserveEvidence extends PreserveEvidence {
@@ -399,11 +401,17 @@ describe('Preserve API', () => {
 
   describe('/api/tokens', () => {
     it('should return generated token', async () => {
+      jest.spyOn(TokenGenerator.prototype, 'generate').mockReturnValue('generated-token');
+
       await request(app)
         .post('/api/tokens')
         .set({ Authorization: 'main-token' })
         .expect(201)
-        .expect({ token: 'generated-token' });
+        .expect({
+          data: {
+            token: 'generated-token',
+          },
+        });
     });
   });
 });

@@ -12,7 +12,8 @@ export class GenerateUserToken {
 
   async execute() {
     const token = this.tokenGenerator.generate();
-    await this.tokensRepository.save(token);
-    return token;
+    const generatedToken = await this.tokensRepository.save(token);
+
+    return generatedToken?.token;
   }
 }

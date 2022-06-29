@@ -2,6 +2,7 @@ import { config } from './config';
 import { connectDB, disconnectDB } from './infrastructure/DB';
 
 import { Api } from './api/Api';
+import { TokensRepository } from './infrastructure/TokensRepository';
 import { Vault } from './infrastructure/Vault';
 import { logger } from './infrastructure/logger';
 
@@ -12,7 +13,7 @@ process.on('unhandledRejection', uncaughtError);
 process.on('uncaughtException', uncaughtError);
 
 connectDB().then(db => {
-  const app = Api(new Vault(db), logger);
+  const app = Api(new Vault(db), new TokensRepository(db), logger);
   const server = app.listen(config.PORT, () => {
     logger.info(`Preserve API started on port ${config.PORT}`);
   });
