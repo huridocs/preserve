@@ -410,14 +410,14 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@browserless/devices@^9.3.19":
-  version "9.3.19"
-  resolved "https://registry.yarnpkg.com/@browserless/devices/-/devices-9.3.19.tgz#26afda74ad90d2839fb04bc143917e74dd05ba27"
-  integrity sha512-PlYmJhje1YC4sRkaUEK94YwSuCkGa3tfSl5EV4U81yCpGayVLCzfYc30BacUzueRdNabBOLNY2BmItRJK2ka8A==
+"@browserless/devices@^9.4.1":
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/@browserless/devices/-/devices-9.4.1.tgz#ef9ea92c8bb9a14feb5c93e2d8db7d0b430ce5fe"
+  integrity sha512-qfqImygUo1oZ8R3XOLeolmxWLjrc2H3KKfFSYb+3hUv+zdsTLn7Z33iiN+3iTaWY/7NSGTuLreWewJ+Rpre/mA==
   dependencies:
     didyoumean3 "~1.2.5"
     memoize-one "~6.0.0"
-    require-one-of "~1.0.15"
+    require-one-of "~1.0.16"
 
 "@browserless/errors@^9.3.21":
   version "9.3.21"
@@ -429,15 +429,15 @@
     serialize-error "~8.1.0"
     whoops "~4.1.1"
 
-"@browserless/goto@^9.3.21":
-  version "9.3.21"
-  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.3.21.tgz#4b964b2b16330a2a471687044928f15603ffd8ce"
-  integrity sha512-tDThnFAJr7pB1VSCpd40IZ7ptdkW6aQ0gw9UxB+xkonP68CY8DeCh5M0SjFpoDa5gcx2Xk99CqSxqNuBOfb8FQ==
+"@browserless/goto@^9.5.0":
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.5.0.tgz#e44ad50ced2e27a20450e2d62a19a4fcdf8897f3"
+  integrity sha512-DL5Bkz2N6x3ztSKgaBmoVqkoAmCaQjRuZj9VJ8Urb6Ba8mBgALiChvE4gvDlPL1DV1wRDYHssmWOWNwy56dFWA==
   dependencies:
-    "@browserless/devices" "^9.3.19"
+    "@browserless/devices" "^9.4.1"
     "@cliqz/adblocker-puppeteer" "~1.23.8"
     debug-logfmt "~1.0.4"
-    got "~11.8.3"
+    got "~11.8.5"
     is-url-http "~2.3.2"
     p-reflect "~2.1.0"
     p-timeout "~4.1.0"
@@ -448,21 +448,21 @@
     tough-cookie "~4.0.0"
     unique-random-array "~2.0.0"
 
-"@browserless/pdf@^9.3.21":
-  version "9.3.21"
-  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.3.21.tgz#1764c88fb265e5627671f619cbe6b5c3b173cea7"
-  integrity sha512-T9jvuoUq03L20sfAgAdg4UoaRb/ctS0lhzUjjUqUDLgiEJIfY/FwX5/y78wTuQbreGmR59/RVScbkCjXjfJyCQ==
+"@browserless/pdf@^9.5.0":
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.5.0.tgz#1ecae41d6cd7f0dfdfc7f96e569fff90fc543d8a"
+  integrity sha512-EMlpMe/LwP4xU5GQ8t/cgCOFYX7gZGsnikk9ff/tUeMBoX51QICsN5W3Sc0it8n32uCUh2eFGCpKv4zixdUgoA==
   dependencies:
-    "@browserless/goto" "^9.3.21"
+    "@browserless/goto" "^9.5.0"
 
-"@browserless/screenshot@^9.3.21":
-  version "9.3.21"
-  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.3.21.tgz#3d843be767396d1ba98b49ffca114d7670c18d7b"
-  integrity sha512-/S30LIt4+loOXR3nHivdPhXW0vyrhTNvElR4KWB84yVcGuF+mSfsxursHnR73PpVl/yd8weEa03jM2mmfKQDqA==
+"@browserless/screenshot@^9.5.0":
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.5.0.tgz#e4ebb19dce5d2977e529f25505a40deae0a63c19"
+  integrity sha512-KIZeXpflOYdhciCrgDBcUXkJrUzaIGY46uepmRbsnJxvv9BGtSgXRjjsAEntb1kQlOFMQc2Lv03GMoShtNCJiw==
   dependencies:
-    "@browserless/goto" "^9.3.21"
+    "@browserless/goto" "^9.5.0"
     debug-logfmt "~1.0.4"
-    got "~11.8.3"
+    got "~11.8.5"
     is-html-content "~1.0.0"
     is-url-http "~2.3.2"
     jimp "~0.16.1"
@@ -471,7 +471,7 @@
     p-reflect "~2.1.0"
     pretty-ms "~7.0.1"
     prism-themes "~1.9.0"
-    sharp "~0.30.6"
+    sharp "~0.30.7"
     svg-gradient "~1.0.3"
     time-span "~4.0.0"
 
@@ -2025,22 +2025,22 @@ braces@^3.0.1, braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-browserless@9.4.0:
-  version "9.4.0"
-  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.4.0.tgz#4a5ef9f974f656bc5d0af95d8cdce431cb27795b"
-  integrity sha512-xRxraDdRgkHF3GhD0urz/g/0ENRsADANGIkNguLFP+YlbtDFJM1Iuhp/oAtlfEmFQ1QqcK7IMfjDBlktjr9nYA==
+browserless@9.5.0:
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.5.0.tgz#828380daf7bae98d92aefc4fc606a72fe6e00df4"
+  integrity sha512-c4a1moqHldejs4N2upT83ZaBaKw2qQ/ld2b0+gbFVEWA4CGA4qLMNWpdGsmU2pmUSuEZgkhKhlkjKo+pqJL5Fg==
   dependencies:
     "@browserless/errors" "^9.3.21"
-    "@browserless/goto" "^9.3.21"
-    "@browserless/pdf" "^9.3.21"
-    "@browserless/screenshot" "^9.3.21"
+    "@browserless/goto" "^9.5.0"
+    "@browserless/pdf" "^9.5.0"
+    "@browserless/screenshot" "^9.5.0"
     debug-logfmt "~1.0.4"
-    kill-process-group "~1.0.2"
+    kill-process-group "~1.0.3"
     mutexify "~1.4.0"
     p-reflect "~2.1.0"
     p-retry "~4.6.1"
     p-timeout "~4.1.0"
-    require-one-of "~1.0.15"
+    require-one-of "~1.0.16"
 
 browserslist@^4.17.5:
   version "4.20.2"
@@ -3557,10 +3557,27 @@ got@^9.6.0:
     to-readable-stream "^1.0.0"
     url-parse-lax "^3.0.0"
 
-got@~11.8.2, got@~11.8.3:
+got@~11.8.2:
   version "11.8.3"
   resolved "https://registry.yarnpkg.com/got/-/got-11.8.3.tgz#f496c8fdda5d729a90b4905d2b07dbd148170770"
   integrity sha512-7gtQ5KiPh1RtGS9/Jbv1ofDpBFuq42gyfEib+ejaRBJuj/3tQFeR5+gw57e4ipaU8c/rCjvX6fkQz2lyDlGAOg==
+  dependencies:
+    "@sindresorhus/is" "^4.0.0"
+    "@szmarczak/http-timer" "^4.0.5"
+    "@types/cacheable-request" "^6.0.1"
+    "@types/responselike" "^1.0.0"
+    cacheable-lookup "^5.0.3"
+    cacheable-request "^7.0.2"
+    decompress-response "^6.0.0"
+    http2-wrapper "^1.0.0-beta.5.2"
+    lowercase-keys "^2.0.0"
+    p-cancelable "^2.0.0"
+    responselike "^2.0.0"
+
+got@~11.8.5:
+  version "11.8.5"
+  resolved "https://registry.yarnpkg.com/got/-/got-11.8.5.tgz#ce77d045136de56e8f024bebb82ea349bc730046"
+  integrity sha512-o0Je4NvQObAuZPHLFoRSkdG2lTgtcynqymzg2Vupdx6PorhaT5MCbIyXG6d4D94kk8ZG57QeosgdiqfJWhEhlQ==
   dependencies:
     "@sindresorhus/is" "^4.0.0"
     "@szmarczak/http-timer" "^4.0.5"
@@ -4555,10 +4572,10 @@ keyv@^4.0.0:
     compress-brotli "^1.3.6"
     json-buffer "3.0.1"
 
-kill-process-group@~1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/kill-process-group/-/kill-process-group-1.0.2.tgz#9583a9a9c0e62e74c22375002803b63ace8e2b57"
-  integrity sha512-t8IqUcEBWDzi0CysgXdqhzQ2Uz0Sq/AZ6i6kNhpVL+xd1QM1hpKQpoTBkHXxJTf3VivOwF7jyfrIay/7JCSd0A==
+kill-process-group@~1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/kill-process-group/-/kill-process-group-1.0.3.tgz#b0122d78459f4b0503051dfa2f61a9716019b502"
+  integrity sha512-AXpTXnBnsR/mhSkNvSqhNpIoXDk7pvk9J/PHRr9UxuaJYp031VbzzOKc9x8dZkVrLkGbZnEi/vl4k60XhPxPjg==
 
 kleur@^3.0.3:
   version "3.0.3"
@@ -5370,7 +5387,7 @@ pngjs@^3.0.0, pngjs@^3.3.3:
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.4.0.tgz#99ca7d725965fb655814eaf65f38f12bbdbf555f"
   integrity sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==
 
-prebuild-install@^7.1.0:
+prebuild-install@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-7.1.1.tgz#de97d5b34a70a0c81334fd24641f2a1702352e45"
   integrity sha512-jAXscXWMcCK8GgCoHOfIr0ODh5ai8mj63L2nWrjuAgXE6tDyYGnx4/8o/rCgU+B4JSyZBKbeZqzhtwtC3ovxjw==
@@ -5700,10 +5717,10 @@ require-directory@^2.1.1:
   resolved "https://registry.npmjs.org/require-directory/-/require-directory-2.1.1.tgz"
   integrity sha1-jGStX9MNqxyXbiNE/+f3kqam30I=
 
-require-one-of@~1.0.15:
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/require-one-of/-/require-one-of-1.0.15.tgz#c285a0bb4294ea0a4451b8690ec0f936a6d1e094"
-  integrity sha512-nkXiy/hrId31AWQgpBKKdRIw8zzH8jOwtxSNIDWfaPS/Vkp8mz7sMvGOnzIWZevKa7hQmke52DaHiA6K6ti9Fw==
+require-one-of@~1.0.16:
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/require-one-of/-/require-one-of-1.0.16.tgz#12ddfdb889b51b30b5f4f843c881cf8bfcb58a97"
+  integrity sha512-33yrZfU6uc5qxCPTj3Sfr8oT+f3mfkNAElLjjKNGg1SfRCcCWVgXTeMTMuUEueOB0m6/rM5MXG/jCdjCsaxU9Q==
   dependencies:
     debug "~4.3.1"
     humanize-list "~1.0.1"
@@ -5895,15 +5912,15 @@ shallow-equal@~1.2.1:
   resolved "https://registry.yarnpkg.com/shallow-equal/-/shallow-equal-1.2.1.tgz#4c16abfa56043aa20d050324efa68940b0da79da"
   integrity sha512-S4vJDjHHMBaiZuT9NPb616CSmLf618jawtv3sufLl6ivK8WocjAo58cXwbRV1cgqxH0Qbv+iUt6m05eqEa2IRA==
 
-sharp@~0.30.6:
-  version "0.30.6"
-  resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.30.6.tgz#02264e9826b5f1577509f70bb627716099778873"
-  integrity sha512-lSdVxFxcndzcXggDrak6ozdGJgmIgES9YVZWtAFrwi+a/H5vModaf51TghBtMPw+71sLxUsTy2j+aB7qLIODQg==
+sharp@~0.30.7:
+  version "0.30.7"
+  resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.30.7.tgz#7862bda98804fdd1f0d5659c85e3324b90d94c7c"
+  integrity sha512-G+MY2YW33jgflKPTXXptVO28HvNOo9G3j0MybYAHeEmby+QuD2U98dT6ueht9cv/XDqZspSpIhoSW+BAKJ7Hig==
   dependencies:
     color "^4.2.3"
     detect-libc "^2.0.1"
     node-addon-api "^5.0.0"
-    prebuild-install "^7.1.0"
+    prebuild-install "^7.1.1"
     semver "^7.3.7"
     simple-get "^4.0.1"
     tar-fs "^2.1.1"
