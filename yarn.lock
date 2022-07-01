@@ -455,10 +455,10 @@
   dependencies:
     "@browserless/goto" "^9.5.0"
 
-"@browserless/screenshot@^9.5.0":
-  version "9.5.0"
-  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.5.0.tgz#e4ebb19dce5d2977e529f25505a40deae0a63c19"
-  integrity sha512-KIZeXpflOYdhciCrgDBcUXkJrUzaIGY46uepmRbsnJxvv9BGtSgXRjjsAEntb1kQlOFMQc2Lv03GMoShtNCJiw==
+"@browserless/screenshot@^9.5.1":
+  version "9.5.1"
+  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.5.1.tgz#5edfb080600a423843d2f895d0064e25f24ec158"
+  integrity sha512-7Be85t/07rx5nksdGYdcG+Tk7nI7pNp6tS1/1VvF0jPp8OTKjPdBI+W6nk/tFBxEqjZzx30uhmZtfQ6F5qfsCA==
   dependencies:
     "@browserless/goto" "^9.5.0"
     debug-logfmt "~1.0.4"
@@ -467,7 +467,7 @@
     is-url-http "~2.3.2"
     jimp "~0.16.1"
     map-values-deep "~1.0.2"
-    mime-types "~2.1.35"
+    mime "~3.0.0"
     p-reflect "~2.1.0"
     pretty-ms "~7.0.1"
     prism-themes "~1.9.0"
@@ -2025,15 +2025,15 @@ braces@^3.0.1, braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-browserless@9.5.0:
-  version "9.5.0"
-  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.5.0.tgz#828380daf7bae98d92aefc4fc606a72fe6e00df4"
-  integrity sha512-c4a1moqHldejs4N2upT83ZaBaKw2qQ/ld2b0+gbFVEWA4CGA4qLMNWpdGsmU2pmUSuEZgkhKhlkjKo+pqJL5Fg==
+browserless@9.5.1:
+  version "9.5.1"
+  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.5.1.tgz#2472ad8553bd876bceae87e6ce34276f16fa556a"
+  integrity sha512-LnAfVl68xb3RAzwyntIl5O8nUQs5cg4D0aFQ3yw+p+7GKg0BKdjVq9wK3o9xEYYVUJXBvcdP7gkFjJCa1t2YMA==
   dependencies:
     "@browserless/errors" "^9.3.21"
     "@browserless/goto" "^9.5.0"
     "@browserless/pdf" "^9.5.0"
-    "@browserless/screenshot" "^9.5.0"
+    "@browserless/screenshot" "^9.5.1"
     debug-logfmt "~1.0.4"
     kill-process-group "~1.0.3"
     mutexify "~1.4.0"
@@ -4804,7 +4804,7 @@ mime-db@1.52.0:
   resolved "https://registry.npmjs.org/mime-db/-/mime-db-1.52.0.tgz"
   integrity sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
 
-mime-types@^2.1.12, mime-types@~2.1.19, mime-types@~2.1.24, mime-types@~2.1.34, mime-types@~2.1.35:
+mime-types@^2.1.12, mime-types@~2.1.19, mime-types@~2.1.24, mime-types@~2.1.34:
   version "2.1.35"
   resolved "https://registry.npmjs.org/mime-types/-/mime-types-2.1.35.tgz"
   integrity sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
@@ -4820,6 +4820,11 @@ mime@^2.5.0:
   version "2.6.0"
   resolved "https://registry.npmjs.org/mime/-/mime-2.6.0.tgz"
   integrity sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==
+
+mime@~3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-3.0.0.tgz#b374550dca3a0c18443b0c950a6a58f1931cf7a7"
+  integrity sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A==
 
 mimic-fn@^2.1.0:
   version "2.1.0"
