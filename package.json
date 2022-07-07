@@ -31,7 +31,7 @@
     "puppeteer-full-page-screenshot": "^1.2.2",
     "winston": "^3.8.1",
     "winston-graylog2": "^2.1.2",
-    "youtube-dl-exec": "^2.0.12"
+    "youtube-dl-exec": "^2.0.13"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
