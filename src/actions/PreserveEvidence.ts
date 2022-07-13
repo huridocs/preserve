@@ -66,9 +66,11 @@ export class PreserveEvidence {
         const videoPaths = await this.videoDownloader.download(_evidence, {
           output: evidence.directoryFor(Preservation.VIDEO),
           format: 'best',
-          addHeader: `Cookie:${evidence.headerCookies()}`,
+          verbose: true,
+          // addHeader: `Cookie:${evidence.headerCookies()}`,
           noPlaylist: true,
           playlistEnd: 1,
+          cookies: `${config.cookiesPath}/${_evidence.cookiesFile}`,
         });
 
         const result: PreservationResults = {

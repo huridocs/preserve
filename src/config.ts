@@ -6,6 +6,7 @@ export const config = {
     crtFile: `${__dirname}/../files/freetsa/tsa.crt`,
   },
   data_path: `${__dirname}/../files/downloads/`,
+  cookiesPath: `${__dirname}/../files/cookies/`,
   trusted_timestamps_path: `${__dirname}/../files/trusted_timestamps/`,
   evidences_return_max_limit: 50,
   mongodb_uri: process.env.MONGO_URI || 'mongodb://localhost:27019',

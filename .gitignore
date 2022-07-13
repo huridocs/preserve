@@ -134,11 +134,16 @@ files/trusted_timestamps/*
 !files/trusted_timestamps/index.html
 files/downloads/*
 !files/downloads/index.html
+files/cookies/*
+!files/cookies/index.html
+
 
 specs/testing_files/trusted_timestamps/*
 !specs/testing_files/trusted_timestamps/index.html
 specs/testing_files/downloads/*
 !specs/testing_files/downloads/index.html
+specs/testing_files/cookies/*
+!specs/testing_files/cookies/index.html
 
 # Webstorm
 .idea

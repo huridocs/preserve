@@ -16,6 +16,7 @@ export class Vault {
       _id: _id,
       user: user._id,
       cookies: cookies,
+      cookiesFile: `${_id.toString()}.txt`,
       attributes: { url: url, status: 'SCHEDULED', downloads: [] },
     });
     const evidence = await this.getOne(_id, user);
