@@ -102,9 +102,7 @@ describe('Create evidence', () => {
       it('saves the cookies file on Netscape format ', async () => {
         const evidence = await action.execute('http://example.com', user, cookies);
 
-        const cookiesFile = await readFile(
-          `${config.cookiesPath}/${evidence.cookiesFile}`
-        );
+        const cookiesFile = await readFile(`${config.cookiesPath}/${evidence.cookiesFile}`);
 
         expect(cookiesFile.toString()).toEqual(
           '.github.com\tTRUE\t/\tTRUE\t1672732978.838891\t_octo\tGH1.1.129557744.1641196970\n' +

@@ -3,7 +3,7 @@ import { Logger } from 'winston';
 import { Vault } from 'src/infrastructure/Vault';
 import { User } from 'src/types';
 import { Cookie } from 'src/types';
-import { config } from 'src/config';
+import { config } from '../config';
 
 export class CreateEvidence {
   private vault: Vault;
