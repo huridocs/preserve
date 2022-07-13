@@ -36,6 +36,7 @@ export type EvidenceDB = EvidenceBase & {
   _id: ObjectId;
   user: ObjectId;
   cookies: Cookie[];
+  cookiesFile: string;
   error?: string;
 };
 

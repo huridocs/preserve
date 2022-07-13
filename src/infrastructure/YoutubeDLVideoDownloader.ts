@@ -1,4 +1,4 @@
-import { EvidenceDB, Preservation, VideoDownloader, VideoDownloaderFlags } from '../types';
+import { EvidenceDB, VideoDownloader, VideoDownloaderFlags } from '../types';
 import { create as createYoutubeDl } from 'youtube-dl-exec';
 import { Evidence } from '../actions/PreserveEvidence';
 import { config } from '../config';

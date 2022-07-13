@@ -9,7 +9,7 @@
     "start": "npm run build && node dist/src/server.js",
     "test": "jest ./specs --testPathIgnorePatterns=Integration",
     "test-integration": "jest ./specs/*Integration*",
-    "lint": "eslint ./**/*.ts",
+    "lint": "eslint specs/**/**.ts src/**/**.ts",
     "check-types": "tsc --noEmit --pretty"
   },
   "keywords": [],

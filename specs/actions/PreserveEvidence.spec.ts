@@ -1,5 +1,5 @@
 import express from 'express';
-import { access, readFile } from 'fs/promises';
+import { access, appendFile, readFile } from 'fs/promises';
 import { Server } from 'http';
 import { ObjectId } from 'mongodb';
 import path from 'path';
@@ -70,14 +70,20 @@ describe('PreserveEvidence', () => {
 
   describe('preserving HTML sites', () => {
     beforeAll(async () => {
+      await appendFile(
+        `${config.cookiesPath}/evidence.txt`,
+        '# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\ta_name\ta_value'
+      );
+
       result = await preserveEvidence.execute(
         {
           _id: new ObjectId(),
           user: new ObjectId(),
-          cookies: [{ name: 'a_name', value: 'a_value', domain: 'localhost' }],
+          cookies: [{ name: 'a_name', value: 'a_value', domain: '127.0.0.1' }],
+          cookiesFile: 'evidence.txt',
           attributes: {
             status: 'PROCESSING',
-            url: 'http://localhost:5960/test_page',
+            url: 'http://127.0.0.1:5960/test_page',
             downloads: [],
           },
         },
@@ -99,15 +105,16 @@ describe('PreserveEvidence', () => {
           _id: new ObjectId(),
           user: new ObjectId(),
           cookies: [],
+          cookiesFile: 'evidence.txt',
           attributes: {
             status: 'PROCESSING',
-            url: 'http://localhost:5960/no_title',
+            url: 'http://127.0.0.1:5960/no_title',
             downloads: [],
           },
         },
         { stepTimeout: 0 }
       );
-      expect(emptyTitleResult.title).toBe('http://localhost:5960/no_title');
+      expect(emptyTitleResult.title).toBe('http://127.0.0.1:5960/no_title');
     }, 20000);
 
     it('should set the text content in a file and return as a download', async () => {
@@ -177,23 +184,25 @@ describe('PreserveEvidence', () => {
         _id: new ObjectId(),
         user: new ObjectId(),
         cookies: [
-          { name: 'a_name', value: 'a_value', domain: 'localhost' },
-          { name: 'another_name', value: 'another_value', domain: 'localhost' },
+          { name: 'a_name', value: 'a_value', domain: '127.0.0.1' },
+          { name: 'another_name', value: 'another_value', domain: '127.0.0.1' },
         ],
+        cookiesFile: 'evidence.txt',
         attributes: {
           status: 'PROCESSING',
-          url: 'http://localhost:5960/test_page',
+          url: 'http://127.0.0.1:5960/test_page',
           downloads: [],
         },
       };
+
       result = await preserveEvidence.execute(evidence, { stepTimeout: 0 });
 
       expect(videoDownloaderSpy).toHaveBeenCalledWith(evidence, {
         format: 'best',
         output: `${config.data_path}/${evidence._id.toString()}/video.mp4`,
-        addHeader: 'Cookie:a_name=a_value;another_name=another_value',
         noPlaylist: true,
         playlistEnd: 1,
+        cookies: `${config.cookiesPath}/evidence.txt`,
       });
       videoDownloaderSpy.mockClear();
     }, 20000);
@@ -206,9 +215,10 @@ describe('PreserveEvidence', () => {
           _id: new ObjectId(),
           user: new ObjectId(),
           cookies: [],
+          cookiesFile: 'evidence.txt',
           attributes: {
             status: 'PROCESSING',
-            url: 'http://localhost:5960/pdf_route',
+            url: 'http://127.0.0.1:5960/pdf_route',
             downloads: [],
           },
         },
@@ -252,9 +262,10 @@ describe('PreserveEvidence', () => {
         _id: new ObjectId(),
         user: new ObjectId(),
         cookies: [],
+        cookiesFile: 'evidence.txt',
         attributes: {
           status: 'PROCESSING',
-          url: 'http://localhost:5960/pdf_route',
+          url: 'http://127.0.0.1:5960/pdf_route',
           downloads: [],
         },
       };
@@ -278,6 +289,7 @@ describe('PreserveEvidence', () => {
             _id: new ObjectId(),
             user: new ObjectId(),
             cookies: [],
+            cookiesFile: 'evidence.txt',
             attributes: {
               status: 'PROCESSING',
               url: 'chrome://crash',
@@ -305,9 +317,10 @@ describe('PreserveEvidence', () => {
               _id: new ObjectId(),
               user: new ObjectId(),
               cookies: [],
+              cookiesFile: 'evidence.txt',
               attributes: {
                 status: 'PROCESSING',
-                url: 'http://localhost:5960/test_page',
+                url: 'http://127.0.0.1:5960/test_page',
                 downloads: [],
               },
             },
