@@ -7,6 +7,7 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -131,19 +132,13 @@ dist
 .sugarcube_cache.json
 
 files/trusted_timestamps/*
-!files/trusted_timestamps/index.html
 files/downloads/*
-!files/downloads/index.html
 files/cookies/*
-!files/cookies/index.html
-
 
 specs/testing_files/trusted_timestamps/*
-!specs/testing_files/trusted_timestamps/index.html
 specs/testing_files/downloads/*
-!specs/testing_files/downloads/index.html
 specs/testing_files/cookies/*
-!specs/testing_files/cookies/index.html
+
 
 # Webstorm
 .idea
@@ -151,3 +146,5 @@ specs/testing_files/cookies/*
 
 # Mac Os
 .DS_Store
+
+!.gitkeep
