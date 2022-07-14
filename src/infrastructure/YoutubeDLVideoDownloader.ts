@@ -1,7 +1,8 @@
-import { EvidenceDB, VideoDownloader, VideoDownloaderFlags } from '../types';
+import * as Sentry from '@sentry/node';
 import { create as createYoutubeDl } from 'youtube-dl-exec';
 import { Evidence } from '../actions/PreserveEvidence';
 import { config } from '../config';
+import { EvidenceDB, VideoDownloader, VideoDownloaderFlags } from '../types';
 
 export class VideoDownloaderError extends Error {
   public originalError: unknown;
@@ -24,17 +25,8 @@ export class YoutubeDLVideoDownloader implements VideoDownloader {
     try {
       await this.downloader(evidence.url(), flags);
     } catch (error: unknown) {
-      const { message, stderr } = error as { message: string; stderr?: string };
-
-      if (stderr?.includes('Unsupported URL')) {
-        return [];
-      }
-
-      if (message) {
-        throw new VideoDownloaderError(message, error);
-      }
-
-      throw error;
+      Sentry.captureException(error, { level: 'info' });
+      return [];
     }
 
     return evidence.videoPaths();

@@ -6,10 +6,7 @@ import path from 'path';
 import { config } from 'src/config';
 import { EvidenceDB, PreservationResults } from 'src/types';
 import { HTTPClient } from 'src/infrastructure/HTTPClient';
-import {
-  VideoDownloaderError,
-  YoutubeDLVideoDownloader,
-} from 'src/infrastructure/YoutubeDLVideoDownloader';
+import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
 import { Browser } from 'src/infrastructure/Browser';
 import { FakeHTTPClient } from '../FakeHTTPClient';
 import { PreserveEvidence } from 'src/actions/PreserveEvidence';
@@ -25,7 +22,7 @@ async function exists(path: string) {
 
 describe('PreserveEvidence', () => {
   let server: Server;
-  let result: PreservationResults;
+  let preservationResults: PreservationResults;
   const videoDownloader = new YoutubeDLVideoDownloader();
   const preserveEvidence = new PreserveEvidence(new HTTPClient(), videoDownloader, new Browser());
 
@@ -75,7 +72,7 @@ describe('PreserveEvidence', () => {
         '# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\ta_name\ta_value'
       );
 
-      result = await preserveEvidence.execute(
+      preservationResults = await preserveEvidence.execute(
         {
           _id: new ObjectId(),
           user: new ObjectId(),
@@ -91,12 +88,14 @@ describe('PreserveEvidence', () => {
       );
     }, 20000);
 
-    it('should ignore "UNSUPORTED URL" error', async () => {
-      expect(result.downloads.find(download => download.type === 'video')).not.toBeDefined();
+    it('should ignore video downloader errors', async () => {
+      expect(
+        preservationResults.downloads.find(download => download.type === 'video')
+      ).not.toBeDefined();
     });
 
     it('should return the site title', async () => {
-      expect(result.title).toBe('test title');
+      expect(preservationResults.title).toBe('test title');
     });
 
     it('should use the url as title when title is empty', async () => {
@@ -121,7 +120,8 @@ describe('PreserveEvidence', () => {
       const content = await readFile(
         path.join(
           config.data_path,
-          result.downloads.find(d => d.path.includes('content.txt'))?.path || 'no content'
+          preservationResults.downloads.find(d => d.path.includes('content.txt'))?.path ||
+            'no content'
         ),
         'utf-8'
       );
@@ -132,7 +132,8 @@ describe('PreserveEvidence', () => {
       const content = await readFile(
         path.join(
           config.data_path,
-          result.downloads.find(d => d.path.includes('content.html'))?.path || 'no content'
+          preservationResults.downloads.find(d => d.path.includes('content.html'))?.path ||
+            'no content'
         ),
         'utf-8'
       );
@@ -146,7 +147,8 @@ describe('PreserveEvidence', () => {
         await exists(
           path.join(
             config.data_path,
-            result.downloads.find(d => d.path.match(/screenshot.jpg/))?.path || 'no_screenshot'
+            preservationResults.downloads.find(d => d.path.match(/screenshot.jpg/))?.path ||
+              'no_screenshot'
           )
         )
       ).toBe(true);
@@ -157,7 +159,8 @@ describe('PreserveEvidence', () => {
         await exists(
           path.join(
             config.data_path,
-            result.downloads.find(d => d.path.match(/full_screenshot.jpg/))?.path || 'no_screenshot'
+            preservationResults.downloads.find(d => d.path.match(/full_screenshot.jpg/))?.path ||
+              'no_screenshot'
           )
         )
       ).toBe(true);
@@ -168,14 +171,14 @@ describe('PreserveEvidence', () => {
         await exists(
           path.join(
             config.data_path,
-            result.downloads.find(d => d.path.match(/content.pdf/))?.path || 'no pdf'
+            preservationResults.downloads.find(d => d.path.match(/content.pdf/))?.path || 'no pdf'
           )
         )
       ).toBe(true);
     });
 
     it('should not include video when not supported', async () => {
-      expect(result.downloads.find(d => d.type === 'video')).not.toBeDefined();
+      expect(preservationResults.downloads.find(d => d.type === 'video')).not.toBeDefined();
     });
 
     it('should download videos', async () => {
@@ -195,7 +198,7 @@ describe('PreserveEvidence', () => {
         },
       };
 
-      result = await preserveEvidence.execute(evidence, { stepTimeout: 0 });
+      preservationResults = await preserveEvidence.execute(evidence, { stepTimeout: 0 });
 
       expect(videoDownloaderSpy).toHaveBeenCalledWith(evidence, {
         format: 'best',
@@ -210,7 +213,7 @@ describe('PreserveEvidence', () => {
 
   describe('preserving PDF URLs', () => {
     beforeAll(async () => {
-      result = await preserveEvidence.execute(
+      preservationResults = await preserveEvidence.execute(
         {
           _id: new ObjectId(),
           user: new ObjectId(),
@@ -231,7 +234,8 @@ describe('PreserveEvidence', () => {
         await exists(
           path.join(
             config.data_path,
-            result.downloads.find(d => d.path.match(/screenshot.jpg/))?.path || 'no_screenshot'
+            preservationResults.downloads.find(d => d.path.match(/screenshot.jpg/))?.path ||
+              'no_screenshot'
           )
         )
       ).toBe(false);
@@ -239,21 +243,22 @@ describe('PreserveEvidence', () => {
         await exists(
           path.join(
             config.data_path,
-            result.downloads.find(d => d.path.match(/full_screenshot.jpg/))?.path || 'no_screenshot'
+            preservationResults.downloads.find(d => d.path.match(/full_screenshot.jpg/))?.path ||
+              'no_screenshot'
           )
         )
       ).toBe(false);
       const preservedFile = await readFile(
         path.join(
           config.data_path,
-          result.downloads.find(d => d.type === 'content')?.path || 'no content'
+          preservationResults.downloads.find(d => d.type === 'content')?.path || 'no content'
         ),
         'utf-8'
       );
 
       const originalFile = await readFile(path.join(__dirname, 'content.pdf'), 'utf-8');
       expect(originalFile).toBe(preservedFile);
-      expect(result.title).toBe('pdf_route');
+      expect(preservationResults.title).toBe('pdf_route');
     }, 10000);
 
     it('should not download videos', async () => {
@@ -270,7 +275,7 @@ describe('PreserveEvidence', () => {
         },
       };
 
-      result = await preserveEvidence.execute(evidence, { stepTimeout: 0 });
+      preservationResults = await preserveEvidence.execute(evidence, { stepTimeout: 0 });
 
       expect(videoDownloaderSpy).not.toHaveBeenCalled();
       videoDownloaderSpy.mockClear();
@@ -280,7 +285,7 @@ describe('PreserveEvidence', () => {
   describe('on page errors', () => {
     it('should bubble up the errors', async () => {
       await expect(async () => {
-        result = await new PreserveEvidence(
+        preservationResults = await new PreserveEvidence(
           new FakeHTTPClient(),
           new YoutubeDLVideoDownloader(),
           new Browser()
@@ -300,33 +305,5 @@ describe('PreserveEvidence', () => {
         );
       }).rejects.toEqual(new Error('Page crashed!'));
     });
-  });
-
-  describe('on video download errors', () => {
-    it('should bubble up video downloader error', async () => {
-      config.video_downloader_path = 'bad_executable';
-      const preserveAction = new PreserveEvidence(
-        new HTTPClient(),
-        new YoutubeDLVideoDownloader(),
-        new Browser()
-      );
-      await expect(
-        async () =>
-          await preserveAction.execute(
-            {
-              _id: new ObjectId(),
-              user: new ObjectId(),
-              cookies: [],
-              cookiesFile: 'evidence.txt',
-              attributes: {
-                status: 'PROCESSING',
-                url: 'http://127.0.0.1:5960/test_page',
-                downloads: [],
-              },
-            },
-            { stepTimeout: 0 }
-          )
-      ).rejects.toBeInstanceOf(VideoDownloaderError);
-    }, 20000);
   });
 });
