@@ -1,4 +1,5 @@
 import { appendFile } from 'fs/promises';
+import path from 'path';
 import { Logger } from 'winston';
 import { Vault } from 'src/infrastructure/Vault';
 import { User } from 'src/types';
@@ -32,7 +33,10 @@ export class CreateEvidence {
       })
       .join('\n');
 
-    await appendFile(`${config.cookiesPath}/${evidence._id.toString()}.txt`, netscapeCookies || '');
+    await appendFile(
+      path.join(config.cookiesPath, `${evidence._id.toString()}.txt`),
+      netscapeCookies || ''
+    );
     this.logger.info(`Evidence created for url ${url}`);
 
     return evidence;
