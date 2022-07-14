@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/node';
-import { Severity } from '@sentry/node';
 import { create as createYoutubeDl } from 'youtube-dl-exec';
 import { Evidence } from '../actions/PreserveEvidence';
 import { config } from '../config';
