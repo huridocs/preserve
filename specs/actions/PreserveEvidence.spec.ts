@@ -6,10 +6,7 @@ import path from 'path';
 import { config } from 'src/config';
 import { EvidenceDB, PreservationResults } from 'src/types';
 import { HTTPClient } from 'src/infrastructure/HTTPClient';
-import {
-  VideoDownloaderError,
-  YoutubeDLVideoDownloader,
-} from 'src/infrastructure/YoutubeDLVideoDownloader';
+import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
 import { Browser } from 'src/infrastructure/Browser';
 import { FakeHTTPClient } from '../FakeHTTPClient';
 import { PreserveEvidence } from 'src/actions/PreserveEvidence';
