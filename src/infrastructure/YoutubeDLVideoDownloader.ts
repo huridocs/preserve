@@ -24,17 +24,7 @@ export class YoutubeDLVideoDownloader implements VideoDownloader {
     try {
       await this.downloader(evidence.url(), flags);
     } catch (error: unknown) {
-      const { message, stderr } = error as { message: string; stderr?: string };
-
-      if (stderr?.includes('Unsupported URL')) {
-        return [];
-      }
-
-      if (message) {
-        throw new VideoDownloaderError(message, error);
-      }
-
-      throw error;
+      return [];
     }
 
     return evidence.videoPaths();
