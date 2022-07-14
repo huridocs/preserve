@@ -105,7 +105,8 @@ describe('Create evidence', () => {
         const cookiesFile = await readFile(`${config.cookiesPath}/${evidence.cookiesFile}`);
 
         expect(cookiesFile.toString()).toEqual(
-          '.github.com\tTRUE\t/\tTRUE\t1672732978.838891\t_octo\tGH1.1.129557744.1641196970\n' +
+          '# Netscape HTTP Cookie File\n' +
+            '.github.com\tTRUE\t/\tTRUE\t1672732978.838891\t_octo\tGH1.1.129557744.1641196970\n' +
             'github.com\tFALSE\t/\tTRUE\t1672732974.3706\t_device_id\t23ab1e1531b57acd1b2fe51859950d0b'
         );
       });
