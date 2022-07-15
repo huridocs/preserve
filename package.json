@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sentry/node": "7.6.0",
+    "@sentry/node": "7.7.0",
     "@sentry/tracing": "^7.6.0",
     "body-parser": "^1.20.0",
     "browserless": "9.5.1",
