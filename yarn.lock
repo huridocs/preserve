@@ -6626,10 +6626,10 @@ yn@3.1.1:
   resolved "https://registry.yarnpkg.com/yn/-/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
   integrity sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 
-youtube-dl-exec@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/youtube-dl-exec/-/youtube-dl-exec-2.1.3.tgz#08d3ff8195f636d8a917621c2f085432e9e11342"
-  integrity sha512-692Q9RMSu4nj4R2SVVBgooVeveZNiPGWMtFuMYyqQWO9lO9A29Kphpca1p0tZd0fi2rbUfAVoYs8Lof7yQ33aw==
+youtube-dl-exec@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/youtube-dl-exec/-/youtube-dl-exec-2.1.4.tgz#3cb1956934d535456c34ac090103334c9e4ec0e7"
+  integrity sha512-Kg8FCI1ITJ2G1TDDgQ5IKvvqgSp1Dfv81d+eweV8rw9uZzll5SruW2OHt6oYNE9xEWnBWgi9xBoMkmw9I3LfVg==
   dependencies:
     dargs "~7.0.0"
     execa "~5.1.0"
