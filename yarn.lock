@@ -429,10 +429,10 @@
     serialize-error "~8.1.0"
     whoops "~4.1.1"
 
-"@browserless/goto@^9.5.0":
-  version "9.5.0"
-  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.5.0.tgz#e44ad50ced2e27a20450e2d62a19a4fcdf8897f3"
-  integrity sha512-DL5Bkz2N6x3ztSKgaBmoVqkoAmCaQjRuZj9VJ8Urb6Ba8mBgALiChvE4gvDlPL1DV1wRDYHssmWOWNwy56dFWA==
+"@browserless/goto@^9.5.4":
+  version "9.5.4"
+  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.5.4.tgz#bc8d687b31b06b65d598fa52171b96eef8a2eb65"
+  integrity sha512-gURdw3HcWxbqJ4tpcjgVsQee9uZR3AEhH2eNCtU3HTz5UFNEq6UAk6g+/dQif0p4skph2YA+DngJMnZ8izugEw==
   dependencies:
     "@browserless/devices" "^9.4.1"
     "@cliqz/adblocker-puppeteer" "~1.23.8"
@@ -448,19 +448,19 @@
     tough-cookie "~4.0.0"
     unique-random-array "~2.0.0"
 
-"@browserless/pdf@^9.5.0":
-  version "9.5.0"
-  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.5.0.tgz#1ecae41d6cd7f0dfdfc7f96e569fff90fc543d8a"
-  integrity sha512-EMlpMe/LwP4xU5GQ8t/cgCOFYX7gZGsnikk9ff/tUeMBoX51QICsN5W3Sc0it8n32uCUh2eFGCpKv4zixdUgoA==
+"@browserless/pdf@^9.5.4":
+  version "9.5.4"
+  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.5.4.tgz#7f492f9381aa71c219c64a292aaff2a11f0a74e9"
+  integrity sha512-sIqOBJH3Mevc5xy0ftZUM4FGJ5ySwUKu27jwXy5bqGIUSMwPOu18Gk9IluyqmumfHYiiP5Ruy0JS3rxSOTmVqw==
   dependencies:
-    "@browserless/goto" "^9.5.0"
+    "@browserless/goto" "^9.5.4"
 
-"@browserless/screenshot@^9.5.1":
-  version "9.5.1"
-  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.5.1.tgz#5edfb080600a423843d2f895d0064e25f24ec158"
-  integrity sha512-7Be85t/07rx5nksdGYdcG+Tk7nI7pNp6tS1/1VvF0jPp8OTKjPdBI+W6nk/tFBxEqjZzx30uhmZtfQ6F5qfsCA==
+"@browserless/screenshot@^9.5.4":
+  version "9.5.4"
+  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.5.4.tgz#d38539159e2da3b794e0889f883dd6be11ddb3aa"
+  integrity sha512-xQxEE6crBiHyY8NSogDpM/UXLTsqMTTVwXuHqArhYE1822sAQ/njsxG5AjAOjOh0qNd+KJr8xdJUs6wgUapRUg==
   dependencies:
-    "@browserless/goto" "^9.5.0"
+    "@browserless/goto" "^9.5.4"
     debug-logfmt "~1.0.4"
     got "~11.8.5"
     is-html-content "~1.0.0"
@@ -1992,15 +1992,15 @@ braces@^3.0.1, braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-browserless@9.5.1:
-  version "9.5.1"
-  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.5.1.tgz#2472ad8553bd876bceae87e6ce34276f16fa556a"
-  integrity sha512-LnAfVl68xb3RAzwyntIl5O8nUQs5cg4D0aFQ3yw+p+7GKg0BKdjVq9wK3o9xEYYVUJXBvcdP7gkFjJCa1t2YMA==
+browserless@9.5.4:
+  version "9.5.4"
+  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.5.4.tgz#3ab7b25e91238625bcf9078ab88289999b47ea91"
+  integrity sha512-SWyN3zINOYVeeBrbOhEWku1q7zZQ20IMa1rxQD5CS9otQtYQYHy31YggZv/fGuX77D+9UuSq9pcPiPtGGcTtAQ==
   dependencies:
     "@browserless/errors" "^9.3.21"
-    "@browserless/goto" "^9.5.0"
-    "@browserless/pdf" "^9.5.0"
-    "@browserless/screenshot" "^9.5.1"
+    "@browserless/goto" "^9.5.4"
+    "@browserless/pdf" "^9.5.4"
+    "@browserless/screenshot" "^9.5.4"
     debug-logfmt "~1.0.4"
     kill-process-group "~1.0.3"
     mutexify "~1.4.0"
