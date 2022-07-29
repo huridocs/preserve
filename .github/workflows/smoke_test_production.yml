@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build the docker-compose stack
-        run: ./run start
+        run: ./run docker:pull && ./run start
       - name: check containers are not restarting
         run: sleep 5 && docker-compose top
       - name: check api is up

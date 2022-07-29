@@ -19,7 +19,7 @@ function mongo {
 }
 
 function stop {
-  docker pull ghcr.io/huridocs/preserve-base:latest &&
+  docker:pull  &&
   docker-compose stop
 }
 
@@ -29,6 +29,10 @@ function docker:build {
 
 function docker:push {
   docker push ghcr.io/huridocs/preserve-base:latest
+}
+
+function docker:pull {
+  docker pull ghcr.io/huridocs/preserve-base:latest
 }
 
 function test:unit {
