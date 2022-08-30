@@ -410,32 +410,32 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@browserless/devices@^9.6.5":
-  version "9.6.5"
-  resolved "https://registry.yarnpkg.com/@browserless/devices/-/devices-9.6.5.tgz#0c8eec95151024e132b600116a345b6efc238130"
-  integrity sha512-f2pzLMMd34qM1W9gL5pHfpsAPEURXonWqYMs8Q+d6c30IG31yUMvF6wbnfZVGzORgLUgSube4/D9es5TmHu16g==
+"@browserless/devices@^9.6.6":
+  version "9.6.6"
+  resolved "https://registry.yarnpkg.com/@browserless/devices/-/devices-9.6.6.tgz#8065e5ba3708493a172df2b99ac3ce82c7c52b1e"
+  integrity sha512-z4m8b4fzRJePJVlNfcFG2VJe8ovmgg+W4aj/WTZp8Z4Pe3LWMdEcJEy7dgxeq4Qana6bkIhH90opW0oiqvASWg==
   dependencies:
     didyoumean3 "~1.2.5"
     memoize-one "~6.0.0"
     require-one-of "~1.0.16"
 
-"@browserless/errors@^9.6.5":
-  version "9.6.5"
-  resolved "https://registry.yarnpkg.com/@browserless/errors/-/errors-9.6.5.tgz#4375b6e01e81074aa0d61f492883b8a5b4e076ab"
-  integrity sha512-NRYeQ61VGMcbWAriCtpx0uoMEf4DemOnvuaGYyhNaMXx3Y0++qfqYxR6PWx3IK9wGy82VTCTXIKcHeRYXOKfGw==
+"@browserless/errors@^9.6.6":
+  version "9.6.6"
+  resolved "https://registry.yarnpkg.com/@browserless/errors/-/errors-9.6.6.tgz#69fb4b4e450bede0858c1954cb7c3b5f6e726281"
+  integrity sha512-8Zk4kSW8xuOWjv9q5hVG92iJ+jRwFnuzOIwuinJjFBhIOS03tr2uAU5QQTlUXbx2E4W19YTYT47CnlhoApcqSg==
   dependencies:
     debug-logfmt "~1.0.4"
     ensure-error "~3.0.1"
     serialize-error "~8.1.0"
     whoops "~4.1.1"
 
-"@browserless/goto@^9.6.5":
-  version "9.6.5"
-  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.6.5.tgz#66be0b4344fb415122436f08633f5dad72ef2bb6"
-  integrity sha512-2t7oxGmefJ9rhaPc7MPjGN+bwE7DKFMINdKOugnxM9jOjyzBuDwrFft0xavH6h1MIBjdlzbDWCK1XZ2yfPj8Zg==
+"@browserless/goto@^9.6.8":
+  version "9.6.8"
+  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.6.8.tgz#0b30af7b250e0443132d7bff7ffd1b184ec1696b"
+  integrity sha512-aWzBHJ9vgYYcoFtbVVhRaqpBBROz/whRVG4ROZ6cBviEKIibPbdbYswSdMSiHUkbCZZIrPFCTXPTzbQPwyPa3w==
   dependencies:
-    "@browserless/devices" "^9.6.5"
-    "@cliqz/adblocker-puppeteer" "~1.23.8"
+    "@browserless/devices" "^9.6.6"
+    "@cliqz/adblocker-puppeteer" "~1.24.0"
     debug-logfmt "~1.0.4"
     got "~11.8.5"
     is-url-http "~2.3.2"
@@ -448,19 +448,19 @@
     tough-cookie "~4.1.0"
     unique-random-array "~2.0.0"
 
-"@browserless/pdf@^9.6.5":
-  version "9.6.5"
-  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.6.5.tgz#2db7ebe3e22ceeda830173ce927b5475e83a430a"
-  integrity sha512-nOXIUXmRKGEU7Y1SVN5tsGyZIERMJ/fVUjm/g+i45iW9xA6U36EtJuSLQjT2lg4Jajki5n34UQRi9+I1OIuDgQ==
+"@browserless/pdf@^9.6.8":
+  version "9.6.8"
+  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.6.8.tgz#1168f1a82b85892121b001ffec791c23179091f5"
+  integrity sha512-eN3NW95drtLaHF3PxVYd5v+JiegexuiYPY5g3Kxknrs43/AJpW2crarcOZerm1Nzid3pFUqDe/ZR5twyOqbxuA==
   dependencies:
-    "@browserless/goto" "^9.6.5"
+    "@browserless/goto" "^9.6.8"
 
-"@browserless/screenshot@^9.6.5":
-  version "9.6.5"
-  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.6.5.tgz#4e00929598c7ff627c54247bd4f3bb37b46b6160"
-  integrity sha512-GDndl5KfCjKDR4I/zfXZaeJTf5pwr+nuxb4b03IXz840eOlmH4670azVqLYzyfaojZCmGc6E6OTV1snuXl35Mg==
+"@browserless/screenshot@^9.6.8":
+  version "9.6.8"
+  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.6.8.tgz#a01997534e260f5a87df510656d6f083be91bab3"
+  integrity sha512-JFJm7lYDJw69gZyv79L2C5EN58zuEgUFBVUlDA/KhnV/JosVDAIw5gilFUswpxV6O4ngH9W+laNWYBFBi2yqWQ==
   dependencies:
-    "@browserless/goto" "^9.6.5"
+    "@browserless/goto" "^9.6.8"
     debug-logfmt "~1.0.4"
     got "~11.8.5"
     is-html-content "~1.0.0"
@@ -475,38 +475,38 @@
     svg-gradient "~1.0.3"
     time-span "~4.0.0"
 
-"@cliqz/adblocker-content@^1.23.8":
-  version "1.23.8"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-content/-/adblocker-content-1.23.8.tgz#c2fdf46cc746e092ad4fce594b8e5f0be6366db9"
-  integrity sha512-5Wm/OSA6H8AUVFi8SDff6xJ4zT/1VCrNoUnevFEi3e0MCmdQUvn+cJc03Saky7Ch5oLSJKTXNNMyPaODZLz24A==
+"@cliqz/adblocker-content@^1.24.0":
+  version "1.24.0"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-content/-/adblocker-content-1.24.0.tgz#cfef376eafa152c73b69b8c0f5b76cde36a3f792"
+  integrity sha512-BFjyIZ7ZJTZVToe5cSb31Lfvbqb+EDuD2Dp51QzOZPqxUuP3EfBI9Bj8cNfigWpYQl35qs3dHNo0SZw7MN4dPw==
   dependencies:
-    "@cliqz/adblocker-extended-selectors" "^1.23.8"
+    "@cliqz/adblocker-extended-selectors" "^1.24.0"
 
-"@cliqz/adblocker-extended-selectors@^1.23.8":
-  version "1.23.8"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-extended-selectors/-/adblocker-extended-selectors-1.23.8.tgz#2d69c95aee385c5b51a047cbaf0219db98f50729"
-  integrity sha512-5xx47oT2Q9E3vkfEm/EzSs7cAPi8WNWtu7kJcGa/urVkDchJwdkdelvQ2Dof+k5icI5AqZorZSsk9Q7w2bLxrA==
+"@cliqz/adblocker-extended-selectors@^1.24.0":
+  version "1.24.0"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-extended-selectors/-/adblocker-extended-selectors-1.24.0.tgz#54555143bb994ae1ba45462ab5acf73e16370f75"
+  integrity sha512-OZM1bBEdCl7erpA0uaRagToHAk9AQbGUuERBO0efgpq/Wo8eBJ12ceod8KcU4Pjt101SYxmm6AI9qwR2W9cJpQ==
 
-"@cliqz/adblocker-puppeteer@~1.23.8":
-  version "1.23.8"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-puppeteer/-/adblocker-puppeteer-1.23.8.tgz#e74636cd200459d1734929e41504a76939504311"
-  integrity sha512-Ca1/DBqQXsOpKTFVAHX6OpLTSEupXmUkUWHj6iXhLLleC7RPISN5B0b801VDmaGRqoC5zKRxn0vYbIfpgCWVug==
+"@cliqz/adblocker-puppeteer@~1.24.0":
+  version "1.24.0"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-puppeteer/-/adblocker-puppeteer-1.24.0.tgz#f9de5fb1eb9c4e8e306f212416114551b3afc1d4"
+  integrity sha512-4l2I7vVLH7OW4aMdEJvGesm7hL7R2NRwZSdm1Prv6mEn6bniqiFVw5ToqN7Rf938JN6b2Nm3yj8HFSl0/GVAEA==
   dependencies:
-    "@cliqz/adblocker" "^1.23.8"
-    "@cliqz/adblocker-content" "^1.23.8"
+    "@cliqz/adblocker" "^1.24.0"
+    "@cliqz/adblocker-content" "^1.24.0"
     tldts-experimental "^5.6.21"
 
-"@cliqz/adblocker@^1.23.8":
-  version "1.23.8"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker/-/adblocker-1.23.8.tgz#5945bdb077a18864ed7a3fefdc30d8887eac615c"
-  integrity sha512-xM1JYTv5dA+pPP4x4IVZdjkM9aAsakTnShFLuHLzMxMHd20eUB91NXm4kK6acw9nHwG6rCyat6+u7TvAqSmR6g==
+"@cliqz/adblocker@^1.24.0":
+  version "1.24.0"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker/-/adblocker-1.24.0.tgz#83be924a34b6e9a01bb2ac524d37d076c31d723f"
+  integrity sha512-JnWY4MPoEjy7uoPXq85/cSWil/m61h+HsuSBqEzXstG/ymGtxD/EC7qYcDT2/T4suxhTMpcB8DsZYqj2vUCeqg==
   dependencies:
-    "@cliqz/adblocker-content" "^1.23.8"
-    "@cliqz/adblocker-extended-selectors" "^1.23.8"
+    "@cliqz/adblocker-content" "^1.24.0"
+    "@cliqz/adblocker-extended-selectors" "^1.24.0"
     "@remusao/guess-url-type" "^1.1.2"
     "@remusao/small" "^1.1.2"
     "@remusao/smaz" "^1.7.1"
-    "@types/chrome" "^0.0.183"
+    "@types/chrome" "^0.0.193"
     "@types/firefox-webext-browser" "^94.0.0"
     tldts-experimental "^5.6.21"
 
@@ -531,14 +531,14 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@eslint/eslintrc@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.3.0.tgz#29f92c30bb3e771e4a2048c95fa6855392dfac4f"
-  integrity sha512-UWW0TMTmk2d7hLcWD1/e2g5HDM/HQ3csaLSqXCfqwh4uNDuNqlaKWXmEsL4Cs41Z0KnILNvwbHAah3C2yt06kw==
+"@eslint/eslintrc@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.3.1.tgz#de0807bfeffc37b964a7d0400e0c348ce5a2543d"
+  integrity sha512-OhSY22oQQdw3zgPOOwdoj01l/Dzl1Z+xyUP33tkSN+aqyEhymJCcPHyXt+ylW8FSe0TfRC2VG+ROQOapD0aZSQ==
   dependencies:
     ajv "^6.12.4"
     debug "^4.3.2"
-    espree "^9.3.2"
+    espree "^9.4.0"
     globals "^13.15.0"
     ignore "^5.2.0"
     import-fresh "^3.2.1"
@@ -564,6 +564,11 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/gitignore-to-minimatch/-/gitignore-to-minimatch-1.0.2.tgz#316b0a63b91c10e53f242efb4ace5c3b34e8728d"
   integrity sha512-rSqmMJDdLFUsyxR6FMtD00nfQKKLFb1kv+qBbOVKqErvloEIJLo5bDTJTQNTYgeyp78JsA7u/NPi5jT1GR/MuA==
+
+"@humanwhocodes/module-importer@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@humanwhocodes/module-importer/-/module-importer-1.0.1.tgz#af5b2691a22b44be847b0ca81641c5fb6ad0172c"
+  integrity sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==
 
 "@humanwhocodes/object-schema@^1.2.1":
   version "1.2.1"
@@ -1356,10 +1361,10 @@
     "@types/node" "*"
     "@types/responselike" "*"
 
-"@types/chrome@^0.0.183":
-  version "0.0.183"
-  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.183.tgz#c12649c00ae5ae8fca511248256c0b11f91c95e2"
-  integrity sha512-sYI1qGY2oB6U5GFyuoSsVJsi2ytuEe92QrQTXQRwkISN8yn1gPY5qRq1XSwKN17yjvZTgxxeHw2ZoSHMti6qYg==
+"@types/chrome@^0.0.193":
+  version "0.0.193"
+  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.193.tgz#cd0dc5033f27a243d228aebe566c3ec19ef17e36"
+  integrity sha512-R8C84oqvk8A8C8G1viBd8qLpDr86Y/jwD+KLgzUekbIT9RGds6a9GnlQyg8P7ltnGogTMHkiEQK0ZlcrvTeo3Q==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"
@@ -2002,15 +2007,15 @@ braces@^3.0.1, braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-browserless@9.6.5:
-  version "9.6.5"
-  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.6.5.tgz#fe914ec1606790cd6c2d5e0d33ba1231c8593f19"
-  integrity sha512-g28tdFppW36rZEAEFF/p8HuFvVt7FNJ35qMXK04P0CiFkqfB/wzB6bcJUNocsqSfqzK3l0v0py2ubk0kK87oAQ==
+browserless@9.6.8:
+  version "9.6.8"
+  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.6.8.tgz#eea96dbb424dd800ea64490aaf1b5c630b2180f3"
+  integrity sha512-L63hYxE9PLiig+C5IaztN0V638M59LnBdl1o7DmtAuGsdSD4+c/sWffsxkBhM1Hg67KZpERNYPnYFV3Bw1W61A==
   dependencies:
-    "@browserless/errors" "^9.6.5"
-    "@browserless/goto" "^9.6.5"
-    "@browserless/pdf" "^9.6.5"
-    "@browserless/screenshot" "^9.6.5"
+    "@browserless/errors" "^9.6.6"
+    "@browserless/goto" "^9.6.8"
+    "@browserless/pdf" "^9.6.8"
+    "@browserless/screenshot" "^9.6.8"
     debug-logfmt "~1.0.4"
     kill-process-group "~1.0.3"
     p-reflect "~2.1.0"
@@ -2890,14 +2895,15 @@ eslint-visitor-keys@^3.3.0:
   resolved "https://registry.npmjs.org/eslint-visitor-keys/-/eslint-visitor-keys-3.3.0.tgz"
   integrity sha512-mQ+suqKJVyeuwGYHAdjMFqjCyfl8+Ldnxuyp3ldiMBFKkvytrXUZWaiPCEav8qDHKty44bD+qV1IP4T+w+xXRA==
 
-eslint@^8.22.0:
-  version "8.22.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.22.0.tgz#78fcb044196dfa7eef30a9d65944f6f980402c48"
-  integrity sha512-ci4t0sz6vSRKdmkOGmprBo6fmI4PrphDFMy5JEq/fNS0gQkJM3rLmrqcp8ipMcdobH3KtUP40KniAE9W19S4wA==
+eslint@^8.23.0:
+  version "8.23.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.23.0.tgz#a184918d288820179c6041bb3ddcc99ce6eea040"
+  integrity sha512-pBG/XOn0MsJcKcTRLr27S5HpzQo4kLr+HjLQIyK4EiCsijDl/TB+h5uEuJU6bQ8Edvwz1XWOjpaP2qgnXGpTcA==
   dependencies:
-    "@eslint/eslintrc" "^1.3.0"
+    "@eslint/eslintrc" "^1.3.1"
     "@humanwhocodes/config-array" "^0.10.4"
     "@humanwhocodes/gitignore-to-minimatch" "^1.0.2"
+    "@humanwhocodes/module-importer" "^1.0.1"
     ajv "^6.10.0"
     chalk "^4.0.0"
     cross-spawn "^7.0.2"
@@ -2907,7 +2913,7 @@ eslint@^8.22.0:
     eslint-scope "^7.1.1"
     eslint-utils "^3.0.0"
     eslint-visitor-keys "^3.3.0"
-    espree "^9.3.3"
+    espree "^9.4.0"
     esquery "^1.4.0"
     esutils "^2.0.2"
     fast-deep-equal "^3.1.3"
@@ -2933,12 +2939,11 @@ eslint@^8.22.0:
     strip-ansi "^6.0.1"
     strip-json-comments "^3.1.0"
     text-table "^0.2.0"
-    v8-compile-cache "^2.0.3"
 
-espree@^9.3.2, espree@^9.3.3:
-  version "9.3.3"
-  resolved "https://registry.yarnpkg.com/espree/-/espree-9.3.3.tgz#2dd37c4162bb05f433ad3c1a52ddf8a49dc08e9d"
-  integrity sha512-ORs1Rt/uQTqUKjDdGCyrtYxbazf5umATSf/K4qxjmZHORR6HJk+2s/2Pqe+Kk49HHINC/xNIrGfgh8sZcll0ng==
+espree@^9.4.0:
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/espree/-/espree-9.4.0.tgz#cd4bc3d6e9336c433265fc0aa016fc1aaf182f8a"
+  integrity sha512-DQmnRpLj7f6TgN/NYb0MTzJXL+vJF9h3pHy4JhCIs3zwcgez8xmGg3sXHcEO97BrmO2OSvCwMdfdlyl+E9KjOw==
   dependencies:
     acorn "^8.8.0"
     acorn-jsx "^5.3.2"
@@ -6434,11 +6439,6 @@ v8-compile-cache-lib@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/v8-compile-cache-lib/-/v8-compile-cache-lib-3.0.1.tgz#6336e8d71965cb3d35a1bbb7868445a7c05264bf"
   integrity sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==
-
-v8-compile-cache@^2.0.3:
-  version "2.3.0"
-  resolved "https://registry.npmjs.org/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz"
-  integrity sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
 
 v8-to-istanbul@^9.0.0:
   version "9.0.0"
