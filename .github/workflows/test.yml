@@ -12,15 +12,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: base_image_should_change
+        with:
+          filters: |
+            src:
+              - package.json
+              - yarn.lock
+              - base.Dockerfile
+              - entrypoint.sh
+              - worker-entrypoint.sh
+              - tsconfig.json
+
       - name: Build the docker-compose stack
+        if: steps.base_image_should_change.outputs.src == 'true'
+        run: ./run docker:build
+
+      - name: Pull latest base image
+        if: steps.base_image_should_change.outputs.src == 'false'
+        run: ./run docker:pull
+
+      - name: Start app
         run: ./run start:local
+
       - name: Run test suite
         run: ./run test:unit
-  integration:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build the docker-compose stack
-        run: ./run start:local
-      - name: Run test suite
+
+      - name: Run integration test suite
         run: ./run test:integration
