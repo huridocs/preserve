@@ -429,13 +429,13 @@
     serialize-error "~8.1.0"
     whoops "~4.1.1"
 
-"@browserless/goto@^9.6.8":
-  version "9.6.8"
-  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.6.8.tgz#0b30af7b250e0443132d7bff7ffd1b184ec1696b"
-  integrity sha512-aWzBHJ9vgYYcoFtbVVhRaqpBBROz/whRVG4ROZ6cBviEKIibPbdbYswSdMSiHUkbCZZIrPFCTXPTzbQPwyPa3w==
+"@browserless/goto@^9.6.9":
+  version "9.6.9"
+  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.6.9.tgz#3377d15a752315e27c1f8d92d9d07fd956460029"
+  integrity sha512-VDmhNqd32prJZ52UAK0/wQD6hZzjtPsntPH747Ywm3OqG0oPRMb16W9SGH3AJ9r7dDvw/LWcG01Z5UfINBqyBw==
   dependencies:
     "@browserless/devices" "^9.6.6"
-    "@cliqz/adblocker-puppeteer" "~1.24.0"
+    "@cliqz/adblocker-puppeteer" "~1.25.0"
     debug-logfmt "~1.0.4"
     got "~11.8.5"
     is-url-http "~2.3.2"
@@ -448,19 +448,19 @@
     tough-cookie "~4.1.0"
     unique-random-array "~2.0.0"
 
-"@browserless/pdf@^9.6.8":
-  version "9.6.8"
-  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.6.8.tgz#1168f1a82b85892121b001ffec791c23179091f5"
-  integrity sha512-eN3NW95drtLaHF3PxVYd5v+JiegexuiYPY5g3Kxknrs43/AJpW2crarcOZerm1Nzid3pFUqDe/ZR5twyOqbxuA==
+"@browserless/pdf@^9.6.9":
+  version "9.6.9"
+  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.6.9.tgz#eee29b674827c664ca52f7cd869d80508d78c8cf"
+  integrity sha512-F5tQaxT68gMyPkgRnTERPXyBNM7jB7tvrfMuN6oIwUfUCr3AJPy1YllTQOdaiV3v/phhyds0vEsHnGV9aGHylg==
   dependencies:
-    "@browserless/goto" "^9.6.8"
+    "@browserless/goto" "^9.6.9"
 
-"@browserless/screenshot@^9.6.8":
-  version "9.6.8"
-  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.6.8.tgz#a01997534e260f5a87df510656d6f083be91bab3"
-  integrity sha512-JFJm7lYDJw69gZyv79L2C5EN58zuEgUFBVUlDA/KhnV/JosVDAIw5gilFUswpxV6O4ngH9W+laNWYBFBi2yqWQ==
+"@browserless/screenshot@^9.6.9":
+  version "9.6.9"
+  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.6.9.tgz#f7e7293a1535cd3cde330a36adbd114a109d5d7d"
+  integrity sha512-6mooXgz5iHML8Gbwb5PsHRZ+0lh+0JtDyVayFK2L+bqykiD6QXyYcB6ShegvGPdrTJ0FrT8tC6BA0nQ9uXojqA==
   dependencies:
-    "@browserless/goto" "^9.6.8"
+    "@browserless/goto" "^9.6.9"
     debug-logfmt "~1.0.4"
     got "~11.8.5"
     is-html-content "~1.0.0"
@@ -475,38 +475,38 @@
     svg-gradient "~1.0.3"
     time-span "~4.0.0"
 
-"@cliqz/adblocker-content@^1.24.0":
-  version "1.24.0"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-content/-/adblocker-content-1.24.0.tgz#cfef376eafa152c73b69b8c0f5b76cde36a3f792"
-  integrity sha512-BFjyIZ7ZJTZVToe5cSb31Lfvbqb+EDuD2Dp51QzOZPqxUuP3EfBI9Bj8cNfigWpYQl35qs3dHNo0SZw7MN4dPw==
+"@cliqz/adblocker-content@^1.25.0":
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-content/-/adblocker-content-1.25.0.tgz#d8c76fbbf6eb1e93c02e30bbd5cd28a39c548bfb"
+  integrity sha512-P3DenzNpd0WRpZAwCZHpOMiMs+o4e0lbHOLJSmOl09bVtwgvPV5PNqJeTQ0GNBgclTbrDzfXDbAEjm+NBm3vcA==
   dependencies:
-    "@cliqz/adblocker-extended-selectors" "^1.24.0"
+    "@cliqz/adblocker-extended-selectors" "^1.25.0"
 
-"@cliqz/adblocker-extended-selectors@^1.24.0":
-  version "1.24.0"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-extended-selectors/-/adblocker-extended-selectors-1.24.0.tgz#54555143bb994ae1ba45462ab5acf73e16370f75"
-  integrity sha512-OZM1bBEdCl7erpA0uaRagToHAk9AQbGUuERBO0efgpq/Wo8eBJ12ceod8KcU4Pjt101SYxmm6AI9qwR2W9cJpQ==
+"@cliqz/adblocker-extended-selectors@^1.25.0":
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-extended-selectors/-/adblocker-extended-selectors-1.25.0.tgz#9de64e3beb798abba6f17a411871904e2bafe3fa"
+  integrity sha512-8gUGPj1bnTqRVi414ouBlyRB9Y/orhlBBFhMAjjlmFNmcJNDLI0t3wFBjpxe/R95c2wGnTLxk5Fsahy1RamKRQ==
 
-"@cliqz/adblocker-puppeteer@~1.24.0":
-  version "1.24.0"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-puppeteer/-/adblocker-puppeteer-1.24.0.tgz#f9de5fb1eb9c4e8e306f212416114551b3afc1d4"
-  integrity sha512-4l2I7vVLH7OW4aMdEJvGesm7hL7R2NRwZSdm1Prv6mEn6bniqiFVw5ToqN7Rf938JN6b2Nm3yj8HFSl0/GVAEA==
+"@cliqz/adblocker-puppeteer@~1.25.0":
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-puppeteer/-/adblocker-puppeteer-1.25.0.tgz#7cecf476bced5c03b1a6dbaf4aba520a7e417eea"
+  integrity sha512-SuBNtVQf2/89ZlX0N+8Q7tkU9/e5acvqSG3GW+SmgLOSy6/AVpA6y/uMzZbUKFLp96TM3fkLuJXRCMUKuSVq4g==
   dependencies:
-    "@cliqz/adblocker" "^1.24.0"
-    "@cliqz/adblocker-content" "^1.24.0"
+    "@cliqz/adblocker" "^1.25.0"
+    "@cliqz/adblocker-content" "^1.25.0"
     tldts-experimental "^5.6.21"
 
-"@cliqz/adblocker@^1.24.0":
-  version "1.24.0"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker/-/adblocker-1.24.0.tgz#83be924a34b6e9a01bb2ac524d37d076c31d723f"
-  integrity sha512-JnWY4MPoEjy7uoPXq85/cSWil/m61h+HsuSBqEzXstG/ymGtxD/EC7qYcDT2/T4suxhTMpcB8DsZYqj2vUCeqg==
+"@cliqz/adblocker@^1.25.0":
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker/-/adblocker-1.25.0.tgz#2833322691f312eb8be72c1cee423435a96ce3b4"
+  integrity sha512-hRcPyiZsU6KccHi7OdEmYxTjjE/TGPPLEjVVfnvlRXCwBSvVnBTXhx31BhUi7BHXXS+OvmNxJOb+cue1nu5YGw==
   dependencies:
-    "@cliqz/adblocker-content" "^1.24.0"
-    "@cliqz/adblocker-extended-selectors" "^1.24.0"
+    "@cliqz/adblocker-content" "^1.25.0"
+    "@cliqz/adblocker-extended-selectors" "^1.25.0"
     "@remusao/guess-url-type" "^1.1.2"
     "@remusao/small" "^1.1.2"
     "@remusao/smaz" "^1.7.1"
-    "@types/chrome" "^0.0.193"
+    "@types/chrome" "^0.0.195"
     "@types/firefox-webext-browser" "^94.0.0"
     tldts-experimental "^5.6.21"
 
@@ -1361,10 +1361,10 @@
     "@types/node" "*"
     "@types/responselike" "*"
 
-"@types/chrome@^0.0.193":
-  version "0.0.193"
-  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.193.tgz#cd0dc5033f27a243d228aebe566c3ec19ef17e36"
-  integrity sha512-R8C84oqvk8A8C8G1viBd8qLpDr86Y/jwD+KLgzUekbIT9RGds6a9GnlQyg8P7ltnGogTMHkiEQK0ZlcrvTeo3Q==
+"@types/chrome@^0.0.195":
+  version "0.0.195"
+  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.195.tgz#c570f72857e11caa0a453a444828f75bca592cff"
+  integrity sha512-kmFh1xx7ehXoOVl6OjEBxmiYaquhxCaILjFGwPbW6xwbqzwDKCte+Mzl99aNWg3EP1B4rKVUuRm1vBsiRYks5g==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"
@@ -2008,15 +2008,15 @@ braces@^3.0.1, braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-browserless@9.6.8:
-  version "9.6.8"
-  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.6.8.tgz#eea96dbb424dd800ea64490aaf1b5c630b2180f3"
-  integrity sha512-L63hYxE9PLiig+C5IaztN0V638M59LnBdl1o7DmtAuGsdSD4+c/sWffsxkBhM1Hg67KZpERNYPnYFV3Bw1W61A==
+browserless@9.6.9:
+  version "9.6.9"
+  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.6.9.tgz#482f8ee1fef069b622079c2435e43706617c8788"
+  integrity sha512-5mUqveI/E2VysV/d4Ed02nf0cNNH3HGBe4ubs6yC1FhNxsHBITHjfRYf3HhjWAGkRaWO3mHNOjy8/0BG8MhcSA==
   dependencies:
     "@browserless/errors" "^9.6.6"
-    "@browserless/goto" "^9.6.8"
-    "@browserless/pdf" "^9.6.8"
-    "@browserless/screenshot" "^9.6.8"
+    "@browserless/goto" "^9.6.9"
+    "@browserless/pdf" "^9.6.9"
+    "@browserless/screenshot" "^9.6.9"
     debug-logfmt "~1.0.4"
     kill-process-group "~1.0.3"
     p-reflect "~2.1.0"
