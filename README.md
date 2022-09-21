@@ -27,9 +27,19 @@ To start the containers:
 ./run start
 ```
 
-To start the containers exposing the ports to your host machine:
+This will expose Preserve on port 4000.
+
+To start the containers exposing the mongodb port to your host machine:
 ```shell
 ./run start:local
+```
+
+This will expose Preserve on port 4000 and MongoDB on port 27019.
+
+To run a blank state that deletes the database and populates the `authorization` collection with a token:
+
+```shell
+yarn blank-state
 ```
 
 If you are working with Mac Apple Silicon chips, you will need to set your Docker default target platform environment variable:

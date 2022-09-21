@@ -10,7 +10,8 @@
     "test": "jest ./specs --testPathIgnorePatterns=Integration",
     "test-integration": "jest ./specs/*Integration*",
     "lint": "eslint specs/**/**.ts src/**/**.ts",
-    "check-types": "tsc --noEmit --pretty"
+    "check-types": "tsc --noEmit --pretty",
+    "blank-state": "./scripts/blank-state.sh"
   },
   "keywords": [],
   "author": "",
