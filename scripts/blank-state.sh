@@ -8,4 +8,6 @@ echo -e "\n\nDeleting $DB database on $HOST"
 mongo -host $HOST:$PORT $DB --eval "db.dropDatabase()"
 echo -e "\n\nPopulating authorization collection"
 mongo -host $HOST:$PORT $DB --eval "db.createCollection('authorization')"
-mongo -host $HOST:$PORT $DB --eval "db.authorization.insertOne({ token: 'mytoken' })"
+HASH=$(openssl rand -hex 16)
+mongo -host $HOST:$PORT $DB --eval "db.authorization.insertOne({ token: '$HASH' })"
+echo -e "Main authorization token created: $HASH"
