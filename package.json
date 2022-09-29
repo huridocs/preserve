@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@sentry/node": "7.14.0",
-    "@sentry/tracing": "7.13.0",
+    "@sentry/tracing": "7.14.0",
     "body-parser": "^1.20.0",
     "browserless": "9.6.10",
     "cors": "^2.8.5",
