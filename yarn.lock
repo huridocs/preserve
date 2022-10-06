@@ -429,10 +429,10 @@
     serialize-error "~8.1.0"
     whoops "~4.1.1"
 
-"@browserless/goto@^9.6.10":
-  version "9.6.10"
-  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.6.10.tgz#ad9f27117aac4e9cf1879f03198d50178acc1db1"
-  integrity sha512-WsGUvFmVV6GSSHyUCvrwzqWzyK5jL2mYa7aWqTorpYVdY0rGTNzMSEORN4m2AiAXxSJS2c37diuMw5q3Lo9W6Q==
+"@browserless/goto@^9.6.11":
+  version "9.6.11"
+  resolved "https://registry.yarnpkg.com/@browserless/goto/-/goto-9.6.11.tgz#bc9d09b567d090cc07837e926a67fcf1e780677d"
+  integrity sha512-atmyGzWSn/znqM+4X/zbf9Ozvju7XLKww0v/PK11l0AKzjeHe8EKq7Ai/4Jy79zMHoBIdg2F0yGW7q95xHydMQ==
   dependencies:
     "@browserless/devices" "^9.6.6"
     "@cliqz/adblocker-puppeteer" "~1.25.0"
@@ -448,19 +448,19 @@
     tough-cookie "~4.1.0"
     unique-random-array "~2.0.0"
 
-"@browserless/pdf@^9.6.10":
-  version "9.6.10"
-  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.6.10.tgz#dd24f82f68402b12f8d9c415b42914e7670b1bbb"
-  integrity sha512-dhPtd3Hqv3XNXlhzntnFj0m6qYL/4OzjNt3h0+4ZHNIoR4ZuJFuQWwHJKunF8Hx/laI73iPKXmWf3Y2h04C4rQ==
+"@browserless/pdf@^9.6.11":
+  version "9.6.11"
+  resolved "https://registry.yarnpkg.com/@browserless/pdf/-/pdf-9.6.11.tgz#d93587cfff6845a5a4c1d08661cf13f593d67044"
+  integrity sha512-PATyPF0X/xNE7z2HgLbm9tsz8k7ZcaAsVZyaz6r6k5VW5AYi1BLLOnm4G8Q/TwWCNUESOdAk/gge8ulnNnuNfQ==
   dependencies:
-    "@browserless/goto" "^9.6.10"
+    "@browserless/goto" "^9.6.11"
 
-"@browserless/screenshot@^9.6.10":
-  version "9.6.10"
-  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.6.10.tgz#3c934a385b3ffb9393490706b816ce1a49acd295"
-  integrity sha512-0y4K58EQQRTqtwpNmsI0Vt7OGYIxbf4H/YMvMnuZHH42uRXOdsCUk5Uixb5SGbIr4ftoChF4nA9iv0YXiPcc5A==
+"@browserless/screenshot@^9.6.11":
+  version "9.6.11"
+  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.6.11.tgz#95f1d32552fe063ad2aa21e692d962c6c069c9bf"
+  integrity sha512-u2fVz8KA8b9yNl3Nexp6BJ4zVJm3l8m0TyqWQAGJ03xA9wmUN3M+2ku0xTQMb6+8xfD+ZUIaN9L56SYYD4MnHA==
   dependencies:
-    "@browserless/goto" "^9.6.10"
+    "@browserless/goto" "^9.6.11"
     debug-logfmt "~1.0.4"
     got "~11.8.5"
     is-html-content "~1.0.0"
@@ -1198,60 +1198,60 @@
   resolved "https://registry.yarnpkg.com/@remusao/trie/-/trie-1.4.1.tgz#755d09f8a007476334e611f42719b2d581f00720"
   integrity sha512-yvwa+aCyYI/UjeD39BnpMypG8N06l86wIDW1/PAc6ihBRnodIfZDwccxQN3n1t74wduzaz74m4ZMHZnB06567Q==
 
-"@sentry/core@7.14.0":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-7.14.0.tgz#89178822de75c6023e1718c29bee8d588687cedd"
-  integrity sha512-Hgn7De6CiCFnz868/Lrtei+9rj7/TIwhbDe3J+NeH+2ffXYn4VI8FxrlR/p2XfIq9iCfmG80EQXDtSh+Kh7mOw==
+"@sentry/core@7.14.1":
+  version "7.14.1"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-7.14.1.tgz#6b046181a1c13ed0fbc90d88d9c18ab1d70d98da"
+  integrity sha512-sjk60Gf5o9zynhWe1e0ro9uQO4OrKZ3H9xfgBf2ExgKXeMfKzYp5r2v2OKNevEde36Sr/DzlpiPj8EK67xrWPA==
   dependencies:
-    "@sentry/hub" "7.14.0"
-    "@sentry/types" "7.14.0"
-    "@sentry/utils" "7.14.0"
+    "@sentry/hub" "7.14.1"
+    "@sentry/types" "7.14.1"
+    "@sentry/utils" "7.14.1"
     tslib "^1.9.3"
 
-"@sentry/hub@7.14.0":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@sentry/hub/-/hub-7.14.0.tgz#cf8e8a345c63a75ea1f3a2d7169a47ab73ff9603"
-  integrity sha512-O+pxsipeiURC6Mxuivz1pX3yHlkQCI2yjP38bISxUZv1NIijHuxiDmgqrrcCJltiIfyY2+f9LAezKVCAXnPFuw==
+"@sentry/hub@7.14.1":
+  version "7.14.1"
+  resolved "https://registry.yarnpkg.com/@sentry/hub/-/hub-7.14.1.tgz#f24d8ac65ff39dab6dbaa859c06a0651359f20d2"
+  integrity sha512-BWh5jUvGmzCsJtYy6EX3qA6gTOxwGhA64IEXHbzwIAnBoG+VWao3addaL77AGR9pIgAqn6ssfkX665OZa+GPGw==
   dependencies:
-    "@sentry/types" "7.14.0"
-    "@sentry/utils" "7.14.0"
+    "@sentry/types" "7.14.1"
+    "@sentry/utils" "7.14.1"
     tslib "^1.9.3"
 
-"@sentry/node@7.14.0":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@sentry/node/-/node-7.14.0.tgz#51f69a0a75388100cc06b332cffd995009ca558f"
-  integrity sha512-dI5kluEkvnKlW2dMYQGM9rAYmL+dVdaZPSnqnP2DcuW3taquCoBX1POXokD/GS6Qdv/eNeMu+rDxEGYTTkBXBg==
+"@sentry/node@7.14.1":
+  version "7.14.1"
+  resolved "https://registry.yarnpkg.com/@sentry/node/-/node-7.14.1.tgz#96e0dcafa7b8f2471c9b67ccb4c4a37933914502"
+  integrity sha512-A+FSEjC0BKwSLaEhB3OW6ipPCajAb7aZvHEk7bzHnkPI/ADPzqSZ41C2pr7+F5DZ8FOdE6//fqXAQi+Cn0FGpg==
   dependencies:
-    "@sentry/core" "7.14.0"
-    "@sentry/hub" "7.14.0"
-    "@sentry/types" "7.14.0"
-    "@sentry/utils" "7.14.0"
+    "@sentry/core" "7.14.1"
+    "@sentry/hub" "7.14.1"
+    "@sentry/types" "7.14.1"
+    "@sentry/utils" "7.14.1"
     cookie "^0.4.1"
     https-proxy-agent "^5.0.0"
     lru_map "^0.3.3"
     tslib "^1.9.3"
 
-"@sentry/tracing@7.14.0":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-7.14.0.tgz#083dadb7736f62cf5b4e168a649d8728260fb60b"
-  integrity sha512-AtSitQukvU52PsLlYZJ2g2Lhj3VMmy4EwF/OMp8UHCtbJYwTNDF5N4Co0GUwFIs8zdXkIoJD+GMKfsSX1L3NXA==
+"@sentry/tracing@7.14.1":
+  version "7.14.1"
+  resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-7.14.1.tgz#f8d8d8d770e19d5ecc0584b7db18d9a9369beeae"
+  integrity sha512-vs/GXOu3RRT9ethdRXdiXmYF11PFViIo70Nt6RWb/vKEykHTQ0Y5IYc3GtU7aC6DKqpJ1xZkNUfgvV/q3he/Eg==
   dependencies:
-    "@sentry/hub" "7.14.0"
-    "@sentry/types" "7.14.0"
-    "@sentry/utils" "7.14.0"
+    "@sentry/hub" "7.14.1"
+    "@sentry/types" "7.14.1"
+    "@sentry/utils" "7.14.1"
     tslib "^1.9.3"
 
-"@sentry/types@7.14.0":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.14.0.tgz#8069e58a0104190e328647963036c7597e2e5fa8"
-  integrity sha512-9iFZS9Hr5hAoL+M9oUH2dY9burOaQh+CHGH66fortuTp++YDWKdbPEeKcz8hRJaUyBBn53rdxiBmAyHsrlE6KA==
+"@sentry/types@7.14.1":
+  version "7.14.1"
+  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.14.1.tgz#8d46c41595b2730f3426d54d1d0a9376b8739e33"
+  integrity sha512-PxAfrIwBci6ouHOuRsfVq1B16i92nQNV5IvlqfJIYciazVhDWJvbF52caJAPOFS1WnuQZ4zqBDMYvtnwld3JCA==
 
-"@sentry/utils@7.14.0":
-  version "7.14.0"
-  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-7.14.0.tgz#58dab9e53ad662231c3289842edbc7f885ebc7cb"
-  integrity sha512-q9em4ZBcaUk7J1WULiltZVEcbyCE0wwAIjqRaoNmHVe4FeK++uAPo2ULZM1kQgN8syZnQ1jcfLktIKkWfnE2cg==
+"@sentry/utils@7.14.1":
+  version "7.14.1"
+  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-7.14.1.tgz#95f408853129197fce5841ed0c9b2ed87400e183"
+  integrity sha512-CErQFbJMuhnHFKGkfIazQj5ETKoS7hG8PkoQEBt19F5QMh4+sbrJgnpIrIW8fVGtp0qKWKuIxQwD3b+1cFBozA==
   dependencies:
-    "@sentry/types" "7.14.0"
+    "@sentry/types" "7.14.1"
     tslib "^1.9.3"
 
 "@sinclair/typebox@^0.23.3":
@@ -2041,15 +2041,15 @@ braces@^3.0.1, braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-browserless@9.6.10:
-  version "9.6.10"
-  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.6.10.tgz#abfa7a96b2099a3405fe2615c38f062cbd9e9c75"
-  integrity sha512-ZzAcU8Plm7W2J/FMiXJm9tuwSii9S8xLjSLqkjYXd2dVZDRhxhFkYc5dbY2AiiK1QWsb8HxStvV2NOsCUE7bwg==
+browserless@9.6.11:
+  version "9.6.11"
+  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.6.11.tgz#d0581020639f8711fe628ff4e8c9dc181db3086f"
+  integrity sha512-xI/Wg+/YKa1ReoA+BB5eBrFD6MMQUJOXoeo0gjt0cKBfMXfHLYzQIH1fkhw/mlUvxgmPlFFx/LoVRkrluMbFTg==
   dependencies:
     "@browserless/errors" "^9.6.6"
-    "@browserless/goto" "^9.6.10"
-    "@browserless/pdf" "^9.6.10"
-    "@browserless/screenshot" "^9.6.10"
+    "@browserless/goto" "^9.6.11"
+    "@browserless/pdf" "^9.6.11"
+    "@browserless/screenshot" "^9.6.11"
     debug-logfmt "~1.0.4"
     kill-process-group "~1.0.3"
     p-reflect "~2.1.0"
