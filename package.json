@@ -19,7 +19,7 @@
   "dependencies": {
     "@sentry/node": "7.14.1",
     "@sentry/tracing": "7.14.1",
-    "body-parser": "^1.20.0",
+    "body-parser": "^1.20.1",
     "browserless": "9.6.11",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
@@ -28,7 +28,7 @@
     "lodash": "^4.17.21",
     "mongodb": "^4.10.0",
     "prom-client": "^14.1.0",
-    "puppeteer": "^18.0.5",
+    "puppeteer": "^18.2.1",
     "puppeteer-full-page-screenshot": "^1.2.2",
     "winston": "^3.8.2",
     "winston-graylog2": "^2.1.2",
