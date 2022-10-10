@@ -17,8 +17,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sentry/node": "7.14.1",
-    "@sentry/tracing": "7.14.1",
+    "@sentry/node": "7.14.2",
+    "@sentry/tracing": "7.14.2",
     "body-parser": "^1.20.1",
     "browserless": "9.6.11",
     "cors": "^2.8.5",
