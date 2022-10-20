@@ -455,10 +455,10 @@
   dependencies:
     "@browserless/goto" "^9.6.11"
 
-"@browserless/screenshot@^9.6.11":
-  version "9.6.11"
-  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.6.11.tgz#95f1d32552fe063ad2aa21e692d962c6c069c9bf"
-  integrity sha512-u2fVz8KA8b9yNl3Nexp6BJ4zVJm3l8m0TyqWQAGJ03xA9wmUN3M+2ku0xTQMb6+8xfD+ZUIaN9L56SYYD4MnHA==
+"@browserless/screenshot@^9.6.12":
+  version "9.6.12"
+  resolved "https://registry.yarnpkg.com/@browserless/screenshot/-/screenshot-9.6.12.tgz#459c66addf91bd87ec70de98f3b25bbd9dc8e623"
+  integrity sha512-DdJyCypEanXit5uKhS+wdBpWYqeHhOpfpTtnziuS1HyjYoaYRKd+C7csyta7uvySRmBP06WfCr6qtUYexTT6Ig==
   dependencies:
     "@browserless/goto" "^9.6.11"
     debug-logfmt "~1.0.4"
@@ -2016,15 +2016,15 @@ braces@^3.0.1, braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-browserless@9.6.11:
-  version "9.6.11"
-  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.6.11.tgz#d0581020639f8711fe628ff4e8c9dc181db3086f"
-  integrity sha512-xI/Wg+/YKa1ReoA+BB5eBrFD6MMQUJOXoeo0gjt0cKBfMXfHLYzQIH1fkhw/mlUvxgmPlFFx/LoVRkrluMbFTg==
+browserless@9.6.12:
+  version "9.6.12"
+  resolved "https://registry.yarnpkg.com/browserless/-/browserless-9.6.12.tgz#b82abc0f8a7d3a37582cc8f3c86277c9d1d9148c"
+  integrity sha512-xzM4EGFB6AwzNvt5uosy8BIrA2ZzpZh2Vzda/WCkjef7wUnYDKs6yUmEjybtxqaXrNKa11MmnkiVRC9E7lqVeQ==
   dependencies:
     "@browserless/errors" "^9.6.6"
     "@browserless/goto" "^9.6.11"
     "@browserless/pdf" "^9.6.11"
-    "@browserless/screenshot" "^9.6.11"
+    "@browserless/screenshot" "^9.6.12"
     debug-logfmt "~1.0.4"
     kill-process-group "~1.0.3"
     p-reflect "~2.1.0"
