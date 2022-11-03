@@ -1,4 +1,4 @@
-import createBrowserless, { BrowserlessContext, BrowserlessFactory } from 'browserless';
+import createBrowser, { BrowserlessContext, BrowserlessFactory } from 'browserless';
 import { appendFile } from 'fs/promises';
 import { Page } from 'puppeteer';
 // eslint-disable-next-line
@@ -9,15 +9,15 @@ import { Cookie, Preservation } from '../types';
 
 export class Browser {
   private context!: BrowserlessContext;
-  private browserlessFactory!: BrowserlessFactory;
+  private browser!: BrowserlessFactory;
   private page!: Page;
 
   async init() {
-    this.browserlessFactory = createBrowserless({
+    this.browser = createBrowser({
       defaultViewPort: { width: 1024, height: 768 },
     });
 
-    this.context = await this.browserlessFactory.createContext();
+    this.context = await this.browser.createContext();
     this.page = await this.context.page();
   }
 
@@ -27,7 +27,7 @@ export class Browser {
 
   async close() {
     await this.context.destroyContext();
-    await this.browserlessFactory.close();
+    await this.browser.close();
   }
 
   async pageTitle() {
