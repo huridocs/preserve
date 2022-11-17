@@ -26,7 +26,7 @@
     "express": "^4.18.1",
     "express-prom-bundle": "^6.5.0",
     "lodash": "^4.17.21",
-    "mongodb": "^4.11.0",
+    "mongodb": "^4.12.0",
     "prom-client": "^14.1.0",
     "puppeteer": "^19.2.2",
     "puppeteer-full-page-screenshot": "^1.2.2",
