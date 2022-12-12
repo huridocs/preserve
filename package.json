@@ -20,7 +20,7 @@
     "@sentry/node": "7.24.2",
     "@sentry/tracing": "7.24.2",
     "body-parser": "^1.20.1",
-    "browserless": "9.7.3",
+    "browserless": "9.8.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "express": "^4.18.1",
