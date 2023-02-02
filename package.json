@@ -28,7 +28,7 @@
     "lodash": "^4.17.21",
     "mongodb": "^4.12.1",
     "prom-client": "^14.1.0",
-    "puppeteer": "^19.4.0",
+    "puppeteer": "^19.6.3",
     "puppeteer-full-page-screenshot": "^1.2.2",
     "winston": "^3.8.2",
     "winston-graylog2": "^2.1.2",
