@@ -1,4 +1,4 @@
-FROM node:18.12.1 AS base
+FROM node:18.14.0 AS base
 
 RUN apt-get update && apt-get install curl gnupg gosu -y \
   && curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
