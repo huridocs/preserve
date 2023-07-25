@@ -3,11 +3,11 @@
 set -eo pipefail
 
 function start {
-  docker-compose up --build -d "${@}"
+  docker compose up --build -d "${@}"
 }
 
 function start:local {
-  docker-compose -f docker-compose.yml -f docker-compose.local.yml up --build -d "${@}"
+  docker compose -f docker-compose.yml -f docker-compose.local.yml up --build -d "${@}"
 }
 
 function bash:api {
@@ -19,12 +19,11 @@ function mongo {
 }
 
 function stop {
-  docker:pull  &&
-  docker-compose stop
+  docker compose stop
 }
 
 function docker:build {
-  docker build -f base.Dockerfile -t ghcr.io/huridocs/preserve-base:latest .
+  docker build --no-cache -f base.Dockerfile -t ghcr.io/huridocs/preserve-base:latest .
 }
 
 function docker:push {
@@ -48,4 +47,4 @@ function help {
   compgen -A function | grep -v "^_" | cat -n
 }
 
-USER_ID=$(id -u) GROUP_ID=$(id -g) "${@:-help}"
+"${@:-help}"
