@@ -6,8 +6,6 @@ services:
     restart: unless-stopped
     environment:
       - MONGO_URI=mongodb://mongo
-      - USER_ID=${USER_ID}
-      - GROUP_ID=${GROUP_ID}
       - ENVIRONMENT=${ENVIRONMENT:-development}
       - SENTRY_PRESERVE_API_DSN=${SENTRY_PRESERVE_API_DSN:-}
       - YOUTUBE_DL_SKIP_DOWNLOAD=true
@@ -15,11 +13,11 @@ services:
       context: .
       dockerfile: Dockerfile
       target: production
-    entrypoint: /bin/entrypoint.sh
+    entrypoint: /home/node/entrypoint.sh
     ports:
       - "4000:4000"
     volumes:
-      - ./files:/home/user/app/files
+      - ./files:/home/node/app/files
     depends_on:
       - mongo
 
@@ -29,19 +27,17 @@ services:
     stop_grace_period: 5m
     environment:
       - MONGO_URI=mongodb://mongo
-      - USER_ID=${USER_ID}
-      - GROUP_ID=${GROUP_ID}
       - ENVIRONMENT=${ENVIRONMENT:-development}
       - SENTRY_PRESERVE_WORKER_DSN=${SENTRY_PRESERVE_WORKER_DSN:-}
       - YOUTUBE_DL_SKIP_DOWNLOAD=true
       - VIDEO_DOWNLOADER_PATH=/usr/local/bin/yt-dlp
-    entrypoint: /bin/worker-entrypoint.sh
+    entrypoint: /home/node/worker-entrypoint.sh
     build:
       context: .
       dockerfile: Dockerfile
       target: production
     volumes:
-      - ./files:/home/user/app/files
+      - ./files:/home/node/app/files
     depends_on:
       - mongo
 

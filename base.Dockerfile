@@ -12,14 +12,11 @@ RUN apt-get update && apt-get install curl gnupg gosu -y \
 RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp  \
   && chmod a+rx /usr/local/bin/yt-dlp
 
-RUN groupmod -g 999 node && usermod -u 999 -g 999 node
+USER node
 
-RUN mkdir -p /home/user/app
-WORKDIR /home/user/app
-COPY package.json yarn.lock tsconfig.json ./
+RUN mkdir -p /home/node/app
+WORKDIR /home/node/app
+COPY --chown=node:node package.json yarn.lock tsconfig.json ./
 RUN yarn install
-
-COPY entrypoint.sh worker-entrypoint.sh /bin/
-RUN chmod +x /bin/entrypoint.sh /bin/worker-entrypoint.sh
 
 EXPOSE 4000
