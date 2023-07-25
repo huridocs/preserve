@@ -1,7 +1,5 @@
 FROM ghcr.io/huridocs/preserve-base:latest AS base
 
-USER node
-
 COPY --chown=node:node entrypoint.sh worker-entrypoint.sh /home/node/
 RUN chmod +x /home/node/entrypoint.sh /home/node/worker-entrypoint.sh
 
