@@ -23,7 +23,7 @@ function stop {
 }
 
 function docker:build {
-  docker build --no-cache -f base.Dockerfile -t ghcr.io/huridocs/preserve-base:latest .
+  docker build -f base.Dockerfile -t ghcr.io/huridocs/preserve-base:latest .
 }
 
 function docker:push {

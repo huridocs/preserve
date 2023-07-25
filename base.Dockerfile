@@ -16,7 +16,7 @@ USER node
 
 RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
-COPY --chown=node:node package.json yarn.lock tsconfig.json .puppeteerrc.cjs ./
+COPY --chown=node:node package.json yarn.lock tsconfig.json ./
 RUN yarn install
 
 EXPOSE 4000
