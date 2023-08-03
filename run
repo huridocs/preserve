@@ -19,6 +19,7 @@ function mongo {
 }
 
 function stop {
+  # This made a docker pull, this is needed elsewhere
   docker compose stop
 }
 
