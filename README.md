@@ -45,3 +45,13 @@ yarn blank-state
 If you are working with Mac Apple Silicon chips, you will need to set your Docker default target platform environment variable:
 
 `export DOCKER_DEFAULT_PLATFORM=linux/amd64`
+
+## Basic Examples
+
+- Send an url to be preserved, this will return a json with the evidence info, use the id to check the status
+
+```bash
+curl -X POST -H 'Content-Type: application/json' -H 'Authorization: <TOKEN>' http://<host>/api/evidences -d '{"url": "https://en.wikipedia.org/wiki/Batman"}'
+curl http://<host>/api/evidences/<id> -H 'Authorization: <TOKEN>' | jq
+```
+
