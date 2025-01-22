@@ -1,4 +1,3 @@
-import { appendFile, mkdir } from 'fs/promises';
 import path from 'path';
 // eslint-disable-next-line
 // @ts-ignore
@@ -12,16 +11,24 @@ import {
   PreservationResults,
   VideoDownloader,
 } from '../types';
+import { Storage } from '../infrastructure/Storage';
 
 export class PreserveEvidence {
   private httpClient: FetchClient;
   private videoDownloader: VideoDownloader;
   private browser: Browser;
+  private storage: Storage;
 
-  constructor(httpClient: FetchClient, videoDownloader: VideoDownloader, browser: Browser) {
+  constructor(
+    httpClient: FetchClient,
+    videoDownloader: VideoDownloader,
+    browser: Browser,
+    storage: Storage
+  ) {
     this.httpClient = httpClient;
     this.videoDownloader = videoDownloader;
     this.browser = browser;
+    this.storage = storage;
   }
 
   async execute(
@@ -29,14 +36,14 @@ export class PreserveEvidence {
     options: PreservationOptions = { stepTimeout: 2000 }
   ): Promise<PreservationResults> {
     const evidence = new Evidence(_evidence);
-    await mkdir(evidence.directory());
+    await this.storage.createDirectory(evidence.directory());
     const response = await this.httpClient.fetch(evidence.url(), {
       headers: { cookie: evidence.headerCookies() },
     });
     const contentType = response.headers.get('Content-Type') || 'text/html';
     if (contentType.includes('application/pdf')) {
       const array = new Uint8Array(await response.arrayBuffer());
-      await appendFile(evidence.directoryFor(Preservation.PDF), array);
+      await this.storage.append(evidence.directoryFor(Preservation.PDF), array);
       return new Promise(resolve => {
         const result: PreservationResults = {
           title: evidence.pdfFilename(),
@@ -46,7 +53,7 @@ export class PreserveEvidence {
       });
     }
     await this.browser.init();
-    await appendFile(evidence.directoryFor(Preservation.HTML), await response.text());
+    await this.storage.append(evidence.directoryFor(Preservation.HTML), await response.text());
 
     return new Promise(async (resolve, reject) => {
       this.browser.onError(error => {

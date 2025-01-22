@@ -1,5 +1,4 @@
 import { Application } from 'express';
-import { appendFile, mkdir } from 'fs/promises';
 import { Db, ObjectId } from 'mongodb';
 import { Api } from 'src/api/Api';
 import { config } from 'src/config';
@@ -22,6 +21,7 @@ import { HTTPClient } from 'src/infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownloader';
 import { Browser } from 'src/infrastructure/Browser';
 import { FakeHTTPClient } from './FakeHTTPClient';
+import { FileSystemStorage } from '../src/infrastructure/Storage';
 
 const timeout = (miliseconds: number) => new Promise(resolve => setTimeout(resolve, miliseconds));
 
@@ -49,15 +49,17 @@ describe('Preserve API', () => {
 
   class FakePreserveEvidence extends PreserveEvidence {
     constructor() {
-      super(new HTTPClient(), new YoutubeDLVideoDownloader(), new Browser());
+      const storage = new FileSystemStorage();
+      super(new HTTPClient(), new YoutubeDLVideoDownloader(), new Browser(), storage);
     }
 
     async execute(evidence: EvidenceDB) {
       await timeout(100);
-      await mkdir(`${config.data_path}/${evidence._id}`);
-      await appendFile(`${config.data_path}/${evidence._id}/screenshot.jpg`, 'screenshot');
-      await appendFile(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
-      await appendFile(`${config.data_path}/${evidence._id}/content.txt`, 'content');
+      const storage = new FileSystemStorage();
+      await storage.createDirectory(`${config.data_path}/${evidence._id}`);
+      await storage.append(`${config.data_path}/${evidence._id}/screenshot.jpg`, 'screenshot');
+      await storage.append(`${config.data_path}/${evidence._id}/video.mp4`, 'video');
+      await storage.append(`${config.data_path}/${evidence._id}/content.txt`, 'content');
       const result: PreservationResults = {
         title: 'title',
         downloads: [
@@ -359,7 +361,8 @@ describe('Preserve API', () => {
 
           class ErrorPreserveEvidence extends PreserveEvidence {
             constructor() {
-              super(new HTTPClient(), new YoutubeDLVideoDownloader(), new Browser());
+              const storage = new FileSystemStorage();
+              super(new HTTPClient(), new YoutubeDLVideoDownloader(), new Browser(), storage);
             }
 
             async execute(): Promise<PreservationResults> {

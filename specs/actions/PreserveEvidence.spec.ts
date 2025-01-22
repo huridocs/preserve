@@ -1,5 +1,5 @@
 import express from 'express';
-import { access, appendFile, readFile } from 'fs/promises';
+import { appendFile, readFile } from 'fs/promises';
 import { Server } from 'http';
 import { ObjectId } from 'mongodb';
 import path from 'path';
@@ -10,21 +10,19 @@ import { YoutubeDLVideoDownloader } from 'src/infrastructure/YoutubeDLVideoDownl
 import { Browser } from 'src/infrastructure/Browser';
 import { FakeHTTPClient } from '../FakeHTTPClient';
 import { PreserveEvidence } from 'src/actions/PreserveEvidence';
-
-async function exists(path: string) {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
-}
+import { FileSystemStorage } from 'src/infrastructure/Storage';
 
 describe('PreserveEvidence', () => {
   let server: Server;
   let preservationResults: PreservationResults;
   const videoDownloader = new YoutubeDLVideoDownloader();
-  const preserveEvidence = new PreserveEvidence(new HTTPClient(), videoDownloader, new Browser());
+  const storage = new FileSystemStorage();
+  const preserveEvidence = new PreserveEvidence(
+    new HTTPClient(), 
+    videoDownloader, 
+    new Browser(),
+    storage
+  );
 
   beforeAll(async () => {
     const app = express();
@@ -144,7 +142,7 @@ describe('PreserveEvidence', () => {
 
     it('should perform screenshots and return the paths', async () => {
       expect(
-        await exists(
+        await storage.exists(
           path.join(
             config.data_path,
             preservationResults.downloads.find(d => d.path.match(/screenshot.jpg/))?.path ||
@@ -156,7 +154,7 @@ describe('PreserveEvidence', () => {
 
     it('should perform full page screenshots and return the paths', async () => {
       expect(
-        await exists(
+        await storage.exists(
           path.join(
             config.data_path,
             preservationResults.downloads.find(d => d.path.match(/full_screenshot.jpg/))?.path ||
@@ -168,7 +166,7 @@ describe('PreserveEvidence', () => {
 
     it('should perform PDF page screenshots and return the paths', async () => {
       expect(
-        await exists(
+        await storage.exists(
           path.join(
             config.data_path,
             preservationResults.downloads.find(d => d.path.match(/content.pdf/))?.path || 'no pdf'
@@ -231,7 +229,7 @@ describe('PreserveEvidence', () => {
 
     it('should preserve only the served file', async () => {
       expect(
-        await exists(
+        await storage.exists(
           path.join(
             config.data_path,
             preservationResults.downloads.find(d => d.path.match(/screenshot.jpg/))?.path ||
@@ -240,7 +238,7 @@ describe('PreserveEvidence', () => {
         )
       ).toBe(false);
       expect(
-        await exists(
+        await storage.exists(
           path.join(
             config.data_path,
             preservationResults.downloads.find(d => d.path.match(/full_screenshot.jpg/))?.path ||
@@ -288,7 +286,8 @@ describe('PreserveEvidence', () => {
         preservationResults = await new PreserveEvidence(
           new FakeHTTPClient(),
           new YoutubeDLVideoDownloader(),
-          new Browser()
+          new Browser(),
+          new FileSystemStorage(),
         ).execute(
           {
             _id: new ObjectId(),

@@ -11,6 +11,7 @@ import { Vault } from './infrastructure/Vault';
 import { PreserveEvidence } from './actions/PreserveEvidence';
 import { HTTPClient } from './infrastructure/HTTPClient';
 import { YoutubeDLVideoDownloader } from './infrastructure/YoutubeDLVideoDownloader';
+import { FileSystemStorage } from './infrastructure/Storage';
 
 const uncaughtError = (error: unknown) => {
   Sentry.captureException(error);
@@ -35,10 +36,12 @@ connectDB().then(db => {
   }
   const vault = new Vault(db);
 
+  const storage = new FileSystemStorage(config.data_path);
   const preserveEvidence = new PreserveEvidence(
     new HTTPClient(),
     new YoutubeDLVideoDownloader(),
-    new Browser()
+    new Browser(),
+    storage
   );
 
   const processJob = new ProcessJob(vault, logger, new TSAService(new HTTPClient()));
